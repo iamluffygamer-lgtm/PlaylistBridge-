@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Reel Song Detector - Test</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent: #bb86fc;
+            --primary: #6200ee;
+            --error: #cf6679;
+            --success: #03dac6;
+            --border-radius: 8px;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .test-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid #333;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: var(--border-radius);
+            padding: 12px 15px;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 12px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #7c4dff;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            background: #2a2a2a;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .result-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .detected-song {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+            word-break: break-word;
+            margin-bottom: 10px;
+        }
+
+        .raw-data {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            color: #888;
+            margin-top: 15px;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .status.error {
+            background: rgba(207, 102, 121, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .status.success {
+            background: rgba(3, 218, 198, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .examples {
+            margin-top: 20px;
+        }
+
+        .example-item {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 5px 0;
+            cursor: pointer;
+            word-break: break-all;
+        }
+
+        .example-item:hover {
+            color: var(--accent);
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #333;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Instagram Reel Song Detector</h1>
+        <p class="subtitle">Test version - See if it can detect songs from Instagram Reels</p>
+
+        <div class="test-card">
+            <div class="input-group">
+                <input type="url" id="reelUrl" placeholder="https://www.instagram.com/reel/..." value="">
+                <button id="detectBtn">Detect Song</button>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <small style="color: var(--text-muted);">Try these examples (click to use):</small>
+                <div class="example-item" onclick="useExample('https://www.instagram.com/reel/CxFZk1KyRp3/')">🎬 Dance trend reel</div>
+                <div class="example-item" onclick="useExample('https://www.instagram.com/reel/CxGJk7Myl9M/')">🎤 Music reel</div>
+            </div>
+
+            <div id="result" style="display: none;">
+                <div class="result-box">
+                    <div class="result-label">Detected Song:</div>
+                    <div id="songName" class="detected-song">-</div>
+                    
+                    <hr>
+                    
+                    <div class="result-label">Raw Response:</div>
+                    <div id="rawResponse" class="raw-data">Waiting for response...</div>
+                    
+                    <div id="statusMessage" class="status"></div>
+                </div>
+            </div>
+
+            <div id="loading" style="text-align: center; padding: 20px; display: none;">
+                <span style="color: var(--accent);">🔍 Detecting song...</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem;">
+            ⚠️ Works best with reels that use Instagram's music library
+        </div>
+    </div>
+
+    <script>
+        const reelInput = document.getElementById('reelUrl');
+        const detectBtn = document.getElementById('detectBtn');
+        const resultDiv = document.getElementById('result');
+        const loadingDiv = document.getElementById('loading');
+        const songNameSpan = document.getElementById('songName');
+        const rawResponseDiv = document.getElementById('rawResponse');
+        const statusMessage = document.getElementById('statusMessage');
+
+        function useExample(url) {
+            reelInput.value = url;
+        }
+
+        detectBtn.addEventListener('click', detectSong);
+        reelInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') detectSong();
+        });
+
+        async function detectSong() {
+            const url = reelInput.value.trim();
+            
+            if (!url) {
+                alert('Please paste an Instagram Reel URL');
+                return;
+            }
+
+            if (!url.includes('instagram.com/reel/')) {
+                alert('Please enter a valid Instagram Reel URL');
+                return;
+            }
+
+            // Show loading
+            loadingDiv.style.display = 'block';
+            resultDiv.style.display = 'none';
+            detectBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:8888/.netlify/functions/reelSong', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ reelUrl: url })
+                });
+
+                const data = await response.json();
+                
+                // Display results
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+                
+                rawResponseDiv.textContent = JSON.stringify(data, null, 2);
+                
+                if (data.song) {
+                    songNameSpan.textContent = data.song;
+                    statusMessage.className = 'status success';
+                    statusMessage.textContent = '✅ Song detected successfully!';
+                } else {
+                    songNameSpan.textContent = 'No song detected';
+                    statusMessage.className = 'status error';
+                    statusMessage.textContent = data.error || 'Could not detect song in this reel';
+                }
+
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+                songNameSpan.textContent = 'Error';
+                rawResponseDiv.textContent = error.toString();
+                statusMessage.className = 'status error';
+                statusMessage.textContent = 'Failed to connect to server. Make sure your Netlify function is running.';
+                console.error('Error:', error);
+            } finally {
+                detectBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+  </html>
