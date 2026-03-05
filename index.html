@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Paste Song List → Get Spotify & YouTube Music Links | PlaylistBridge</title>
-    <meta name="description" content="Paste a song list and instantly get Spotify, YouTube Music, or YouTube listening links. No login. No searching. Perfect for ChatGPT-generated playlists.">
+    <title>PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links</title>
+    <meta name="description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
 
     <link rel="canonical" href="https://playlistbridge.netlify.app/" />
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playlistbridge.netlify.app/">
-    <meta property="og:title" content="PlaylistBridge | Text to Playlist Converter">
-    <meta property="og:description" content="Turn any song list into instant listening links. No login required.">
+    <meta property="og:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
+    <meta property="og:description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://playlistbridge.netlify.app/">
-    <meta property="twitter:title" content="PlaylistBridge | Text to Playlist Converter">
-    <meta property="twitter:description" content="Turn any song list into instant listening links. No login required.">
+    <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
+    <meta property="twitter:description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
     
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,39 +25,49 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Can I convert a ChatGPT playlist to Spotify or YouTube Music?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-            "text": "Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required."
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "PlaylistBridge",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web",
+          "description": "Converts plain text song lists into instant playable links for YouTube Music, Spotify, and YouTube."
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "Can I convert a ChatGPT playlist to Spotify or YouTube Music?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required."
+            }
+          }]
         }
-      }]
+      ]
     }
     </script>
 </head>
 <body>
 
-<main class="container">
-    <header>
-        <h1>Paste a Song List. Get Instant Music Links.</h1>
-        <p class="micro-copy" style="font-weight: 600; color: var(--accent); margin-bottom: 0.5rem;">
-            Built for AI-generated playlists. Paste output from ChatGPT, Claude, or any AI tool.
-        </p>
-        <p>
-            Turn any song list — from notes or messages — into Spotify, YouTube Music, or YouTube links.
-            No login. No searching.
-        </p>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">PlaylistBridge</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="developer.html">Developer</a>
+        </div>
+    </div>
+</nav>
 
-        <p class="helper-text">
-            PlaylistBridge helps you convert plain text song lists into instant listening links,
-            saving you from searching each song manually.
-        </p>
+<main class="container">
+    <header class="hero">
+        <h1>Paste a Song List → Get Instant Music Links</h1>
+        <p class="subtitle">Built for AI-generated playlists from ChatGPT, Claude, or Gemini.</p>
+        <p class="description">Convert plain text song lists into instant Spotify, YouTube Music, or YouTube search links. No login required.</p>
     </header>
 
     <section class="input-section">
-
         <div class="platform-selector-wrapper">
             <p class="label">Where do you listen?</p>
             <div class="platform-selector" id="platformSelector">
@@ -68,7 +78,7 @@
         </div>
 
         <div class="examples">
-            <span class="examples-label">Try an example:</span>
+            <span class="examples-label">Example formats supported:</span>
             <button class="example-btn" data-example="pop">Pop</button>
             <button class="example-btn" data-example="classic">90s</button>
             <button class="example-btn" data-example="ai">AI Sample</button>
@@ -78,9 +88,9 @@
             <div id="aiBadge" class="ai-badge hidden">✨ AI-generated list detected & cleaned</div>
             <textarea id="songInput" placeholder="Paste your list here...
 Example:
-1. Bohemian Rhapsody
-2. Blinding Lights
-3. Hotel California"></textarea>
+1. Bohemian Rhapsody - Queen
+2. Blinding Lights - The Weeknd
+3. Hotel California - Eagles"></textarea>
         </div>
 
         <div class="controls">
@@ -98,11 +108,6 @@ Example:
         <span id="statusText">Processing playlist...</span>
     </div>
 
-    <div class="bulk-actions hidden" id="bulkActions">
-        <button id="copyAllBtn" class="btn outline">📋 Copy All Links</button>
-        <button id="openAllBtn" class="btn outline">⚠️ Open First 15</button>
-    </div>
-
     <section id="resultsSection" class="results-section hidden">
 
         <div class="share-container">
@@ -112,6 +117,11 @@ Example:
             <p class="subtext">
                 This is a temporary listening session. Nothing is saved.
             </p>
+        </div>
+
+        <div class="bulk-actions hidden" id="bulkActions">
+            <button id="copyAllBtn" class="btn outline">📋 Copy All Links</button>
+            <button id="openAllBtn" class="btn outline">⚠️ Open First 15</button>
         </div>
 
         <div id="artistModeSection" class="artist-mode-section hidden">
@@ -144,54 +154,81 @@ Example:
         </div>
     </section>
 
-    <section class="feedback hidden" id="feedbackSection">
-        <h2>Was PlaylistBridge helpful?</h2>
-        <div class="stars" id="starRating">
-            <span data-val="1">★</span>
-            <span data-val="2">★</span>
-            <span data-val="3">★</span>
-            <span data-val="4">★</span>
-            <span data-val="5">★</span>
+    <section class="seo-section">
+        <h2>How PlaylistBridge Works</h2>
+        <div class="seo-steps">
+            <div class="seo-step">
+                <div class="step-num">1</div>
+                <p><strong>Paste your song list:</strong> Perfect for any AI playlist converter output.</p>
+            </div>
+            <div class="seo-step">
+                <div class="step-num">2</div>
+                <p><strong>PlaylistBridge finds the songs via metadata:</strong> Quickly process your ChatGPT playlist to Spotify or YouTube formats.</p>
+            </div>
+            <div class="seo-step">
+                <div class="step-num">3</div>
+                <p><strong>Get instant listening links:</strong> Easily transition your song list to YouTube Music with zero hassle.</p>
+            </div>
         </div>
-        <textarea id="feedbackText" placeholder="Optional feedback (How can we improve?)"></textarea>
-        <button id="submitFeedbackBtn" class="btn primary">Submit Feedback</button>
-        <p id="feedbackStatus" class="subtext hidden"></p>
+    </section>
+
+    <section class="feedback hidden" id="feedbackSection">
+        <div class="feedback-card">
+            <h2>Was PlaylistBridge helpful?</h2>
+            <div class="stars" id="starRating">
+                <span data-val="1">★</span>
+                <span data-val="2">★</span>
+                <span data-val="3">★</span>
+                <span data-val="4">★</span>
+                <span data-val="5">★</span>
+            </div>
+            <textarea id="feedbackText" placeholder="Optional feedback (How can we improve?)"></textarea>
+            <button id="submitFeedbackBtn" class="btn primary">Submit Feedback</button>
+            <p id="feedbackStatus" class="subtext hidden"></p>
+        </div>
     </section>
 
     <section class="faq">
         <h2>Frequently Asked Questions</h2>
+        
+        <details>
+            <summary>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</summary>
+            <div class="faq-content">
+                <p>Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required.</p>
+            </div>
+        </details>
 
-        <h3>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</h3>
-        <p>
-            Yes. Paste your AI-generated playlist and instantly get platform-ready links.
-            No login or account is required.
-        </p>
+        <details>
+            <summary>Does this create a real playlist?</summary>
+            <div class="faq-content">
+                <p>PlaylistBridge generates instant listening links and may offer a temporary YouTube queue. It does not save playlists permanently to your account.</p>
+            </div>
+        </details>
 
-        <h3>Does this create a real playlist?</h3>
-        <p>
-            PlaylistBridge generates instant listening links and may offer a temporary YouTube queue.
-            It does not save playlists.
-        </p>
+        <details>
+            <summary>Do I need to sign up?</summary>
+            <div class="faq-content">
+                <p>No. The app works entirely without logins, accounts, or saving your personal data.</p>
+            </div>
+        </details>
 
-        <h3>Do I need to sign up?</h3>
-        <p>
-            No. The app works without login, accounts, or data storage.
-        </p>
-
-        <h3>Which music platforms are supported?</h3>
-        <p>
-            Spotify, YouTube Music, and YouTube.
-        </p>
+        <details>
+            <summary>Which music platforms are supported?</summary>
+            <div class="faq-content">
+                <p>Currently, we generate search links for Spotify, YouTube Music, and standard YouTube.</p>
+            </div>
+        </details>
     </section>
 </main>
 
 <footer>
-    <p>This tool generates search links. All music rights belong to their respective owners.</p>
-    <p class="branding">
-        App made by <a href="https://instagram.com/coder_smit" target="_blank">@coder_smit</a> 
-        <span style="margin: 0 8px;">|</span> 
-        <a href="developer.html">About the Developer</a>
-    </p>
+    <div class="footer-content">
+        <p>&copy; PlaylistBridge. All rights reserved.</p>
+        <p>App made by <a href="https://instagram.com/coder_smit" target="_blank" class="accent">@coder_smit</a></p>
+        <div class="footer-links">
+            <a href="developer.html">About the Developer</a>
+        </div>
+    </div>
 </footer>
 
 <script src="script.js"></script>
