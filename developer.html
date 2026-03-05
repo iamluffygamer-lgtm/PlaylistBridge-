@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About the Developer | PlaylistBridge</title>
+    <meta name="description" content="Learn about the developer behind PlaylistBridge, a lightweight tool that converts raw song lists into playable music links instantly.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "name": "Smit Patil",
+          "jobTitle": "Web Developer",
+          "description": "Independent web developer and tool builder focused on creating lightweight utilities."
+        },
+        {
+          "@type": "WebApplication",
+          "name": "PlaylistBridge",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web",
+          "description": "Converts raw song lists into instant playable links for YouTube Music, Spotify, and YouTube."
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        /* CORE VARIABLES (Matching Main App) */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent: #bb86fc;
+            --primary: #6200ee;
+            --primary-hover: #7c4dff;
+            --border-radius: 8px;
+            --font-family: 'Inter', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        /* NAVIGATION */
+        .nav-top {
+            margin-bottom: 3rem;
+        }
+        .nav-top a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        .nav-top a:hover {
+            color: var(--accent);
+        }
+
+        /* HERO SECTION */
+        header { text-align: center; margin-bottom: 3rem; animation: fadeIn 0.4s ease forwards; }
+        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--accent); font-weight: 600; font-size: 1.1rem; }
+
+        /* DEVELOPER CARD */
+        .dev-card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .dev-card h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .dev-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+
+        /* CONTENT SECTIONS */
+        section { margin-bottom: 3rem; animation: fadeIn 0.6s ease forwards; }
+        h3 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--text-main); border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+        section p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; }
+        
+        /* DESIGN PHILOSOPHY LIST */
+        .philosophy-list { list-style: none; color: var(--text-muted); }
+        .philosophy-list li { margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; }
+        .philosophy-list li::before { content: "✦"; color: var(--accent); position: absolute; left: 0; font-size: 0.9rem; }
+
+        /* TECH STACK BADGES */
+        .tech-stack { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+        .badge {
+            background: rgba(187, 134, 252, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(187, 134, 252, 0.3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* ROADMAP TIMELINE */
+        .roadmap { border-left: 2px solid #333; padding-left: 1.5rem; margin-top: 1rem; position: relative; }
+        .roadmap-item { margin-bottom: 1.5rem; position: relative; }
+        .roadmap-item::before {
+            content: ""; position: absolute; left: -1.85rem; top: 0.3rem;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: var(--bg-color); border: 2px solid var(--accent);
+        }
+        .roadmap-title { font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem; }
+
+        /* CONTACT LINKS */
+        .contact-links { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+        .btn-link {
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: 1px solid #333;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .btn-link:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 2rem; border-top: 1px solid #333; color: var(--text-muted); font-size: 0.8rem; margin-top: auto; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<main class="container">
+    
+    <div class="nav-top">
+        <a href="/">← Back to PlaylistBridge</a>
+    </div>
+
+    <header>
+        <h1>About the Developer</h1>
+        <p class="subtitle">The builder behind PlaylistBridge</p>
+    </header>
+
+    <div class="dev-card">
+        <h2>Smit Patil</h2>
+        <p>Independent web developer and tool builder focused on creating lightweight utilities that solve real problems without unnecessary complexity.</p>
+    </div>
+
+    <section>
+        <h3>Why PlaylistBridge Was Built</h3>
+        <p>Most playlist conversion tools on the market are bloated. They require OAuth logins, demand invasive permissions to read your personal library, and force you through multi-step authorization processes.</p>
+        <p>PlaylistBridge was designed as the antidote: a frictionless, drop-in utility. It takes plain text—perfect for AI-generated lists—and turns it into playable links instantly, without asking who you are.</p>
+    </section>
+
+    <section>
+        <h3>Design Philosophy</h3>
+        <ul class="philosophy-list">
+            <li><strong>Zero Login:</strong> No accounts, no passwords, no OAuth friction.</li>
+            <li><strong>Privacy First:</strong> No tracking of your musical tastes or saving your data.</li>
+            <li><strong>Minimal Backend:</strong> Relying on the client and edge functions for speed.</li>
+            <li><strong>AI Workflow Compatibility:</strong> Built to parse the exact formats output by ChatGPT and Claude.</li>
+            <li><strong>Fast Static Architecture:</strong> Served via a global CDN for instant load times.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Technology Stack Used in this Utility</h3>
+        <div class="tech-stack">
+            <span class="badge">HTML5</span>
+            <span class="badge">CSS3</span>
+            <span class="badge">Vanilla JavaScript</span>
+            <span class="badge">iTunes Metadata API</span>
+            <span class="badge">Netlify Functions</span>
+            <span class="badge">Serverless Architecture</span>
+        </div>
+    </section>
+
+    <section>
+        <h3>Future Roadmap</h3>
+        <div class="roadmap">
+            <div class="roadmap-item">
+                <div class="roadmap-title">AI Style Chat Interface</div>
+                <p>Natural language processing to refine and adjust playlists conversationally.</p>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-title">Direct Spotify Playlist Creation</div>
+                <p>Optional, authenticated OAuth flow to push an entire list directly to a Spotify account.</p>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-title">Improved Metadata Matching</div>
+                <p>Smarter fallbacks and fuzzy searching for obscure indie and international tracks.</p>
+            </div>
+            <div class="roadmap-item">
+                <div class="roadmap-title">Enhanced Session Sharing</div>
+                <p>Better visual previews when sharing a PlaylistBridge URL on social media.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Connect & Contribute</h3>
+        <p>Want to chat about web development, suggest a feature, or check out the code?</p>
+        <div class="contact-links">
+            <a href="https://instagram.com/coder_smit" target="_blank" class="btn-link">Instagram</a>
+            <a href="https://dev.to/coder_smit" target="_blank" class="btn-link">DEV Profile</a>
+            <a href="pilgrim3201@gmail.com" class="btn-link">Email Contact</a>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>© PlaylistBridge</p>
+    <p>Built by Smit Patil</p>
+</footer>
+
+</body>
+</html>
