@@ -257,7 +257,7 @@
             detectBtn.disabled = true;
 
             try {
-                const response = await fetch('http://localhost:8888/.netlify/functions/reelSong', {
+                const response = await fetch('http:playlistbridge.netlify.app/.netlify/functions/reelSong', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
