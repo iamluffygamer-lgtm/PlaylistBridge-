@@ -47,6 +47,9 @@
       ]
     }
     </script>
+ 
+</style>
+
 </head>
 <body>
 
@@ -84,14 +87,17 @@
             <button class="example-btn" data-example="ai">AI Sample</button>
         </div>
 
-        <div class="textarea-wrapper">
+                <div class="textarea-wrapper">
             <div id="aiBadge" class="ai-badge hidden">✨ AI-generated list detected & cleaned</div>
             <textarea id="songInput" placeholder="Paste your list here...
 Example:
 1. Bohemian Rhapsody - Queen
 2. Blinding Lights - The Weeknd
 3. Hotel California - Eagles"></textarea>
+            
+            <div id="suggestionBox" class="suggestion-box hidden"></div>
         </div>
+
 
         <div class="controls">
             <button id="generateBtn" class="btn primary">
@@ -234,3 +240,4 @@ Example:
 <script src="script.js"></script>
 </body>
 </html>
+          
