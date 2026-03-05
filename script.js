@@ -334,7 +334,7 @@ async function fetchMetadataAndRender(rawQuery) {
     let track = {
         title: rawQuery,
         artist: 'Search Result',
-        image: 'https://via.placeholder.com/60/333333/888888?text=?', 
+        image: 'https://via.placeholder.co/60×60/333333/888888?text=Music', 
         query: rawQuery 
     };
 
@@ -358,7 +358,7 @@ async function fetchMetadataAndRender(rawQuery) {
             const item = data.results[0];
             track.title = item.trackName || rawQuery;
             track.artist = item.artistName || 'Unknown Artist';
-            track.image = item.artworkUrl60 || 'https://via.placeholder.com/60/333333/888888?text=🎵';
+            track.image = item.artworkUrl60 || 'https://via.placeholder.co/60/333333/888888?text=Music';
             track.query = `${item.artistName || ''} ${item.trackName || rawQuery}`.trim();
         }
     } catch (e) { 
@@ -631,8 +631,12 @@ function initV13Features() {
                     feedback: userComments || 'No written feedback provided.'
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Server returned an error');
+                return response.json();
+            })
             .then(data => {
+
                 elements.feedbackSection.innerHTML = `
                     <h3>Thank you for your feedback! 💖</h3>
                     <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Your response has been sent to the developer.</p>
