@@ -334,7 +334,7 @@ async function fetchMetadataAndRender(rawQuery) {
     let track = {
         title: rawQuery,
         artist: 'Search Result',
-        image: 'https://via.placeholder.co/60×60/333333/888888?text=Music', 
+        image: 'https://via.placeholder.com/60/333333/888888?text=?', 
         query: rawQuery 
     };
 
@@ -358,7 +358,7 @@ async function fetchMetadataAndRender(rawQuery) {
             const item = data.results[0];
             track.title = item.trackName || rawQuery;
             track.artist = item.artistName || 'Unknown Artist';
-            track.image = item.artworkUrl60 || 'https://via.placeholder.co/60/333333/888888?text=Music';
+            track.image = item.artworkUrl60 || 'https://via.placeholder.com/60/333333/888888?text=🎵';
             track.query = `${item.artistName || ''} ${item.trackName || rawQuery}`.trim();
         }
     } catch (e) { 
@@ -631,12 +631,8 @@ function initV13Features() {
                     feedback: userComments || 'No written feedback provided.'
                 })
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Server returned an error');
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-
                 elements.feedbackSection.innerHTML = `
                     <h3>Thank you for your feedback! 💖</h3>
                     <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Your response has been sent to the developer.</p>
@@ -652,6 +648,115 @@ function initV13Features() {
         });
     }
 } // ← This closes initV13Features()
+// =========================================
+// AUTOCOMPLETE SUGGESTIONS FEATURE
+// =========================================
+
+// Add the new elements to our DOM cache
+elements.suggestionBox = document.getElementById('suggestionBox');
+let suggestionDebounceTimer;
+
+// Listen for typing inside the textarea
+elements.input.addEventListener('input', (e) => {
+    const val = e.target.value;
+    const cursorPos = e.target.selectionStart;
+    
+    // Extract only the current line the user is actively typing on
+    const textBeforeCursor = val.substring(0, cursorPos);
+    const lines = textBeforeCursor.split('\n');
+    const currentLine = lines[lines.length - 1].trim();
+
+    // Only search if they've typed at least 3 characters
+    if (currentLine.length >= 5) {
+        clearTimeout(suggestionDebounceTimer);
+        suggestionDebounceTimer = setTimeout(() => {
+            fetchSuggestions(currentLine);
+        }, 300); // 300ms debounce
+    } else {
+        elements.suggestionBox.classList.add('hidden');
+        elements.suggestionBox.innerHTML = '';
+    }
+});
+
+// Hide dropdown if the user clicks anywhere outside of it
+document.addEventListener('click', (e) => {
+    if (!elements.suggestionBox.contains(e.target) && e.target !== elements.input) {
+        elements.suggestionBox.classList.add('hidden');
+    }
+});
+
+async function fetchSuggestions(query) {
+    try {
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=5`);
+        if (!res.ok) throw new Error('iTunes API failed');
+        
+        const data = await res.json();
+        
+        if (data.results && data.results.length > 0) {
+            renderSuggestions(data.results);
+        } else {
+            elements.suggestionBox.classList.add('hidden');
+        }
+    } catch (err) {
+        // Fail silently without crashing the app, hide dropdown
+        console.error('Failed to fetch suggestions:', err);
+        elements.suggestionBox.classList.add('hidden');
+    }
+}
+
+function renderSuggestions(results) {
+    elements.suggestionBox.innerHTML = ''; // Clear previous results
+    
+    results.forEach(track => {
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        
+        // Accessibility requirement
+        item.setAttribute('aria-label', `${track.trackName} by ${track.artistName}`);
+        
+        const artUrl = track.artworkUrl60 || 'https://via.placeholder.co/40/333333/888888?text=Music';
+        
+        item.innerHTML = `
+            <img src="${artUrl}" alt="Cover" class="suggestion-cover">
+            <div class="suggestion-text">
+                <span class="suggestion-title">${track.trackName}</span>
+                <span class="suggestion-artist">${track.artistName}</span>
+            </div>
+        `;
+        
+        item.addEventListener('click', () => {
+            fillSuggestion(`${track.trackName} – ${track.artistName}`);
+        });
+        
+        elements.suggestionBox.appendChild(item);
+    });
+    
+    elements.suggestionBox.classList.remove('hidden');
+}
+
+function fillSuggestion(songText) {
+    const val = elements.input.value;
+    const cursorPos = elements.input.selectionStart;
+    
+    // Find where the current typing line starts and ends
+    const lastNewline = val.lastIndexOf('\n', cursorPos - 1);
+    const nextNewline = val.indexOf('\n', cursorPos);
+    
+    const lineStart = lastNewline === -1 ? 0 : lastNewline + 1;
+    const lineEnd = nextNewline === -1 ? val.length : nextNewline;
+    
+    // Replace *only* the current line with the chosen suggestion 
+    // This protects the rest of the playlist if they pasted multiple songs
+    const newText = val.substring(0, lineStart) + songText + val.substring(lineEnd);
+    
+    elements.input.value = newText;
+    elements.suggestionBox.classList.add('hidden');
+    elements.input.focus();
+    
+    // Move the text cursor to the end of the newly injected line
+    const newCursorPos = lineStart + songText.length;
+    elements.input.setSelectionRange(newCursorPos, newCursorPos);
+}
 
 // Run the app
 init();
