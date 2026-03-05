@@ -1,16 +1,9 @@
-export async function handler(event) {
-
+exports.handler = async function(event) {
   try {
-
     const body = JSON.parse(event.body);
     const song = body.song;
-
-    const res = await fetch(
-      `https://itunes.apple.com/search?term=${encodeURIComponent(song)}&entity=song&limit=1`
-    );
-
+    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(song)}&entity=song&limit=1`);
     const data = await res.json();
-
     return {
       statusCode: 200,
       headers: {
@@ -19,16 +12,10 @@ export async function handler(event) {
       },
       body: JSON.stringify(data)
     };
-
   } catch (error) {
-
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: "Metadata fetch failed"
-      })
+      body: JSON.stringify({ error: "Metadata fetch failed" })
     };
-
   }
-}
-
+};
