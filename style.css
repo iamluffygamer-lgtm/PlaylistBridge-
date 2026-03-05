@@ -231,3 +231,71 @@ footer p { color: var(--text-muted); font-size: 0.9rem; }
     .track-link { width: 100%; text-align: center; }
     .seo-step { flex-direction: column; text-align: center; align-items: center; }
 }
+<style>
+/* --- AUTOCOMPLETE FORCED STYLES --- */
+.textarea-wrapper {
+    position: relative !important; 
+}
+
+.suggestion-box {
+    position: absolute !important;
+    top: calc(100% - 4px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    background-color: #1e1e1e !important;
+    border: 1px solid #bb86fc !important;
+    border-top: none !important;
+    border-radius: 0 0 12px 12px !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    z-index: 9999 !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8) !important;
+    display: block; /* Ensure it overrides any weird defaults */
+}
+
+.suggestion-item {
+    display: flex !important;
+    align-items: center !important;
+    padding: 10px 15px !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    background-color: transparent !important;
+}
+
+.suggestion-cover {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important; 
+    border-radius: 6px !important;
+    margin-right: 14px !important;
+    object-fit: cover !important;
+    background-color: #222 !important;
+}
+
+.suggestion-text {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    width: 100% !important;
+}
+
+.suggestion-title {
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-bottom: 2px !important;
+    text-align: left !important;
+}
+
+.suggestion-artist {
+    color: #a0a0a0 !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: left !important;
+}
+</style>
