@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Assets Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CANVAS SETUP */
+        body {
+            background-color: #000;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            padding: 50px;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* INSTAGRAM SQUARE (1080x1080 scaled down for viewing) */
+        .ig-post {
+            width: 540px; /* Scaled for screen */
+            height: 540px;
+            background-color: var(--bg-color);
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* --- POST 1: THE HOOK (Messy Text) --- */
+        .chat-bubble {
+            background: #25d366; /* WhatsApp Green */
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 15px 15px 0 15px;
+            font-size: 1rem;
+            max-width: 80%;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .chat-bubble::after {
+            content: ''; position: absolute; bottom: 0; right: -10px;
+            border-width: 10px 0 0 10px; border-style: solid;
+            border-color: transparent transparent transparent #25d366;
+        }
+        .messy-text { font-family: monospace; white-space: pre-wrap; opacity: 0.9; }
+        .arrow-down { font-size: 3rem; color: var(--text-muted); animation: bounce 1s infinite; }
+
+        /* --- POST 2: THE SOLUTION (App UI) --- */
+        .app-mockup {
+            width: 90%;
+            background: var(--bg-color);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .solution-badge {
+            position: absolute; top: 40px; right: 40px;
+            background: var(--success); color: #000;
+            padding: 8px 16px; border-radius: 20px;
+            font-weight: bold; transform: rotate(5deg);
+            box-shadow: 0 4px 15px rgba(3, 218, 198, 0.4);
+        }
+
+        /* --- POST 3: PRIVACY FLEX --- */
+        .privacy-icon { font-size: 5rem; margin-bottom: 20px; }
+        .big-text { font-size: 3.5rem; font-weight: 800; line-height: 1.1; text-align: center; }
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .strike { text-decoration: line-through; color: var(--text-muted); }
+
+        /* --- POST 4: ARTIST MODE --- */
+        .artist-showcase {
+            transform: scale(1.2);
+            width: 80%;
+        }
+        .smart-tag {
+            background: var(--primary); color: white;
+            padding: 5px 12px; border-radius: 4px;
+            font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 20px;
+        }
+
+        /* UTILS */
+        .label {
+            position: absolute; top: -30px; left: 0; 
+            color: #888; font-size: 0.9rem; text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ig-post">
+        <span class="label">Post 1: The Problem</span>
+        <div class="chat-bubble">
+            <div class="messy-text">Bro play these:<br>Fix You<br>Believer<br>Shape of You<br>Bohemian Rhapsody</div>
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">(Text Message)</div>
+        <div class="arrow-down">⬇️</div>
+        <h2 style="margin-top: 20px;">Tired of searching 1-by-1?</h2>
+    </div>
+
+    <div class="ig-post">
+        <span class="label">Post 2: The Solution</span>
+        <div class="solution-badge">✨ Instant Results</div>
+        <div class="app-mockup">
+            <div class="track-list">
+                <li class="track-card">
+                    <img src="https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/73/6d/7c/736d7cfb-c79d-c9a9-4170-5e71d008dg4a/source/60x60bb.jpg" class="thumb">
+                    <div class="track-info">
+                        <div class="track-title">Fix You</div>
+                        <div class="track-channel">Coldplay</div>
+                    </div>
+                    <a class="track-link">Listen</a>
+                </li>
+                <li class="track-card">
+                    <img src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004056101a3/source/60x60bb.jpg" class="thumb">
+                    <div class="track-info">
+                        <div class="track-title">Believer</div>
+                        <div class="track-channel">Imagine Dragons</div>
+                    </div>
+                    <a class="track-link">Listen</a>
+                </li>
+                <li class="track-card">
+                    <img src="https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/ae/4c/d4/ae4cd42a-80a9-d950-16f5-06f091010183/source/60x60bb.jpg" class="thumb">
+                    <div class="track-info">
+                        <div class="track-title">Bohemian Rhapsody</div>
+                        <div class="track-channel">Queen</div>
+                    </div>
+                    <a class="track-link">Listen</a>
+                </li>
+            </div>
+        </div>
+        <h3 style="margin-top: 30px;">Paste. Click. Listen. 🎧</h3>
+    </div>
+
+    <div class="ig-post">
+        <span class="label">Post 3: Privacy Flex</span>
+        <div class="privacy-icon">🔒</div>
+        <div class="big-text">
+            <div class="strike">Login</div>
+            <div class="strike">Signup</div>
+            <div class="gradient-text">JUST MUSIC</div>
+        </div>
+        <p style="color: var(--text-muted); margin-top: 20px;">No Account Required.</p>
+        <button class="btn primary" style="margin-top: 20px; transform: scale(1.2);">Try Now</button>
+    </div>
+
+    <div class="ig-post">
+        <span class="label">Post 4: Artist Mode</span>
+        <div class="smart-tag">New Feature 🧠</div>
+        
+        <div class="artist-showcase">
+            <div class="artist-card">
+                <div class="artist-info">
+                    <h2 style="color:white;">Taylor Swift</h2>
+                    <p>Artist detected. Explore top songs and albums.</p>
+                </div>
+                <a href="#" class="btn success artist-btn" style="background-color: var(--yt-red); color: white; border:none;">
+                    Open on YouTube Music
+                </a>
+            </div>
+        </div>
+        
+        <h3 style="margin-top: 40px; color: var(--text-muted);">Smart Detection v1.2</h3>
+    </div>
+
+</body>
+</html>

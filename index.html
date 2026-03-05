@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Paste Song List → Get Spotify & YouTube Music Links | PlaylistBridge</title>
+    <meta name="description" content="Paste a song list and instantly get Spotify, YouTube Music, or YouTube listening links. No login. No searching. Perfect for ChatGPT-generated playlists.">
+
+    <link rel="canonical" href="https://playlistbridge.netlify.app/" />
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://playlistbridge.netlify.app/">
+    <meta property="og:title" content="PlaylistBridge | Text to Playlist Converter">
+    <meta property="og:description" content="Turn any song list into instant listening links. No login required.">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://playlistbridge.netlify.app/">
+    <meta property="twitter:title" content="PlaylistBridge | Text to Playlist Converter">
+    <meta property="twitter:description" content="Turn any song list into instant listening links. No login required.">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Can I convert a ChatGPT playlist to Spotify or YouTube Music?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+            "text": "Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required."
+        }
+      }]
+    }
+    </script>
+</head>
+<body>
+
+<main class="container">
+    <header>
+        <h1>Paste a Song List. Get Instant Music Links.</h1>
+        <p class="micro-copy" style="font-weight: 600; color: var(--accent); margin-bottom: 0.5rem;">
+            Built for AI-generated playlists. Paste output from ChatGPT, Claude, or any AI tool.
+        </p>
+        <p>
+            Turn any song list — from notes or messages — into Spotify, YouTube Music, or YouTube links.
+            No login. No searching.
+        </p>
+
+        <p class="helper-text">
+            PlaylistBridge helps you convert plain text song lists into instant listening links,
+            saving you from searching each song manually.
+        </p>
+    </header>
+
+    <section class="input-section">
+
+        <div class="platform-selector-wrapper">
+            <p class="label">Where do you listen?</p>
+            <div class="platform-selector" id="platformSelector">
+                <button class="platform-btn selected" data-platform="yt_music">YouTube Music</button>
+                <button class="platform-btn" data-platform="spotify">Spotify</button>
+                <button class="platform-btn" data-platform="youtube">YouTube</button>
+            </div>
+        </div>
+
+        <div class="examples">
+            <span class="examples-label">Try an example:</span>
+            <button class="example-btn" data-example="pop">Pop</button>
+            <button class="example-btn" data-example="classic">90s</button>
+            <button class="example-btn" data-example="ai">AI Sample</button>
+        </div>
+
+        <div class="textarea-wrapper">
+            <div id="aiBadge" class="ai-badge hidden">✨ AI-generated list detected & cleaned</div>
+            <textarea id="songInput" placeholder="Paste your list here...
+Example:
+1. Bohemian Rhapsody
+2. Blinding Lights
+3. Hotel California"></textarea>
+        </div>
+
+        <div class="controls">
+            <button id="generateBtn" class="btn primary">
+                <span class="btn-text">Get Links</span>
+                <span class="loader hidden"></span>
+            </button>
+            <button id="clearBtn" class="btn secondary">Clear</button>
+        </div>
+
+        <p id="statusMsg" class="status-message"></p>
+    </section>
+
+    <div id="statusBar" class="status-bar hidden">
+        <span id="statusText">Processing playlist...</span>
+    </div>
+
+    <div class="bulk-actions hidden" id="bulkActions">
+        <button id="copyAllBtn" class="btn outline">📋 Copy All Links</button>
+        <button id="openAllBtn" class="btn outline">⚠️ Open First 15</button>
+    </div>
+
+    <section id="resultsSection" class="results-section hidden">
+
+        <div class="share-container">
+            <button id="shareBtn" class="btn outline share-btn">
+                🔗 Copy Shareable Session Link
+            </button>
+            <p class="subtext">
+                This is a temporary listening session. Nothing is saved.
+            </p>
+        </div>
+
+        <div id="artistModeSection" class="artist-mode-section hidden">
+            <div class="artist-card">
+                <div class="artist-info">
+                    <h2 id="artistNameDisplay">Artist Name</h2>
+                    <p>Artist detected. Explore top songs and albums.</p>
+                </div>
+                <a id="artistLinkBtn" href="#" target="_blank" class="btn success">
+                    Open Artist Page
+                </a>
+            </div>
+        </div>
+
+        <div id="playlistModeSection">
+            <div class="playlist-actions">
+                <a id="playAllBtn" href="#" target="_blank" class="btn success hidden">
+                    ▶ Try Play All (Experimental)
+                </a>
+                <p id="playAllSubtext" class="subtext hidden">
+                    Auto-generated. May not include all songs.
+                </p>
+            </div>
+
+            <div class="list-header">
+                <h2>Tracks Found (<span id="countDisplay">0</span>)</h2>
+            </div>
+
+            <ul id="resultsList" class="track-list"></ul>
+        </div>
+    </section>
+
+    <section class="feedback hidden" id="feedbackSection">
+        <h2>Was PlaylistBridge helpful?</h2>
+        <div class="stars" id="starRating">
+            <span data-val="1">★</span>
+            <span data-val="2">★</span>
+            <span data-val="3">★</span>
+            <span data-val="4">★</span>
+            <span data-val="5">★</span>
+        </div>
+        <textarea id="feedbackText" placeholder="Optional feedback (How can we improve?)"></textarea>
+        <button id="submitFeedbackBtn" class="btn primary">Submit Feedback</button>
+        <p id="feedbackStatus" class="subtext hidden"></p>
+    </section>
+
+    <section class="faq">
+        <h2>Frequently Asked Questions</h2>
+
+        <h3>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</h3>
+        <p>
+            Yes. Paste your AI-generated playlist and instantly get platform-ready links.
+            No login or account is required.
+        </p>
+
+        <h3>Does this create a real playlist?</h3>
+        <p>
+            PlaylistBridge generates instant listening links and may offer a temporary YouTube queue.
+            It does not save playlists.
+        </p>
+
+        <h3>Do I need to sign up?</h3>
+        <p>
+            No. The app works without login, accounts, or data storage.
+        </p>
+
+        <h3>Which music platforms are supported?</h3>
+        <p>
+            Spotify, YouTube Music, and YouTube.
+        </p>
+    </section>
+</main>
+
+<footer>
+    <p>This tool generates search links. All music rights belong to their respective owners.</p>
+    <p class="branding">
+        App made by <a href="https://instagram.com/coder_smit" target="_blank">@coder_smit</a> 
+        <span style="margin: 0 8px;">|</span> 
+        <a href="developer.html">About the Developer</a>
+    </p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
