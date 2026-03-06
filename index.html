@@ -109,6 +109,12 @@ Example:
 
         <p id="statusMsg" class="status-message"></p>
     </section>
+        <p id="statusMsg" class="status-message"></p>
+        
+        <div class="playlist-counter">
+            🎧 <span id="playlistCount">...</span> playlists generated
+        </div>
+    </section>
 
     <div id="statusBar" class="status-bar hidden">
         <span id="statusText">Processing playlist...</span>
@@ -238,6 +244,40 @@ Example:
 </footer>
 
 <script src="script.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    // TODO: Replace with your actual Firebase config object
+    const firebaseConfig = {
+       apiKey: "AIzaSyDJA3jzuYXfclyqNXmaSTYjNVLk8ge7NEY",
+    authDomain: "playlistbridge-142f6.firebaseapp.com",
+    projectId: "playlistbridge-142f6",
+    storageBucket: "playlistbridge-142f6.firebasestorage.app",
+    messagingSenderId: "906732155342",
+    appId: "1:906732155342:web:b5b8ad3d5c31341cc17b9f",
+    measurementId: "G-JV9F025368"
+  };
+
+    try {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Expose Firebase tools globally for script.js to access
+        window.firebaseDb = db;
+        window.firebaseDoc = doc;
+        window.firebaseGetDoc = getDoc;
+        window.firebaseUpdateDoc = updateDoc;
+        window.firebaseIncrement = increment;
+
+        // Dispatch an event to tell script.js that Firebase is ready
+        window.dispatchEvent(new Event('firebase-ready'));
+    } catch (error) {
+        console.error("Firebase init failed:", error);
+    }
+</script>
+
+<script src="script.js"></script>
 </body>
 </html>
-          
+
