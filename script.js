@@ -858,36 +858,42 @@ async function incrementPlaylistCounter() {
     }
 }
 // =========================================
-// COMMUNITY PLAYLISTS FEATURE (True Trending + Viral Loop)
+// COMMUNITY MODAL & TRENDING LOGIC
 // =========================================
 
-window.addEventListener('firebase-ready', loadTrendingPlaylists);
+const communityModal = document.getElementById('communityModal');
+const openCommunityBtn = document.getElementById('openCommunityBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
 
-async function savePlaylist(songList) {
-    if (!window.firebaseDb || songList.length < 3) return;
-
-    try {
-        const colRef = window.firebaseCollection(window.firebaseDb, "playlists");
-        window.firebaseAddDoc(colRef, {
-            songs: songList,
-            platform: currentPlatform,
-            createdAt: window.firebaseServerTimestamp(),
-            views: 0
-        }).catch(err => console.warn("Background save failed:", err));
-    } catch (error) {
-        console.error("Failed to execute save function:", error);
-    }
+// Modal Toggle Logic
+function openModal() {
+    communityModal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
 }
 
+function closeModal() {
+    communityModal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+}
+
+if (openCommunityBtn) openCommunityBtn.addEventListener('click', openModal);
+if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+
+// Close on outside click
+window.addEventListener('click', (e) => {
+    if (e.target === communityModal) {
+        closeModal();
+    }
+});
+
+// Adjusted loadTrendingPlaylists()
 async function loadTrendingPlaylists() {
     if (!window.firebaseDb) return;
 
-    const trendingSection = document.getElementById('trendingSection');
     const trendingList = document.getElementById('trendingList');
-    if (!trendingSection || !trendingList) return;
+    if (!trendingList) return;
 
     try {
-        // ✨ UPGRADE: Order by 'views' descending
         const q = window.firebaseQuery(
             window.firebaseCollection(window.firebaseDb, "playlists"),
             window.firebaseOrderBy("views", "desc"),
@@ -895,7 +901,11 @@ async function loadTrendingPlaylists() {
         );
 
         const querySnapshot = await window.firebaseGetDocs(q);
-        if (querySnapshot.empty) return;
+        
+        if (querySnapshot.empty) {
+            trendingList.innerHTML = '<p class="subtext" style="text-align:center;">No playlists yet. Be the first!</p>';
+            return;
+        }
 
         trendingList.innerHTML = ''; 
 
@@ -920,10 +930,13 @@ async function loadTrendingPlaylists() {
                 </div>
             `;
 
-            // Open Button
-            card.querySelector('.open-playlist-btn').addEventListener('click', () => openPlaylist(id));
+            // ✨ UX Tweak: Close the modal immediately when a playlist is selected
+            card.querySelector('.open-playlist-btn').addEventListener('click', () => {
+                closeModal(); 
+                openPlaylist(id); 
+            });
             
-            // Share Button (Viral Loop)
+            // Share Button (Viral Loop) remains exactly the same
             card.querySelector('.share-trending-btn').addEventListener('click', (e) => {
                 const hash = `p=${data.platform}&s=${encodeURIComponent(data.songs.join('|'))}`;
                 const shareUrl = `${window.location.origin}${window.location.pathname}#${hash}`;
@@ -938,44 +951,9 @@ async function loadTrendingPlaylists() {
             trendingList.appendChild(card);
         });
 
-        trendingSection.classList.remove('hidden');
     } catch (error) {
         console.error("Failed to load community playlists:", error);
-    }
-}
-
-async function openPlaylist(playlistId) {
-    if (!window.firebaseDb) return;
-
-    elements.input.value = "⏳ Loading community playlist...";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    try {
-        const docRef = window.firebaseDoc(window.firebaseDb, "playlists", playlistId);
-        const docSnap = await window.firebaseGetDoc(docRef);
-
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-
-            window.firebaseUpdateDoc(docRef, { 
-                views: window.firebaseIncrement(1) 
-            }).catch(() => {});
-
-            elements.input.value = data.songs.join('\n');
-            currentPlatform = data.platform;
-            elements.platformBtns.forEach(b => {
-                b.classList.toggle('selected', b.dataset.platform === data.platform);
-            });
-
-            handleGenerate(true); 
-        } else {
-            showStatus("Playlist no longer exists.", "error");
-            elements.input.value = "";
-        }
-    } catch (error) {
-        console.error("Failed to open playlist:", error);
-        showStatus("Error loading playlist.", "error");
-        elements.input.value = "";
+        trendingList.innerHTML = '<p class="status-message error">Failed to load playlists.</p>';
     }
 }
 
