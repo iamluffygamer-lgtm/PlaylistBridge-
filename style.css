@@ -311,91 +311,101 @@ footer p { color: var(--text-muted); font-size: 0.9rem; }
     font-variant-numeric: tabular-nums; /* Locks digit width to prevent jiggling */
 }
 
-/* ========================================= */
-/* COMMUNITY TRENDING PLAYLISTS              */
-/* ========================================= */
-
-.trending-section {
-    margin-top: 1.5rem;
-    animation: fadeIn 0.5s ease;
-}
-
-.trending-section h2 {
-    font-size: 1.15rem;
-    margin-bottom: 1rem;
-    color: var(--text-main);
-}
-
-.trending-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.trending-card {
-    background: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--border-radius);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
+/* --- COMMUNITY NAV LINK --- */
+.community-nav-link {
+    color: var(--accent) !important;
+    display: inline-flex;
     align-items: center;
-    gap: 1rem;
-    transition: all 0.2s ease;
+    gap: 4px;
 }
 
-.trending-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transform: translateY(-2px);
+.community-nav-link:hover {
+    text-shadow: 0 0 10px rgba(187, 134, 252, 0.4);
 }
 
-.trending-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    flex: 1;
-    overflow: hidden; /* Required for text truncation */
-}
-
-.trending-platform {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.trending-songs {
-    font-size: 0.9rem;
-    color: var(--text-main);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.trending-count {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.open-playlist-btn {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.8rem;
-    flex-shrink: 0;
-    white-space: nowrap;
-}
-
+/* Mobile Adjustment to prevent navbar from breaking onto two lines */
 @media (max-width: 600px) {
-    .trending-card {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: left;
+    .nav-links a {
+        margin-left: 0.8rem; /* Slightly reduced margin to fit all 3 links */
+        font-size: 0.85rem;
     }
-    .open-playlist-btn {
-        width: 100%;
-        text-align: center;
-        margin-top: 0.5rem;
+}
+/* ========================================= */
+/* COMMUNITY MODAL STYLES                    */
+/* ========================================= */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    display: none !important;
+    opacity: 0;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--accent);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2rem 1.5rem;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+.modal-title {
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--error);
+}
+
+@keyframes modalSlideUp {
+    from { 
+        transform: translateY(30px) scale(0.98); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0) scale(1); 
+        opacity: 1; 
     }
 }
 
+/* Ensure body doesn't scroll when modal is open */
+body.modal-open {
+    overflow: hidden;
+}
