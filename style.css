@@ -298,4 +298,17 @@ footer p { color: var(--text-muted); font-size: 0.9rem; }
     text-overflow: ellipsis !important;
     text-align: left !important;
 }
-</style>
+/* --- GLOBAL PLAYLIST COUNTER --- */
+.playlist-counter {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-top: 10px;
+    text-align: center;
+    
+    /* NEW: Animation Polish */
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    font-variant-numeric: tabular-nums; /* Locks digit width to prevent jiggling */
+}
+
+
