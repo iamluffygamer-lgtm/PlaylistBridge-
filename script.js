@@ -866,9 +866,11 @@ const openCommunityBtn = document.getElementById('openCommunityBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 
 // Modal Toggle Logic
+// Modal Toggle Logic
 function openModal() {
     communityModal.classList.remove('hidden');
     document.body.classList.add('modal-open');
+    loadTrendingPlaylists(); // Load playlists when modal opens
 }
 
 function closeModal() {
