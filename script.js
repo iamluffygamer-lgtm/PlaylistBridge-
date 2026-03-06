@@ -311,8 +311,17 @@ async function handleGenerate(isAutoLoad = false) {
         elements.statusText.textContent = `🎵 Matched: ${completed} / ${songList.length} songs`;
     });
 
+        // (Existing code)
     await Promise.all(metaPromises);
     incrementPlaylistCounter();
+
+    // ⚡ ADD THIS RIGHT HERE ⚡
+    // We strictly check !isAutoLoad so users opening a community 
+    // playlist don't immediately re-save duplicate playlists into the DB.
+    if (!isAutoLoad) {
+        savePlaylist(songList);
+    }
+
 
     showStatus(`Links ready!`);
     elements.statusBar.classList.add('hidden');
@@ -846,6 +855,127 @@ async function incrementPlaylistCounter() {
         }
     } catch (error) {
         console.error("Failed to increment playlist counter:", error);
+    }
+}
+// =========================================
+// COMMUNITY PLAYLISTS FEATURE (True Trending + Viral Loop)
+// =========================================
+
+window.addEventListener('firebase-ready', loadTrendingPlaylists);
+
+async function savePlaylist(songList) {
+    if (!window.firebaseDb || songList.length < 3) return;
+
+    try {
+        const colRef = window.firebaseCollection(window.firebaseDb, "playlists");
+        window.firebaseAddDoc(colRef, {
+            songs: songList,
+            platform: currentPlatform,
+            createdAt: window.firebaseServerTimestamp(),
+            views: 0
+        }).catch(err => console.warn("Background save failed:", err));
+    } catch (error) {
+        console.error("Failed to execute save function:", error);
+    }
+}
+
+async function loadTrendingPlaylists() {
+    if (!window.firebaseDb) return;
+
+    const trendingSection = document.getElementById('trendingSection');
+    const trendingList = document.getElementById('trendingList');
+    if (!trendingSection || !trendingList) return;
+
+    try {
+        // ✨ UPGRADE: Order by 'views' descending
+        const q = window.firebaseQuery(
+            window.firebaseCollection(window.firebaseDb, "playlists"),
+            window.firebaseOrderBy("views", "desc"),
+            window.firebaseLimit(5)
+        );
+
+        const querySnapshot = await window.firebaseGetDocs(q);
+        if (querySnapshot.empty) return;
+
+        trendingList.innerHTML = ''; 
+
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const id = docSnap.id;
+            
+            const previewSongs = data.songs.slice(0, 3).join(', ') + (data.songs.length > 3 ? '...' : '');
+            const platformName = data.platform === 'yt_music' ? 'YouTube Music' : data.platform === 'spotify' ? 'Spotify' : 'YouTube';
+
+            const card = document.createElement('div');
+            card.className = 'trending-card fade-in';
+            card.innerHTML = `
+                <div class="trending-info">
+                    <span class="trending-platform">${platformName}</span>
+                    <p class="trending-songs">${previewSongs}</p>
+                    <span class="trending-count">${data.songs.length} tracks • ${data.views} views</span>
+                </div>
+                <div class="trending-actions">
+                    <button class="btn outline share-trending-btn" title="Copy Share Link">🔗</button>
+                    <button class="btn outline open-playlist-btn" data-id="${id}">Open</button>
+                </div>
+            `;
+
+            // Open Button
+            card.querySelector('.open-playlist-btn').addEventListener('click', () => openPlaylist(id));
+            
+            // Share Button (Viral Loop)
+            card.querySelector('.share-trending-btn').addEventListener('click', (e) => {
+                const hash = `p=${data.platform}&s=${encodeURIComponent(data.songs.join('|'))}`;
+                const shareUrl = `${window.location.origin}${window.location.pathname}#${hash}`;
+                
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    const btn = e.target;
+                    btn.textContent = '✅';
+                    setTimeout(() => btn.textContent = '🔗', 2000);
+                });
+            });
+
+            trendingList.appendChild(card);
+        });
+
+        trendingSection.classList.remove('hidden');
+    } catch (error) {
+        console.error("Failed to load community playlists:", error);
+    }
+}
+
+async function openPlaylist(playlistId) {
+    if (!window.firebaseDb) return;
+
+    elements.input.value = "⏳ Loading community playlist...";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    try {
+        const docRef = window.firebaseDoc(window.firebaseDb, "playlists", playlistId);
+        const docSnap = await window.firebaseGetDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+
+            window.firebaseUpdateDoc(docRef, { 
+                views: window.firebaseIncrement(1) 
+            }).catch(() => {});
+
+            elements.input.value = data.songs.join('\n');
+            currentPlatform = data.platform;
+            elements.platformBtns.forEach(b => {
+                b.classList.toggle('selected', b.dataset.platform === data.platform);
+            });
+
+            handleGenerate(true); 
+        } else {
+            showStatus("Playlist no longer exists.", "error");
+            elements.input.value = "";
+        }
+    } catch (error) {
+        console.error("Failed to open playlist:", error);
+        showStatus("Error loading playlist.", "error");
+        elements.input.value = "";
     }
 }
 
