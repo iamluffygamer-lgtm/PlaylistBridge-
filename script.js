@@ -957,6 +957,60 @@ async function loadTrendingPlaylists() {
         trendingList.innerHTML = '<p class="status-message error">Failed to load playlists.</p>';
     }
 }
+async function openPlaylist(id) {
+    if (!window.firebaseDb) return;
+
+    try {
+        const docRef = window.firebaseDoc(window.firebaseDb, "playlists", id);
+        const docSnap = await window.firebaseGetDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            
+            // 1. Increment the view count in the database
+            await window.firebaseUpdateDoc(docRef, {
+                views: window.firebaseIncrement(1)
+            });
+
+            // 2. Update the UI to match the playlist's platform
+            currentPlatform = data.platform || 'yt_music';
+            elements.platformBtns.forEach(b => {
+                b.classList.toggle('selected', b.dataset.platform === currentPlatform);
+            });
+
+            // 3. Load the songs into the input and trigger generation
+            elements.input.value = data.songs.join('\n');
+            closeModal(); // Failsafe to ensure the blur goes away
+            handleGenerate(true); // Pass 'true' so it doesn't re-save a duplicate
+            
+        } else {
+            alert("Sorry, this playlist no longer exists.");
+        }
+    } catch (error) {
+        console.error("Failed to open community playlist:", error);
+    }
+}
+// =========================================
+// FIREBASE DATABASE FUNCTIONS
+// =========================================
+
+async function savePlaylist(songList) {
+    // Prevent saving empty lists or if Firebase isn't ready
+    if (!window.firebaseDb || !songList || songList.length === 0) return;
+
+    try {
+        await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, "playlists"), {
+            songs: songList,
+            platform: currentPlatform,
+            createdAt: window.firebaseServerTimestamp(),
+            views: 0
+        });
+        console.log("Playlist successfully saved to community!");
+    } catch (error) {
+        console.error("Failed to save playlist to database:", error);
+    }
+}
+
 
 // Run the app
 init();
