@@ -312,6 +312,7 @@ async function handleGenerate(isAutoLoad = false) {
     });
 
     await Promise.all(metaPromises);
+    incrementPlaylistCounter();
 
     showStatus(`Links ready!`);
     elements.statusBar.classList.add('hidden');
@@ -756,6 +757,96 @@ function fillSuggestion(songText) {
     // Move the text cursor to the end of the newly injected line
     const newCursorPos = lineStart + songText.length;
     elements.input.setSelectionRange(newCursorPos, newCursorPos);
+}
+// =========================================
+// GLOBAL PLAYLIST COUNTER FEATURE
+// =========================================
+
+// Listen for the custom event we dispatched from the HTML module script
+window.addEventListener('firebase-ready', loadPlaylistCounter);
+
+// 1. The Animation Helper Function
+function animateCounter(element, newValue) {
+    const duration = 500; // 500ms animation
+    const startText = element.textContent;
+    
+    // Safely parse the starting value, falling back to 0 if it's "..."
+    const startValue = startText === '...' ? 0 : parseInt(startText.replace(/,/g, ''), 10) || 0;
+    const change = newValue - startValue;
+    
+    if (change === 0) {
+        element.textContent = newValue.toLocaleString();
+        return;
+    }
+
+    let startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        
+        const percentage = Math.min(progress / duration, 1);
+        const easeOut = percentage * (2 - percentage);
+        
+        const currentValue = Math.floor(startValue + (change * easeOut));
+        element.textContent = currentValue.toLocaleString();
+
+        if (progress < duration) {
+            window.requestAnimationFrame(step);
+        } else {
+            element.textContent = newValue.toLocaleString(); 
+        }
+    }
+
+    window.requestAnimationFrame(step);
+}
+
+// 2. Load the Counter on Page Load
+async function loadPlaylistCounter() {
+    try {
+        if (!window.firebaseDb) return;
+
+        const docRef = window.firebaseDoc(window.firebaseDb, "stats", "global");
+        const docSnap = await window.firebaseGetDoc(docRef);
+
+        if (docSnap.exists()) {
+            const count = docSnap.data().playlistCount;
+            const countEl = document.getElementById('playlistCount');
+            
+            // Trigger the animation instead of instantly setting text
+            if (countEl) animateCounter(countEl, count);
+        } else {
+            console.warn("Global stats document does not exist yet.");
+        }
+    } catch (error) {
+        console.error("Failed to load playlist counter:", error);
+    }
+}
+
+// 3. Increment the Counter when a Playlist is Generated
+async function incrementPlaylistCounter() {
+    try {
+        if (!window.firebaseDb) return;
+
+        const docRef = window.firebaseDoc(window.firebaseDb, "stats", "global");
+        
+        // Atomically increment the counter in Firestore
+        await window.firebaseUpdateDoc(docRef, {
+            playlistCount: window.firebaseIncrement(1)
+        });
+
+        // Optimistically animate the UI locally
+        const countEl = document.getElementById('playlistCount');
+        if (countEl) {
+            const currentText = countEl.textContent;
+            const currentVal = currentText === '...' ? 0 : parseInt(currentText.replace(/,/g, ''), 10) || 0;
+            
+            // Animate to the new incremented value
+            animateCounter(countEl, currentVal + 1);
+        }
+    } catch (error) {
+        console.error("Failed to increment playlist counter:", error);
+    }
 }
 
 // Run the app
