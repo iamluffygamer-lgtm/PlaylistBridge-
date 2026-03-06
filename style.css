@@ -311,4 +311,91 @@ footer p { color: var(--text-muted); font-size: 0.9rem; }
     font-variant-numeric: tabular-nums; /* Locks digit width to prevent jiggling */
 }
 
+/* ========================================= */
+/* COMMUNITY TRENDING PLAYLISTS              */
+/* ========================================= */
+
+.trending-section {
+    margin-top: 1.5rem;
+    animation: fadeIn 0.5s ease;
+}
+
+.trending-section h2 {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.trending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.trending-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s ease;
+}
+
+.trending-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+.trending-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    overflow: hidden; /* Required for text truncation */
+}
+
+.trending-platform {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.trending-songs {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trending-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.open-playlist-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .trending-card {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+    }
+    .open-playlist-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+}
 
