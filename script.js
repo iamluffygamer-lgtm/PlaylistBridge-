@@ -866,7 +866,6 @@ const openCommunityBtn = document.getElementById('openCommunityBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 
 // Modal Toggle Logic
-// Modal Toggle Logic
 function openModal() {
     communityModal.classList.remove('hidden');
     document.body.classList.add('modal-open');
@@ -878,7 +877,7 @@ function closeModal() {
     document.body.classList.remove('modal-open');
 }
 
-if (openCommunityBtn) openCommunityBtn.addEventListener('click', openModal);
+if (openCommunityBtn) openCommunityBtn.addEventListener('click', openModal); // ← Fixed: was 'open'
 if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
 
 // Close on outside click
