@@ -862,7 +862,7 @@ async function incrementPlaylistCounter() {
 // =========================================
 
 const modalElements = {
-    exploreBtn: document.getElementById('exploreCommunityBtn'),
+    exploreBtn: document.getElementById('openCommunityBtn'),
     modal: document.getElementById('communityModal'),
     closeBtn: document.getElementById('closeModalBtn'),
     listContainer: document.getElementById('modalTrendingList')
@@ -870,7 +870,8 @@ const modalElements = {
 
 // --- Modal Event Listeners ---
 if (modalElements.exploreBtn) {
-    modalElements.exploreBtn.addEventListener('click', () => {
+    modalElements.exploreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         modalElements.modal.classList.remove('hidden');
         loadCommunityPlaylists();
         document.body.style.overflow = 'hidden'; // Prevent background scrolling
