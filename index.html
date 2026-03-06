@@ -115,7 +115,14 @@ Example:
             🎧 <span id="playlistCount">...</span> playlists generated
         </div>
     </section>
+  
+    <section id="trendingSection" class="trending-section hidden">
+        <h2>🔥 Community Playlists</h2>
+        <div id="trendingList" class="trending-list">
+            </div>
+    </section>
 
+  
     <div id="statusBar" class="status-bar hidden">
         <span id="statusText">Processing playlist...</span>
     </div>
@@ -165,7 +172,7 @@ Example:
             <ul id="resultsList" class="track-list"></ul>
         </div>
     </section>
-
+  
     <section class="seo-section">
         <h2>How PlaylistBridge Works</h2>
         <div class="seo-steps">
@@ -246,38 +253,44 @@ Example:
 <script src="script.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, increment, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // TODO: Replace with your actual Firebase config object
+    // Your existing config
     const firebaseConfig = {
        apiKey: "AIzaSyDJA3jzuYXfclyqNXmaSTYjNVLk8ge7NEY",
-    authDomain: "playlistbridge-142f6.firebaseapp.com",
-    projectId: "playlistbridge-142f6",
-    storageBucket: "playlistbridge-142f6.firebasestorage.app",
-    messagingSenderId: "906732155342",
-    appId: "1:906732155342:web:b5b8ad3d5c31341cc17b9f",
-    measurementId: "G-JV9F025368"
-  };
+       authDomain: "playlistbridge-142f6.firebaseapp.com",
+       projectId: "playlistbridge-142f6",
+       storageBucket: "playlistbridge-142f6.firebasestorage.app",
+       messagingSenderId: "906732155342",
+       appId: "1:906732155342:web:b5b8ad3d5c31341cc17b9f",
+       measurementId: "G-JV9F025368"
+    };
 
     try {
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Expose Firebase tools globally for script.js to access
+        // Expose Firebase tools globally
         window.firebaseDb = db;
         window.firebaseDoc = doc;
         window.firebaseGetDoc = getDoc;
         window.firebaseUpdateDoc = updateDoc;
         window.firebaseIncrement = increment;
+        
+        // NEW: Expose tools for Community Playlists
+        window.firebaseCollection = collection;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseServerTimestamp = serverTimestamp;
+        window.firebaseQuery = query;
+        window.firebaseOrderBy = orderBy;
+        window.firebaseLimit = limit;
+        window.firebaseGetDocs = getDocs;
 
-        // Dispatch an event to tell script.js that Firebase is ready
         window.dispatchEvent(new Event('firebase-ready'));
     } catch (error) {
         console.error("Firebase init failed:", error);
     }
 </script>
-
-
 </body>
 </html>
 
