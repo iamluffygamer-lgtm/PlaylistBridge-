@@ -4,7 +4,7 @@ export async function handler(event) {
 
     const body = JSON.parse(event.body);
 
-    const response = await fetch("https://script.google.com/macros/s/AKfycbwoiS0MLyFeZZkJkZwROi5rmNo8lIqUG_vLASMp9ZgsCWddkmwx4dgweNPeGyHFd2tZMA/exec", {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbxrvZVI0uc3PmPYlHZoSRnGLjJyqxACuJAH8Ndn16W5csZTVk97-O1kgKiYia5AjjFRRA/exec", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
