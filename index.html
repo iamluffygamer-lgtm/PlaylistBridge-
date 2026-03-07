@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links</title>
     <meta name="description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
-
     <link rel="canonical" href="https://playlistbridge.netlify.app/" />
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playlistbridge.netlify.app/">
     <meta property="og:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
     <meta property="og:description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://playlistbridge.netlify.app/">
-    <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
+  <meta property="twitter:url" content="https://playlistbridge.netlify.app/">
+  <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
     <meta property="twitter:description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
-    
-    <link rel="stylesheet" href="/style.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
 
     <script type="application/ld+json">
     {
@@ -47,219 +46,277 @@
       ]
     }
     </script>
- 
-</style>
-
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="/" class="logo">PlaylistBridge</a>
-        <div class="nav-links">
-            <a href="#" id="openCommunityBtn" class="community-nav-link">🔥 Community</a>
-            <a href="/">Home</a>
-            <a href="/developer.html">Developer</a>
+<!-- ───── NAVBAR ───── -->
+<nav class="navbar" id="navbar">
+    <div class="nav-inner">
+        <a href="/" class="nav-logo">
+            <span class="logo-mark">PB</span>
+            <span class="logo-text">PlaylistBridge</span>
+        </a>
+        <div class="nav-actions">
+            <button id="openCommunityBtn" class="nav-pill">
+                <span class="nav-pill-dot"></span>
+                Community
+            </button>
+            <a href="/developer.html" class="nav-link">Developer</a>
         </div>
     </div>
 </nav>
 
+<!-- ───── HERO ───── -->
+<main>
+<section class="hero-section">
+    <div class="hero-inner">
+        <div class="hero-badge">
+            <span class="badge-pulse"></span>
+            Built for AI playlists
+        </div>
+        <h1 class="hero-title">Paste a list.<br>Start listening.</h1>
+        <p class="hero-sub">Turn any AI-generated song list into instant links for Spotify, YouTube Music, or YouTube. No account needed.</p>
+        
+        <div class="counter-strip">
+            <span class="counter-icon">🎧</span>
+            <span id="playlistCount" class="counter-num">…</span>
+            <span class="counter-label">playlists generated</span>
+        </div>
+    </div>
+</section>
 
-<main class="container">
-    <header class="hero">
-        <h1>Paste a Song List → Get Instant Music Links</h1>
-        <p class="subtitle">Built for AI-generated playlists from ChatGPT, Claude, or Gemini.</p>
-        <p class="description">Convert plain text song lists into instant Spotify, YouTube Music, or YouTube search links. No login required.</p>
-    </header>
+<!-- ───── INPUT SECTION ───── -->
+<section class="input-section">
+    <div class="card input-card">
 
-    <section class="input-section">
-        <div class="platform-selector-wrapper">
-            <p class="label">Where do you listen?</p>
+        <!-- Platform selector -->
+        <div class="platform-row">
+            <span class="section-label">Platform</span>
             <div class="platform-selector" id="platformSelector">
-                <button class="platform-btn selected" data-platform="yt_music">YouTube Music</button>
-                <button class="platform-btn" data-platform="spotify">Spotify</button>
-                <button class="platform-btn" data-platform="youtube">YouTube</button>
+                <button class="platform-btn selected" data-platform="yt_music">
+                    <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/></svg>
+                    YT Music
+                </button>
+                <button class="platform-btn" data-platform="spotify">
+                    <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                    Spotify
+                </button>
+                <button class="platform-btn" data-platform="youtube">
+                    <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+                    YouTube
+                </button>
             </div>
         </div>
 
-        <div class="examples">
-            <span class="examples-label">Example formats supported:</span>
-            <button class="example-btn" data-example="pop">Pop</button>
-            <button class="example-btn" data-example="classic">90s</button>
-            <button class="example-btn" data-example="ai">AI Sample</button>
+        <!-- Examples row -->
+        <div class="examples-row">
+            <span class="section-label">Try an example</span>
+            <div class="example-chips">
+                <button class="example-chip" data-example="pop">Pop hits</button>
+                <button class="example-chip" data-example="classic">90s classics</button>
+                <button class="example-chip" data-example="ai">AI sample</button>
+            </div>
         </div>
 
-                <div class="textarea-wrapper">
-            <div id="aiBadge" class="ai-badge hidden">✨ AI-generated list detected & cleaned</div>
-            <textarea id="songInput" placeholder="Paste your list here...
-Example:
-1. Bohemian Rhapsody - Queen
-2. Blinding Lights - The Weeknd
-3. Hotel California - Eagles"></textarea>
-            
+        <!-- Textarea -->
+        <div class="textarea-container">
+            <div id="aiBadge" class="ai-badge hidden">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                AI list detected & cleaned
+            </div>
+            <textarea 
+                id="songInput" 
+                class="song-input" 
+                placeholder="Paste your playlist here…&#10;&#10;Example:&#10;1. Bohemian Rhapsody – Queen&#10;2. Blinding Lights – The Weeknd&#10;3. Hotel California – Eagles"
+                spellcheck="false"
+            ></textarea>
             <div id="suggestionBox" class="suggestion-box hidden"></div>
         </div>
 
-
-        <div class="controls">
-            <button id="generateBtn" class="btn primary">
-                <span class="btn-text">Get Links</span>
-                <span class="loader hidden"></span>
+        <!-- Controls -->
+        <div class="controls-row">
+            <button id="generateBtn" class="btn-generate">
+                <span class="btn-generate-text">Get Links</span>
+                <span class="btn-generate-loader hidden">
+                    <span class="spinner"></span>
+                </span>
+                <kbd class="btn-kbd">⌘↵</kbd>
             </button>
-            <button id="clearBtn" class="btn secondary">Clear</button>
+            <button id="clearBtn" class="btn-ghost">Clear</button>
         </div>
-    </section>
-        <p id="statusMsg" class="status-message"></p>
-        
-        <div class="playlist-counter">
-            🎧 <span id="playlistCount">...</span> playlists generated
-        </div>
-    </section>
-   
-    <div id="statusBar" class="status-bar hidden">
-        <span id="statusText">Processing playlist...</span>
+
     </div>
 
-    <section id="resultsSection" class="results-section hidden">
+    <p id="statusMsg" class="status-message"></p>
+</section>
 
-        <div class="share-container">
-            <button id="shareBtn" class="btn outline share-btn">
-                🔗 Copy Shareable Session Link
-            </button>
-            <p class="subtext">
-                This is a temporary listening session. Nothing is saved.
-            </p>
+<!-- ───── STATUS BAR ───── -->
+<div id="statusBar" class="status-bar hidden">
+    <div class="status-bar-inner">
+        <span class="status-pulse"></span>
+        <span id="statusText">Processing playlist…</span>
+    </div>
+</div>
+
+<!-- ───── RESULTS ───── -->
+<section id="resultsSection" class="results-section hidden">
+
+    <!-- Artist mode -->
+    <div id="artistModeSection" class="artist-mode hidden">
+        <div class="card artist-card">
+            <div class="artist-avatar">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13M9 18c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-2c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
+            </div>
+            <div class="artist-info">
+                <p class="artist-mode-label">Artist detected</p>
+                <h2 id="artistNameDisplay" class="artist-name">Artist Name</h2>
+            </div>
+            <a id="artistLinkBtn" href="#" target="_blank" class="btn-primary">Open Artist Page →</a>
+        </div>
+    </div>
+
+    <!-- Playlist mode -->
+    <div id="playlistModeSection">
+
+        <!-- Play all row -->
+        <div class="play-all-row" id="playAllRow" style="display:none">
+            <a id="playAllBtn" href="#" target="_blank" class="play-all-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Try Play All
+                <span class="play-all-badge">Experimental</span>
+            </a>
+            <p id="playAllSubtext" class="play-all-subtext"></p>
         </div>
 
-        <div class="bulk-actions hidden" id="bulkActions">
-            <button id="copyAllBtn" class="btn outline">📋 Copy All Links</button>
-            <button id="openAllBtn" class="btn outline">⚠️ Open First 15</button>
-        </div>
-
-        <div id="artistModeSection" class="artist-mode-section hidden">
-            <div class="artist-card">
-                <div class="artist-info">
-                    <h2 id="artistNameDisplay">Artist Name</h2>
-                    <p>Artist detected. Explore top songs and albums.</p>
+        <!-- Track count + share -->
+        <div class="results-header">
+            <div class="results-meta">
+                <span class="results-count-label">Tracks found</span>
+                <span id="countDisplay" class="results-count">0</span>
+            </div>
+            <div class="results-actions">
+                <div id="bulkActions" class="bulk-actions-inline hidden">
+                    <button id="copyAllBtn" class="btn-outline">📋 Copy All</button>
+                    <button id="openAllBtn" class="btn-outline">⚠ Open First 15</button>
                 </div>
-                <a id="artistLinkBtn" href="#" target="_blank" class="btn success">
-                    Open Artist Page
-                </a>
+                <button id="shareBtn" class="btn-outline share-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Share
+                </button>
             </div>
         </div>
 
-        <div id="playlistModeSection">
-            <div class="playlist-actions">
-                <a id="playAllBtn" href="#" target="_blank" class="btn success hidden">
-                    ▶ Try Play All (Experimental)
-                </a>
-                <p id="playAllSubtext" class="subtext hidden">
-                    Auto-generated. May not include all songs.
-                </p>
-            </div>
+        <!-- Track list — space is always reserved -->
+        <ul id="resultsList" class="track-list"></ul>
 
-            <div class="list-header">
-                <h2>Tracks Found (<span id="countDisplay">0</span>)</h2>
-            </div>
+    </div>
+</section>
 
-            <ul id="resultsList" class="track-list"></ul>
+<!-- ───── SEO / HOW IT WORKS ───── -->
+<section class="how-section">
+    <div class="how-inner">
+        <h2 class="how-title">How it works</h2>
+        <div class="how-steps">
+            <div class="how-step">
+                <div class="step-num">01</div>
+                <div class="step-body">
+                    <h3>Paste your list</h3>
+                    <p>Works with any AI output — ChatGPT, Claude, Gemini. Numbered lists, plain text, dash-separated, anything.</p>
+                </div>
+            </div>
+            <div class="how-step">
+                <div class="step-num">02</div>
+                <div class="step-body">
+                    <h3>We match metadata</h3>
+                    <p>Songs are matched against platform metadata so you get the right track, not a cover.</p>
+                </div>
+            </div>
+            <div class="how-step">
+                <div class="step-num">03</div>
+                <div class="step-body">
+                    <h3>Listen instantly</h3>
+                    <p>Open individual tracks or share the whole session. No login, no saving, no friction.</p>
+                </div>
+            </div>
         </div>
-    </section>
-  
-    <section class="seo-section">
-        <h2>How PlaylistBridge Works</h2>
-        <div class="seo-steps">
-            <div class="seo-step">
-                <div class="step-num">1</div>
-                <p><strong>Paste your song list:</strong> Perfect for any AI playlist converter output.</p>
-            </div>
-            <div class="seo-step">
-                <div class="step-num">2</div>
-                <p><strong>PlaylistBridge finds the songs via metadata:</strong> Quickly process your ChatGPT playlist to Spotify or YouTube formats.</p>
-            </div>
-            <div class="seo-step">
-                <div class="step-num">3</div>
-                <p><strong>Get instant listening links:</strong> Easily transition your song list to YouTube Music with zero hassle.</p>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
-    <section class="feedback hidden" id="feedbackSection">
-        <div class="feedback-card">
-            <h2>Was PlaylistBridge helpful?</h2>
-            <div class="stars" id="starRating">
-                <span data-val="1">★</span>
-                <span data-val="2">★</span>
-                <span data-val="3">★</span>
-                <span data-val="4">★</span>
-                <span data-val="5">★</span>
-            </div>
-            <textarea id="feedbackText" placeholder="Optional feedback (How can we improve?)"></textarea>
-            <button id="submitFeedbackBtn" class="btn primary">Submit Feedback</button>
-            <p id="feedbackStatus" class="subtext hidden"></p>
+<!-- ───── FEEDBACK ───── -->
+<section class="feedback-section hidden" id="feedbackSection">
+    <div class="card feedback-card">
+        <h2 class="feedback-title">Was PlaylistBridge helpful?</h2>
+        <div class="stars" id="starRating">
+            <button class="star" data-val="1">★</button>
+            <button class="star" data-val="2">★</button>
+            <button class="star" data-val="3">★</button>
+            <button class="star" data-val="4">★</button>
+            <button class="star" data-val="5">★</button>
         </div>
-    </section>
+        <textarea id="feedbackText" class="feedback-input" placeholder="Optional: How can we improve?"></textarea>
+        <button id="submitFeedbackBtn" class="btn-primary">Submit feedback</button>
+        <p id="feedbackStatus" class="feedback-status hidden"></p>
+    </div>
+</section>
 
-    <section class="faq">
-        <h2>Frequently Asked Questions</h2>
-        
-        <details>
-            <summary>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</summary>
-            <div class="faq-content">
+<!-- ───── FAQ ───── -->
+<section class="faq-section">
+    <div class="faq-inner">
+        <h2 class="faq-title">Questions</h2>
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</summary>
                 <p>Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required.</p>
-            </div>
-        </details>
-
-        <details>
-            <summary>Does this create a real playlist?</summary>
-            <div class="faq-content">
+            </details>
+            <details class="faq-item">
+                <summary>Does this create a real playlist?</summary>
                 <p>PlaylistBridge generates instant listening links and may offer a temporary YouTube queue. It does not save playlists permanently to your account.</p>
-            </div>
-        </details>
-
-        <details>
-            <summary>Do I need to sign up?</summary>
-            <div class="faq-content">
+            </details>
+            <details class="faq-item">
+                <summary>Do I need to sign up?</summary>
                 <p>No. The app works entirely without logins, accounts, or saving your personal data.</p>
-            </div>
-        </details>
-
-        <details>
-            <summary>Which music platforms are supported?</summary>
-            <div class="faq-content">
+            </details>
+            <details class="faq-item">
+                <summary>Which music platforms are supported?</summary>
                 <p>Currently, we generate search links for Spotify, YouTube Music, and standard YouTube.</p>
-            </div>
-        </details>
-    </section>
+            </details>
+        </div>
+    </div>
+</section>
 </main>
 
-<footer>
-    <div class="footer-content">
-        <p>&copy; PlaylistBridge. All rights reserved.</p>
-        <p>App made by <a href="https://instagram.com/coder_smit" target="_blank" class="accent">@coder_smit</a></p>
+<!-- ───── FOOTER ───── -->
+<footer class="footer">
+    <div class="footer-inner">
+        <a href="/" class="footer-logo">PlaylistBridge</a>
+        <p class="footer-copy">Made by <a href="https://instagram.com/coder_smit" target="_blank">@coder_smit</a></p>
         <div class="footer-links">
-            <a href="developer.html">About the Developer</a>
+            <a href="/developer.html">Developer</a>
         </div>
     </div>
 </footer>
-    <div id="communityModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button id="closeModalBtn" class="modal-close">&times;</button>
-            <h2 class="modal-title">🔥 Community Playlists</h2>
-            <div id="modalTrendingList" class="trendingList">
 
-
-                </div>
+<!-- ───── COMMUNITY MODAL ───── -->
+<div id="communityModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-panel">
+        <div class="modal-header">
+            <h2 id="modalTitle" class="modal-title">Community Playlists</h2>
+            <button id="closeModalBtn" class="modal-close" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
+        <div id="modalTrendingList" class="modal-list"></div>
     </div>
+</div>
 
-<script src="/script.js"></script>
-<script src="/share-system.js"></script>
+<!-- ───── SCRIPTS ───── -->
+<script src="ui.js"></script>
+<script src="script.js"></script>
+<script src=""share-system.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, doc, getDoc,setDoc,updateDoc, increment, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // Your existing config
     const firebaseConfig = {
        apiKey: "AIzaSyDJA3jzuYXfclyqNXmaSTYjNVLk8ge7NEY",
        authDomain: "playlistbridge-142f6.firebaseapp.com",
@@ -273,16 +330,12 @@ Example:
     try {
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        // Expose Firebase tools globally
         window.firebaseDb = db;
         window.firebaseDoc = doc;
         window.firebaseGetDoc = getDoc;
         window.firebaseUpdateDoc = updateDoc;
         window.firebaseIncrement = increment;
         window.firebaseSetDoc = setDoc;
-        
-        // NEW: Expose tools for Community Playlists
         window.firebaseCollection = collection;
         window.firebaseAddDoc = addDoc;
         window.firebaseServerTimestamp = serverTimestamp;
@@ -290,7 +343,6 @@ Example:
         window.firebaseOrderBy = orderBy;
         window.firebaseLimit = limit;
         window.firebaseGetDocs = getDocs;
-
         window.dispatchEvent(new Event('firebase-ready'));
     } catch (error) {
         console.error("Firebase init failed:", error);
@@ -298,4 +350,3 @@ Example:
 </script>
 </body>
 </html>
-
