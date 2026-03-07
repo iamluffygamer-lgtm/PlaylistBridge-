@@ -11,15 +11,12 @@
     <meta property="og:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
     <meta property="og:description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
     <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://playlistbridge.netlify.app/">
-  <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
-    <meta property="twitter:description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
 
     <script type="application/ld+json">
     {
@@ -310,9 +307,8 @@
 </div>
 
 <!-- ───── SCRIPTS ───── -->
-<script src="ui.js"></script>
-<script src="script.js"></script>
-<script src=""share-system.js"></script>
+<script src="/ui.js"></script>
+<script src="/script.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -343,10 +339,14 @@
         window.firebaseOrderBy = orderBy;
         window.firebaseLimit = limit;
         window.firebaseGetDocs = getDocs;
-        window.dispatchEvent(new Event('firebase-ready'));
+
+        // setTimeout 0 ensures share-system.js has registered its
+        // firebase-ready listener before we fire the event
+        setTimeout(() => window.dispatchEvent(new Event('firebase-ready')), 0);
     } catch (error) {
         console.error("Firebase init failed:", error);
     }
 </script>
+<script src="/share-system.js"></script>
 </body>
-</html>
+                </html>
