@@ -10,7 +10,9 @@
     padding: 0;
 }
 
-:root {
+root {
+    color-scheme: dark;
+
     /* ── Palette ── */
     --bg-base:      #0a0a0c;
     --bg-surface:   #111115;
@@ -393,11 +395,8 @@ body {
 
 /* ── Textarea container ── */
 .textarea-container {
-    position: relative;
-    /* Reserve minimum height to prevent layout shift */
-    min-height: 200px;
+    overflow: visible;
 }
-
 .ai-badge {
     display: flex;
     align-items: center;
@@ -1348,9 +1347,9 @@ body {
 ──────────────────────────────────── */
 .suggestion-box {
     position: absolute;
-    left: var(--sp-md);
-    right: var(--sp-md);
-    bottom: calc(100% - var(--sp-md));
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
     background: var(--bg-elevated);
     border: 1px solid var(--border-focus);
     border-radius: var(--r-md);
@@ -1360,6 +1359,7 @@ body {
     max-height: 220px;
     overflow-y: auto;
 }
+
 
 .suggestion-item {
     display: flex;
