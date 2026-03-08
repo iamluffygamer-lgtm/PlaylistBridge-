@@ -1,1 +1,6 @@
-/p/*   /index.html   200
+# 1. Route /p/ links to our Netlify Function for dynamic OG tags
+/p/* /.netlify/functions/share  200
+
+# 2. Keep your other frontend routes intact (if you have any others)
+/* /index.html   200
+
