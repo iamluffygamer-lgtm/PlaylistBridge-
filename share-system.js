@@ -45,36 +45,44 @@ async function savePlaylistIfNotExists(platform, rawText) {
 // Load Logic
 async function loadPlaylistFromURL() {
     const path = window.location.pathname;
-    if (path.startsWith('/p/')) {
-        const hash = path.split('/')[2];
-        if (!hash) return;
+    const params = new URLSearchParams(window.location.search);
+    
+    // 1. Check for the new ?id= parameter (from Netlify redirect), or fallback to old /p/ logic
+    let hash = params.get('id');
+    if (!hash && path.startsWith('/p/')) {
+        hash = path.split('/')[2];
+    }
 
-        try {
-            const docRef = window.firebaseDoc(window.firebaseDb, "playlists", hash);
-            const docSnap = await window.firebaseGetDoc(docRef);
+    if (!hash) return;
 
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                window.firebaseUpdateDoc(docRef, { views: window.firebaseIncrement(1) });
+    // 2. Clean up the URL bar instantly so the user just sees "playlistbridge.netlify.app"
+    window.history.replaceState({}, document.title, "/");
 
-                // Fill your specific text area
-                document.getElementById('songInput').value = data.songs.join('\n');
-                
-                // Select the correct platform button
-                const platformBtns = document.querySelectorAll('.platform-btn');
-                platformBtns.forEach(btn => {
-                    if (btn.dataset.platform === data.platform) {
-                        btn.click(); // Triggers your existing UI logic to highlight the button
-                    }
-                });
+    try {
+        const docRef = window.firebaseDoc(window.firebaseDb, "playlists", hash);
+        const docSnap = await window.firebaseGetDoc(docRef);
 
-                // Trigger your existing generate logic
-                const generateBtn = document.getElementById('generateBtn');
-                if (generateBtn) generateBtn.click();
-            }
-        } catch (error) {
-            console.error("Error loading playlist:", error);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            window.firebaseUpdateDoc(docRef, { views: window.firebaseIncrement(1) });
+
+            // Fill your specific text area
+            document.getElementById('songInput').value = data.songs.join('\n');
+            
+            // Select the correct platform button
+            const platformBtns = document.querySelectorAll('.platform-btn');
+            platformBtns.forEach(btn => {
+                if (btn.dataset.platform === data.platform) {
+                    btn.click(); // Triggers your existing UI logic to highlight the button
+                }
+            });
+
+            // Trigger your existing generate logic
+            const generateBtn = document.getElementById('generateBtn');
+            if (generateBtn) generateBtn.click();
         }
+    } catch (error) {
+        console.error("Error loading playlist:", error);
     }
 }
 
