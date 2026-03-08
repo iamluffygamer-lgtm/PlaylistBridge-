@@ -32,8 +32,15 @@ exports.handler = async (event) => {
     }
 
     // 3. Build the dynamic image URL (Using Vercel's free OG generator)
+        // 3. Build the dynamic image URL 
     const ogText = encodeURIComponent(`${playlistTitle}${songCountText}`);
-    const ogImageUrl = `https://og-image.vercel.app/${ogText}.png?theme=dark&md=1&fontSize=100px`;
+    
+    // Grab a clean, white music icon from a public icon API
+    const customIcon = encodeURIComponent("https://api.iconify.design/mdi:music-circle.svg?color=white");
+    
+    // Inject our custom icon using the &images= parameter
+    const ogImageUrl = `https://og-image.vercel.app/${ogText}.png?theme=dark&md=1&fontSize=100px&images=${customIcon}`;
+    
     const appUrl = "https://playlistbridge.netlify.app";
 
     // 4. Return the HTML with Meta Tags, then immediately redirect the user
@@ -45,7 +52,8 @@ exports.handler = async (event) => {
         <title>${playlistTitle} | PlaylistBridge</title>
         
         <meta property="og:title" content="${playlistTitle} | PlaylistBridge">
-        <meta property="og:description" content="Listen to this playlist instantly on Spotify or YouTube Music.">
+        <meta property="og:description" content="Listen to this custom playlist instantly! PlaylistBridge converts plain text and AI-generated song lists into playable Spotify and YouTube Music links for free.">
+
         <meta property="og:image" content="${ogImageUrl}">
         <meta property="og:url" content="${appUrl}/p/${playlistId}">
         <meta property="og:type" content="website">
