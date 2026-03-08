@@ -278,7 +278,8 @@ async function fetchMetadataAndRender(rawQuery) {
 function getSearchLink(query, platform) {
     const q = encodeURIComponent(query);
     switch (platform) {
-        case 'spotify':  return `https://open.spotify.com/search/${q}`;
+        case 'spotify':
+  return `https://open.spotify.com/search/${encodeURIComponent(q)}`;
         case 'yt_music': return `https://music.youtube.com/search?q=${q}`;
         case 'youtube':  return `https://www.youtube.com/results?search_query=${q}`;
         default:         return `https://www.youtube.com/results?search_query=${q}`;
