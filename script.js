@@ -108,7 +108,7 @@ function handleArtistMode(artistName) {
 function updateArtistButton(artistName) {
     const q = encodeURIComponent(artistName);
     const map = {
-        spotify:  { url: `https://open.spotify.com/search/${q}`,                              label: 'Open Artist on Spotify' },
+        spotify: { url: `https://open.spotify.com/search?q=${q}`,                              label: 'Open Artist on Spotify' },
         yt_music: { url: `https://music.youtube.com/search?q=${q}`,                           label: 'Open Artist on YouTube Music' },
         youtube:  { url: `https://www.youtube.com/results?search_query=${q}+official+music`,  label: 'Open Artist on YouTube' },
     };
