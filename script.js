@@ -675,49 +675,6 @@ async function savePlaylist(songList) {
         }).catch(err => console.warn('Background save failed:', err));
     } catch (e) { console.error('savePlaylist error:', e); }
 }
-const FEEDBACK_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzv5b5Adg6NUjg_JkS5kmtkdftIE5nSS5NZDsN4b0czlZldACDimLYo9N-L4KEuOsaZ/exec";
 
-function showFeedbackPrompt(){
-document.getElementById("feedbackModal").style.display="block";
-}
-
-function sendPositive(){
-
-sendFeedback("positive");
-
-}
-
-function showNegativeOptions(){
-
-document.getElementById("feedbackButtons").style.display="none";
-document.getElementById("negativeOptions").style.display="block";
-
-}
-
-function sendNegative(reason){
-
-sendFeedback("negative - "+reason);
-
-}
-
-function sendFeedback(value){
-
-fetch(FEEDBACK_SCRIPT_URL,{
-method:"POST",
-body:JSON.stringify({
-feedback:value,
-time:new Date().toISOString()
-})
-})
-.then(()=>{
-console.log("feedback saved",value);
-})
-.catch(err=>{
-console.error(err);
-});
-
-document.getElementById("feedbackModal").style.display="none";
-
-}
 // ─── BOOT ───
 init();
