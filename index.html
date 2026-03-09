@@ -305,6 +305,22 @@
         <div id="modalTrendingList" class="modal-list"></div>
     </div>
 </div>
+    <div id="feedbackModal">
+    <p class="fm-question">Did PlaylistBridge work for your playlist?</p>
+
+    <div id="feedbackButtons" class="fm-buttons">
+        <button class="fm-btn fm-yes" onclick="sendPositive()">👍 Yes, it worked</button>
+        <button class="fm-btn fm-no" onclick="showNegativeOptions()">👎 Not really</button>
+    </div>
+
+    <div id="negativeOptions" class="fm-negative hidden">
+        <p class="fm-sub">What went wrong?</p>
+        <button class="fm-tag" onclick="sendNegative('wrong songs')">Wrong songs</button>
+        <button class="fm-tag" onclick="sendNegative('spotify search failed')">Spotify search failed</button>
+        <button class="fm-tag" onclick="sendNegative('slow loading')">Slow loading</button>
+        <button class="fm-tag" onclick="sendNegative('confusing ui')">Confusing UI</button>
+    </div>
+        </div>
 
 <!-- ───── SCRIPTS ───── -->
 <script src="/ui.js"></script>
