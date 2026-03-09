@@ -279,7 +279,10 @@ function getSearchLink(query, platform) {
     const q = encodeURIComponent(query);
     switch (platform) {
         case 'spotify':
-  return `https://open.spotify.com/search/${encodeURIComponent(q)}`;
+    const webUrl = `https://open.spotify.com/search?q=${q}`;
+    const appUrl = `spotify:search:${query}`;
+    // Returns app URI on mobile, web on desktop
+    return /Android|iPhone|iPad/i.test(navigator.userAgent) ? appUrl : webUrl;
         case 'yt_music': return `https://music.youtube.com/search?q=${q}`;
         case 'youtube':  return `https://www.youtube.com/results?search_query=${q}`;
         default:         return `https://www.youtube.com/results?search_query=${q}`;
