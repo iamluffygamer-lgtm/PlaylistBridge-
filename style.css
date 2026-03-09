@@ -1412,3 +1412,99 @@ body {
         transition-duration: 0.01ms !important;
     }
 }
+/* ── Quick Feedback Modal ── */
+#feedbackModal {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-focus);
+    border-radius: var(--r-xl);
+    padding: var(--sp-lg);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+    z-index: 9999;
+    max-width: 260px;
+    width: calc(100vw - 48px);
+    display: none;
+    animation: slide-up 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+.fm-question {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--sp-md);
+    line-height: 1.4;
+}
+
+.fm-buttons {
+    display: flex;
+    gap: var(--sp-sm);
+}
+
+.fm-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: var(--r-md);
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 120ms;
+}
+
+.fm-btn:hover { border-color: var(--border-focus); background: var(--bg-elevated); }
+
+.fm-btn.fm-yes:hover  { border-color: var(--green); color: var(--green); }
+.fm-btn.fm-no:hover   { border-color: var(--red);   color: var(--red);   }
+
+.fm-negative {
+    margin-top: var(--sp-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-xs);
+}
+
+.fm-negative.hidden { display: none; }
+
+.fm-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+}
+
+.fm-tag {
+    padding: 7px 12px;
+    border-radius: var(--r-md);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    text-align: left;
+    transition: all 120ms;
+}
+
+.fm-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+/* Mobile — stick to bottom full width */
+@media (max-width: 480px) {
+    #feedbackModal {
+        bottom: 0;
+        right: 0;
+        left: 0;
+        max-width: 100%;
+        width: 100%;
+        border-radius: var(--r-xl) var(--r-xl) 0 0;
+    }
+   }
