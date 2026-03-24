@@ -6,53 +6,255 @@
     <title>Convert Plain Text to a Playable Playlist | PlaylistBridge</title>
     <meta name="description" content="Easily turn any text-based list of songs into a real, playable playlist for Spotify or YouTube Music. Paste your text to generate links instantly.">
     <link rel="canonical" href="https://playlistbridge.netlify.app/text-to-playlist.html" />
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent: #bb86fc;
+            --accent-dim: rgba(187, 134, 252, 0.12);
+            --primary: #6200ee;
+            --spotify-green: #1DB954;
+            --yt-red: #fa2c2c;
+            --success: #03dac6;
+            --success-dim: rgba(3, 218, 198, 0.12);
+            --border-radius: 12px;
+            --border-subtle: 1px solid rgba(255,255,255,0.07);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(ellipse at 80% 10%, rgba(3,218,198,0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 20% 90%, rgba(98,0,238,0.08) 0%, transparent 50%);
+        }
+
+        /* NAV */
+        .navbar { position: sticky; top: 0; background: rgba(18,18,18,0.85); backdrop-filter: blur(12px); border-bottom: var(--border-subtle); z-index: 1000; }
+        .nav-container { max-width: 860px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; text-decoration: none; background: linear-gradient(90deg, var(--accent), #ff79c6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-back { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .nav-back:hover { color: var(--accent); }
+        .nav-back svg { width: 14px; height: 14px; }
+
+        main { flex: 1; max-width: 860px; margin: 0 auto; padding: 4rem 1.5rem 5rem; width: 100%; }
+
+        /* HERO */
+        .hero { text-align: center; margin-bottom: 4rem; animation: fadeUp 0.6s ease both; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--success-dim); border: 1px solid rgba(3,218,198,0.3); color: var(--success); font-size: 0.8rem; font-weight: 600; padding: 6px 14px; border-radius: 20px; margin-bottom: 1.5rem; letter-spacing: 0.03em; text-transform: uppercase; }
+        .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.25rem; }
+        .hero h1 .text-accent { background: linear-gradient(135deg, var(--success), #00e5cc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero h1 .playlist-accent { background: linear-gradient(135deg, var(--accent), #ff79c6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.7; }
+        .hero-cta { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--primary), #7c4dff); color: white; font-weight: 700; font-size: 1rem; padding: 1rem 2.2rem; border-radius: 50px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 24px rgba(98,0,238,0.4); }
+        .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(98,0,238,0.55); }
+
+        .divider { border: none; border-top: var(--border-subtle); margin: 4rem 0; }
+        .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--success); margin-bottom: 1rem; }
+
+        /* THE PAIN */
+        .pain-section { animation: fadeUp 0.6s ease 0.1s both; margin-bottom: 4rem; }
+        .pain-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        .pain-section > p { color: var(--text-muted); font-size: 1rem; line-height: 1.75; max-width: 640px; margin-bottom: 2rem; }
+
+        /* SOURCE CARDS - where people find tracklists */
+        .sources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+        .source-card { background: var(--card-bg); border: var(--border-subtle); border-radius: var(--border-radius); padding: 1.25rem; transition: border-color 0.2s, transform 0.2s; }
+        .source-card:hover { border-color: rgba(3,218,198,0.3); transform: translateY(-2px); }
+        .source-card .icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+        .source-card h3 { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .source-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* HOW IT WORKS */
+        .how-section { animation: fadeUp 0.6s ease 0.2s both; margin-bottom: 4rem; }
+        .how-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 2rem; letter-spacing: -0.02em; }
+        .steps { display: flex; flex-direction: column; position: relative; }
+        .steps::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: 40px; width: 2px; background: linear-gradient(to bottom, var(--success), rgba(3,218,198,0.1)); }
+        .step { display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.5rem 0; }
+        .step-num { flex-shrink: 0; width: 40px; height: 40px; background: #0a2e2a; border: 2px solid var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--success); position: relative; z-index: 1; }
+        .step-content { padding-top: 6px; }
+        .step-content h3 { font-weight: 700; font-size: 1rem; margin-bottom: 0.35rem; }
+        .step-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+        .step-content .tag { display: inline-block; background: var(--success-dim); color: var(--success); font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 0.5rem; }
+
+        /* FORMAT SHOWCASE */
+        .formats-section { animation: fadeUp 0.6s ease 0.25s both; margin-bottom: 4rem; }
+        .formats-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+        .formats-section > p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .format-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; }
+        .format-pill { background: var(--card-bg); border: var(--border-subtle); border-radius: 8px; padding: 1rem 1.1rem; line-height: 1.6; }
+        .format-pill strong { display: block; font-size: 0.7rem; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: var(--success); margin-bottom: 0.4rem; font-weight: 700; }
+        .format-pill span { font-size: 0.85rem; font-family: 'Courier New', monospace; color: var(--text-muted); white-space: pre-line; }
+
+        /* PRIVACY CALLOUT */
+        .privacy-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 4rem; animation: fadeUp 0.6s ease 0.3s both; }
+        .privacy-item { display: flex; align-items: flex-start; gap: 0.75rem; background: var(--card-bg); border: var(--border-subtle); border-radius: var(--border-radius); padding: 1.25rem; }
+        .privacy-item .pi-icon { font-size: 1.25rem; flex-shrink: 0; }
+        .privacy-item h4 { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .privacy-item p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+
+        /* CALLOUT */
+        .bridge-callout { background: linear-gradient(135deg, rgba(3,218,198,0.12) 0%, rgba(98,0,238,0.1) 100%); border: 1px solid rgba(3,218,198,0.25); border-radius: var(--border-radius); padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; animation: fadeUp 0.6s ease 0.35s both; }
+        .bridge-callout-text h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+        .bridge-callout-text p { color: var(--text-muted); font-size: 0.9rem; }
+        .bridge-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--success); color: #000; font-weight: 700; font-size: 0.95rem; padding: 0.85rem 1.8rem; border-radius: 50px; text-decoration: none; white-space: nowrap; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(3,218,198,0.3); }
+        .bridge-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(3,218,198,0.45); }
+
+        footer { border-top: var(--border-subtle); padding: 2rem 1.5rem; text-align: center; }
+        .footer-content { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+        .footer-seo { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 20px; font-size: 0.8rem; }
+        .footer-seo a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-seo a:hover { color: var(--accent); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 600px) {
+            main { padding: 2.5rem 1.25rem 4rem; }
+            .hero h1 { font-size: 1.9rem; }
+            .bridge-callout { flex-direction: column; text-align: center; }
+            .bridge-cta { width: 100%; justify-content: center; }
+            .steps::before { left: 17px; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">PlaylistBridge</a>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">PlaylistBridge</a>
+        <a href="/" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to app
+        </a>
+    </div>
+</nav>
+
+<main>
+
+    <header class="hero">
+        <div class="hero-badge">📋 Text → Playlist</div>
+        <h1>Turn <span class="text-accent">plain text</span><br>into a real <span class="playlist-accent">playlist</span></h1>
+        <p class="subtitle">Stop manually searching for songs one by one. Paste any list of tracks — from anywhere — and get instant playable links in seconds.</p>
+        <a href="/" class="hero-cta">→ Start Converting Text</a>
+    </header>
+
+    <hr class="divider">
+
+    <!-- WHERE DO LISTS COME FROM -->
+    <section class="pain-section">
+        <p class="section-label">The problem</p>
+        <h2>Great tracklists live everywhere — except your music app</h2>
+        <p>You encounter song recommendations constantly — in texts from friends, Reddit threads, blog posts, old note apps, screenshots. The music is great. But getting it into your queue is a manual nightmare. PlaylistBridge solves that with a single paste.</p>
+
+        <div class="sources-grid">
+            <div class="source-card"><div class="icon">💬</div><h3>Friend recommendations</h3><p>That long iMessage thread of tracks your friend sent you.</p></div>
+            <div class="source-card"><div class="icon">🌐</div><h3>Reddit threads</h3><p>r/Music, r/indieheads, genre subreddits — incredible curated lists buried in comments.</p></div>
+            <div class="source-card"><div class="icon">📸</div><h3>Screenshots</h3><p>Instagram posts, Pinterest boards, and tracklist screenshots you saved months ago.</p></div>
+            <div class="source-card"><div class="icon">📝</div><h3>Note apps</h3><p>Apple Notes, Google Keep, or Notion docs full of songs you promised yourself you'd listen to.</p></div>
+            <div class="source-card"><div class="icon">📖</div><h3>Blog posts</h3><p>"Best albums of the decade" listicles, music journalism, vinyl recommendation guides.</p></div>
+            <div class="source-card"><div class="icon">🤖</div><h3>AI output</h3><p>ChatGPT, Claude, Gemini, or any other AI model's curated tracklist.</p></div>
         </div>
-    </nav>
+    </section>
 
-    <main class="container" style="max-width: 800px;">
-        <header class="hero" style="margin-bottom: 2rem;">
-            <h1>Convert Plain Text to a Playlist</h1>
-            <p class="subtitle">Stop searching for songs one by one.</p>
-        </header>
+    <hr class="divider">
 
-        <section class="input-section" style="padding: 3rem 2rem; text-align: left;">
-            <h2 style="margin-bottom: 1rem; color: var(--accent);">The Pain of Plain Text</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">We have all been there. A friend sends you a massive text message full of song recommendations. You find a screenshot of a great tracklist on Instagram, or you copy a list of vintage hits from a blog post. You have the text, but now you have to manually open your music app, type in the artist, find the right song, and add it to your queue over and over again.</p>
-            
-            <h2 style="margin-bottom: 1rem; margin-top: 2rem; color: var(--accent);">The Instant Text Converter</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">PlaylistBridge eliminates the manual work. It is a smart text parser built specifically for music.</p>
-
-            <ul style="margin-bottom: 2rem; color: var(--text-muted); padding-left: 1.5rem; line-height: 1.8;">
-                <li><strong>No Formatting Required:</strong> Whether your list uses numbers (1., 2., 3.), bullet points, dashes, or is just a messy block of text, our tool cleans it up automatically.</li>
-                <li><strong>Cross-Platform:</strong> Convert your text into search links for Spotify, YouTube Music, or standard YouTube.</li>
-                <li><strong>Privacy First:</strong> No accounts, no logins, and no connecting your Spotify profile. Just paste and play.</li>
-            </ul>
-
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="/" class="btn primary" style="font-size: 1.2rem; padding: 1rem 2rem;">Start Converting Text</a>
+    <!-- HOW IT WORKS -->
+    <section class="how-section">
+        <p class="section-label">How it works</p>
+        <h2>Paste. Pick a platform. Done.</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Copy your text list from anywhere</h3>
+                    <p>Grab a list from a message, Reddit post, website, note app — anywhere. The format doesn't matter at all. Don't clean it up, just copy the raw text.</p>
+                    <span class="tag">Any source, any format</span>
+                </div>
             </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; PlaylistBridge. All rights reserved.</p>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Paste it into PlaylistBridge</h3>
+                    <p>Drop the raw text into the input box. Our parser automatically removes numbered prefixes, bullets, dashes, and any extra formatting. Up to 50 tracks per session.</p>
+                    <span class="tag">Auto-parses messy formatting</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Choose Spotify, YouTube Music, or YouTube</h3>
+                    <p>Select your preferred music platform. PlaylistBridge fetches metadata for each track using iTunes and generates direct search links — one click per song, no manual typing.</p>
+                    <span class="tag">Spotify · YouTube Music · YouTube</span>
+                </div>
+            </div>
         </div>
-        <div class="footer-seo" style="margin-top: 1.5rem; font-size: 0.85rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
-    <a href="/chatgpt-to-spotify.html" style="color: var(--text-muted); text-decoration: none;">ChatGPT to Spotify</a>
-    <a href="/text-to-youtube-music.html" style="color: var(--text-muted); text-decoration: none;">Text to YouTube Music</a>
-    <a href="/claude-to-spotify.html" style="color: var(--text-muted); text-decoration: none;">Claude to Spotify</a>
-    <a href="/text-to-playlist.html" style="color: var(--text-muted); text-decoration: none;">Text to Playlist</a>
-    <a href="/paste-ai-playlist.html" style="color: var(--text-muted); text-decoration: none;">Paste AI Playlist</a>
-</div>
+    </section>
 
-    </footer>
+    <hr class="divider">
+
+    <!-- SUPPORTED FORMATS -->
+    <section class="formats-section">
+        <p class="section-label">Supported formats</p>
+        <h2>Paste it however you have it</h2>
+        <p>PlaylistBridge is built to handle real-world, messy text — not just perfectly formatted lists.</p>
+        <div class="format-grid">
+            <div class="format-pill"><strong>Numbered</strong><span>1. Bohemian Rhapsody – Queen
+2. Hotel California – Eagles</span></div>
+            <div class="format-pill"><strong>Bullet points</strong><span>• Blinding Lights – The Weeknd
+• As It Was – Harry Styles</span></div>
+            <div class="format-pill"><strong>Dashes</strong><span>- Smells Like Teen Spirit
+- Nirvana
+- Come As You Are</span></div>
+            <div class="format-pill"><strong>Plain lines</strong><span>Midnight City M83
+Tame Impala The Less I Know
+Daft Punk Instant Crush</span></div>
+            <div class="format-pill"><strong>Artist - Title</strong><span>The Weeknd - Blinding Lights
+Dua Lipa - Levitating</span></div>
+            <div class="format-pill"><strong>Bold markdown</strong><span>**Midnight City** by M83
+**Levitating** – Dua Lipa</span></div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- PRIVACY -->
+    <div class="privacy-row">
+        <div class="privacy-item"><div class="pi-icon">🔒</div><div><h4>No login required</h4><p>Never connect your Spotify or YouTube account. PlaylistBridge stays entirely separate from your music profile.</p></div></div>
+        <div class="privacy-item"><div class="pi-icon">🗑️</div><div><h4>Nothing is saved</h4><p>Sessions are temporary. Once you close the tab, your list is gone. No data stored on our servers.</p></div></div>
+        <div class="privacy-item"><div class="pi-icon">⚡</div><div><h4>Instant results</h4><p>Metadata lookup and link generation happen in parallel — a 20-song list takes under 5 seconds.</p></div></div>
+    </div>
+
+    <div class="bridge-callout">
+        <div class="bridge-callout-text">
+            <h3>Turn that text list into music now</h3>
+            <p>Paste any format. No login, no account, no cleanup needed.</p>
+        </div>
+        <a href="/" class="bridge-cta">→ Open PlaylistBridge</a>
+    </div>
+
+</main>
+
+<footer>
+    <div class="footer-content"><p>&copy; PlaylistBridge. All rights reserved.</p></div>
+    <div class="footer-seo">
+        <a href="/chatgpt-to-spotify.html">ChatGPT to Spotify</a>
+        <a href="/text-to-youtube-music.html">Text to YouTube Music</a>
+        <a href="/claude-to-spotify.html">Claude to Spotify</a>
+        <a href="/text-to-playlist.html">Text to Playlist</a>
+        <a href="/paste-ai-playlist.html">Paste AI Playlist</a>
+    </div>
+</footer>
+
 </body>
 </html>
