@@ -6,51 +6,289 @@
     <title>Paste AI Generated Playlists to Get Music Links | PlaylistBridge</title>
     <meta name="description" content="Did an AI generate a great tracklist for you? Paste your AI-generated playlist here to instantly convert it into Spotify and YouTube Music links.">
     <link rel="canonical" href="https://playlistbridge.netlify.app/paste-ai-playlist.html" />
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent: #bb86fc;
+            --accent-dim: rgba(187, 134, 252, 0.12);
+            --primary: #6200ee;
+            --spotify-green: #1DB954;
+            --yt-red: #fa2c2c;
+            --border-radius: 12px;
+            --border-subtle: 1px solid rgba(255,255,255,0.07);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(ellipse at 10% 30%, rgba(98,0,238,0.09) 0%, transparent 55%),
+                radial-gradient(ellipse at 90% 70%, rgba(187,134,252,0.06) 0%, transparent 50%);
+        }
+
+        /* NAV */
+        .navbar { position: sticky; top: 0; background: rgba(18,18,18,0.85); backdrop-filter: blur(12px); border-bottom: var(--border-subtle); z-index: 1000; }
+        .nav-container { max-width: 860px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; text-decoration: none; background: linear-gradient(90deg, var(--accent), #ff79c6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-back { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .nav-back:hover { color: var(--accent); }
+        .nav-back svg { width: 14px; height: 14px; }
+
+        main { flex: 1; max-width: 860px; margin: 0 auto; padding: 4rem 1.5rem 5rem; width: 100%; }
+
+        /* HERO */
+        .hero { text-align: center; margin-bottom: 4rem; animation: fadeUp 0.6s ease both; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-dim); border: 1px solid rgba(187,134,252,0.3); color: var(--accent); font-size: 0.8rem; font-weight: 600; padding: 6px 14px; border-radius: 20px; margin-bottom: 1.5rem; letter-spacing: 0.03em; text-transform: uppercase; }
+        .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.25rem; }
+        .hero h1 .highlight { background: linear-gradient(135deg, var(--accent), #ff79c6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.7; }
+
+        /* Platform CTAs */
+        .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .cta-spotify { display: inline-flex; align-items: center; gap: 8px; background: var(--spotify-green); color: #000; font-weight: 700; font-size: 0.95rem; padding: 0.9rem 1.8rem; border-radius: 50px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(29,185,84,0.35); }
+        .cta-spotify:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(29,185,84,0.5); }
+        .cta-yt { display: inline-flex; align-items: center; gap: 8px; background: var(--yt-red); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 0.9rem 1.8rem; border-radius: 50px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(250,44,44,0.3); }
+        .cta-yt:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(250,44,44,0.45); }
+
+        .divider { border: none; border-top: var(--border-subtle); margin: 4rem 0; }
+        .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+
+        /* AI MODELS SECTION */
+        .ai-section { animation: fadeUp 0.6s ease 0.1s both; margin-bottom: 4rem; }
+        .ai-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        .ai-section > p { color: var(--text-muted); font-size: 1rem; line-height: 1.75; max-width: 640px; margin-bottom: 2rem; }
+
+        .ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .ai-card { background: var(--card-bg); border: var(--border-subtle); border-radius: var(--border-radius); padding: 1.4rem; transition: border-color 0.2s, transform 0.2s; }
+        .ai-card:hover { transform: translateY(-2px); }
+        .ai-card.chatgpt:hover { border-color: rgba(16,163,127,0.4); }
+        .ai-card.claude:hover { border-color: rgba(187,134,252,0.4); }
+        .ai-card.gemini:hover { border-color: rgba(66,133,244,0.4); }
+        .ai-card.perplexity:hover { border-color: rgba(32,178,170,0.4); }
+        .ai-card .ai-name { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+        .ai-card.chatgpt .ai-name { color: #10a37f; }
+        .ai-card.claude .ai-name { color: var(--accent); }
+        .ai-card.gemini .ai-name { color: #4285f4; }
+        .ai-card.perplexity .ai-name { color: #20b2aa; }
+        .ai-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; }
+        .ai-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* SAMPLE PROMPT */
+        .sample-prompt { background: var(--card-bg); border: var(--border-subtle); border-left: 3px solid var(--accent); border-radius: 0 var(--border-radius) var(--border-radius) 0; padding: 1.25rem 1.5rem; }
+        .sample-prompt .plabel { font-size: 0.75rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+        .sample-prompt p { font-style: italic; font-size: 0.95rem; color: var(--text-main); line-height: 1.6; }
+
+        /* HOW IT WORKS */
+        .how-section { animation: fadeUp 0.6s ease 0.2s both; margin-bottom: 4rem; }
+        .how-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 2rem; letter-spacing: -0.02em; }
+        .steps { display: flex; flex-direction: column; position: relative; }
+        .steps::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: 40px; width: 2px; background: linear-gradient(to bottom, var(--accent), rgba(187,134,252,0.1)); }
+        .step { display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.5rem 0; }
+        .step-num { flex-shrink: 0; width: 40px; height: 40px; background: var(--primary); border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: white; position: relative; z-index: 1; box-shadow: 0 0 20px rgba(187,134,252,0.2); }
+        .step-content { padding-top: 6px; }
+        .step-content h3 { font-weight: 700; font-size: 1rem; margin-bottom: 0.35rem; }
+        .step-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+        .step-content .tag { display: inline-block; background: var(--accent-dim); color: var(--accent); font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 0.5rem; }
+
+        /* PLATFORM PICKER */
+        .platforms-section { animation: fadeUp 0.6s ease 0.25s both; margin-bottom: 4rem; }
+        .platforms-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+        .platform-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+        .platform-card { background: var(--card-bg); border: var(--border-subtle); border-radius: var(--border-radius); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; transition: transform 0.2s, border-color 0.2s; text-decoration: none; color: inherit; }
+        .platform-card:hover { transform: translateY(-2px); }
+        .platform-card.spotify:hover { border-color: rgba(29,185,84,0.4); }
+        .platform-card.ytmusic:hover { border-color: rgba(250,44,44,0.4); }
+        .platform-card.youtube:hover { border-color: rgba(255,0,0,0.3); }
+        .platform-card .pname { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+        .platform-card.spotify .pname { color: var(--spotify-green); }
+        .platform-card.ytmusic .pname, .platform-card.youtube .pname { color: var(--yt-red); }
+        .platform-card h3 { font-size: 1rem; font-weight: 700; }
+        .platform-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* CALLOUT */
+        .bridge-callout { background: linear-gradient(135deg, rgba(98,0,238,0.2) 0%, rgba(187,134,252,0.1) 100%); border: 1px solid rgba(187,134,252,0.3); border-radius: var(--border-radius); padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; animation: fadeUp 0.6s ease 0.3s both; }
+        .bridge-callout-text h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+        .bridge-callout-text p { color: var(--text-muted); font-size: 0.9rem; }
+        .bridge-cta { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), #ff79c6); color: #000; font-weight: 700; font-size: 0.95rem; padding: 0.85rem 1.8rem; border-radius: 50px; text-decoration: none; white-space: nowrap; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(187,134,252,0.3); }
+        .bridge-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(187,134,252,0.5); }
+
+        footer { border-top: var(--border-subtle); padding: 2rem 1.5rem; text-align: center; }
+        .footer-content { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+        .footer-seo { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 20px; font-size: 0.8rem; }
+        .footer-seo a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-seo a:hover { color: var(--accent); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 600px) {
+            main { padding: 2.5rem 1.25rem 4rem; }
+            .hero h1 { font-size: 1.9rem; }
+            .bridge-callout { flex-direction: column; text-align: center; }
+            .bridge-cta { width: 100%; justify-content: center; }
+            .steps::before { left: 17px; }
+            .hero-ctas { flex-direction: column; align-items: center; }
+            .cta-spotify, .cta-yt { width: 100%; justify-content: center; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">PlaylistBridge</a>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">PlaylistBridge</a>
+        <a href="/" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to app
+        </a>
+    </div>
+</nav>
+
+<main>
+
+    <header class="hero">
+        <div class="hero-badge">✨ Universal AI Playlist Converter</div>
+        <h1>Paste any <span class="highlight">AI playlist</span><br>— get instant music links</h1>
+        <p class="subtitle">ChatGPT, Claude, Gemini, Perplexity — whichever AI built your tracklist, PlaylistBridge turns it into real listening links on Spotify or YouTube Music.</p>
+        <div class="hero-ctas">
+            <a href="/?p=spotify" class="cta-spotify">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                Paste for Spotify
+            </a>
+            <a href="/?p=yt_music" class="cta-yt">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm4.992 12.96l-7.488 4.32A1.077 1.077 0 018 16.32V7.68a1.077 1.077 0 011.504-.96l7.488 4.32a1.077 1.077 0 010 1.92z"/></svg>
+                Paste for YouTube Music
+            </a>
         </div>
-    </nav>
+    </header>
 
-    <main class="container" style="max-width: 800px;">
-        <header class="hero" style="margin-bottom: 2rem;">
-            <h1>Paste AI-Generated Playlists Here</h1>
-            <p class="subtitle">Give your AI's music recommendations actual volume.</p>
-        </header>
+    <hr class="divider">
 
-        <section class="input-section" style="padding: 3rem 2rem; text-align: left;">
-            <h2 style="margin-bottom: 1rem; color: var(--accent);">AI Makes the List, We Make the Links</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">AI tools like ChatGPT, Gemini, Claude, and Perplexity have revolutionized how we discover music. You can ask them to curate highly specific vibes—like "1970s Japanese City Pop for driving at night"—and they will instantly output a perfect 15-song tracklist. But an AI's job ends at the text screen.</p>
-            
-            <h2 style="margin-bottom: 1rem; margin-top: 2rem; color: var(--accent);">How to use the AI Playlist Converter</h2>
-            <ul style="margin-bottom: 2rem; color: var(--text-muted); padding-left: 1.5rem; line-height: 1.8;">
-                <li><strong>Copy the AI Output:</strong> Highlight the block of text the AI generated. Don't worry about conversational filler like "Here is your requested playlist:"—our tool ignores it.</li>
-                <li><strong>Paste it into PlaylistBridge:</strong> Drop the text into our main converter box.</li>
-                <li><strong>Choose Your Platform:</strong> Select Spotify, YouTube Music, or YouTube, and hit generate. We will instantly fetch the metadata and provide you with one-click listening links.</li>
-            </ul>
+    <!-- AI MODELS -->
+    <section class="ai-section">
+        <p class="section-label">Supported AI sources</p>
+        <h2>Works with every major AI model</h2>
+        <p>No matter which AI curated your playlist, PlaylistBridge handles the output. Each model has a slightly different style — we parse all of them.</p>
 
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="/" class="btn primary" style="font-size: 1.2rem; padding: 1rem 2rem;">Paste Your AI Playlist</a>
+        <div class="ai-grid">
+            <div class="ai-card chatgpt">
+                <div class="ai-name">ChatGPT</div>
+                <h3>Great for genre deep-dives</h3>
+                <p>Excels at specific era and subgenre requests. Often outputs numbered markdown lists.</p>
             </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; PlaylistBridge. All rights reserved.</p>
+            <div class="ai-card claude">
+                <div class="ai-name">Claude</div>
+                <h3>Best for nuanced curation</h3>
+                <p>Understands layered mood and context. Produces highly specific, accurate tracklists.</p>
+            </div>
+            <div class="ai-card gemini">
+                <div class="ai-name">Gemini</div>
+                <h3>Good mainstream coverage</h3>
+                <p>Strong on popular artists and current charts. Integrates well with Google's music knowledge.</p>
+            </div>
+            <div class="ai-card perplexity">
+                <div class="ai-name">Perplexity</div>
+                <h3>Great for research playlists</h3>
+                <p>Cites music with context — ideal when you want to know why each track fits.</p>
+            </div>
         </div>
-        <div class="footer-seo" style="margin-top: 1.5rem; font-size: 0.85rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
-    <a href="/chatgpt-to-spotify.html" style="color: var(--text-muted); text-decoration: none;">ChatGPT to Spotify</a>
-    <a href="/text-to-youtube-music.html" style="color: var(--text-muted); text-decoration: none;">Text to YouTube Music</a>
-    <a href="/claude-to-spotify.html" style="color: var(--text-muted); text-decoration: none;">Claude to Spotify</a>
-    <a href="/text-to-playlist.html" style="color: var(--text-muted); text-decoration: none;">Text to Playlist</a>
-    <a href="/paste-ai-playlist.html" style="color: var(--text-muted); text-decoration: none;">Paste AI Playlist</a>
-</div>
 
-       </footer>
+        <div class="sample-prompt">
+            <div class="plabel">Example AI prompt that works great</div>
+            <p>"Give me a 15-song playlist of 1970s Japanese City Pop for driving at night — include Tatsuro Yamashita, Mariya Takeuchi, and lesser-known artists."</p>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- HOW -->
+    <section class="how-section">
+        <p class="section-label">How it works</p>
+        <h2>Copy, paste, listen</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Ask any AI for a playlist</h3>
+                    <p>Use ChatGPT, Claude, Gemini, or any other AI. Ask for any vibe, genre, or mood. The more specific your prompt, the better the curation.</p>
+                    <span class="tag">Any AI, any format</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Copy the full output — including filler text</h3>
+                    <p>Don't bother cleaning it up. Our parser ignores conversational text like "Here's your playlist:" and strips numbered lists, bullets, and markdown automatically.</p>
+                    <span class="tag">Auto-cleaned on paste</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Choose your platform and get links</h3>
+                    <p>Select Spotify, YouTube Music, or YouTube. We fetch metadata for each track and generate instant listening links. Up to 50 songs per session.</p>
+                    <span class="tag">Spotify · YouTube Music · YouTube</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- PLATFORMS -->
+    <section class="platforms-section">
+        <p class="section-label">Choose your platform</p>
+        <h2>One list, three platforms</h2>
+        <div class="platform-cards">
+            <a href="/?p=spotify" class="platform-card spotify">
+                <div class="pname">Spotify</div>
+                <h3>Direct Spotify search links</h3>
+                <p>Each track opens directly in Spotify's search. Best for users with a Spotify account.</p>
+            </a>
+            <a href="/?p=yt_music" class="platform-card ytmusic">
+                <div class="pname">YouTube Music</div>
+                <h3>YouTube Music search links</h3>
+                <p>Best free option — YouTube Music has the largest catalogue with no subscription needed.</p>
+            </a>
+            <a href="/?p=youtube" class="platform-card youtube">
+                <div class="pname">YouTube</div>
+                <h3>Regular YouTube links</h3>
+                <p>Great for music videos, live performances, and tracks not available on streaming services.</p>
+            </a>
+        </div>
+    </section>
+
+    <div class="bridge-callout">
+        <div class="bridge-callout-text">
+            <h3>Paste your AI playlist now</h3>
+            <p>No login. No account. Works with any AI model's output.</p>
+        </div>
+        <a href="/" class="bridge-cta">→ Open PlaylistBridge</a>
+    </div>
+
+</main>
+
+<footer>
+    <div class="footer-content"><p>&copy; PlaylistBridge. All rights reserved.</p></div>
+    <div class="footer-seo">
+        <a href="/chatgpt-to-spotify.html">ChatGPT to Spotify</a>
+        <a href="/text-to-youtube-music.html">Text to YouTube Music</a>
+        <a href="/claude-to-spotify.html">Claude to Spotify</a>
+        <a href="/text-to-playlist.html">Text to Playlist</a>
+        <a href="/paste-ai-playlist.html">Paste AI Playlist</a>
+    </div>
+</footer>
+
 </body>
 </html>
