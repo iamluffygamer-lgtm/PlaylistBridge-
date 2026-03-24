@@ -5,57 +5,677 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Convert Claude AI Playlists to Spotify | PlaylistBridge</title>
     <meta name="description" content="Moving music from Claude AI to Spotify is easy. Paste your generated tracklist and get instant listening links.">
-    <link rel="stylesheet" href="style.css">
-   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Design tokens matching PlaylistBridge style.css ── */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --card-hover: #2a2a2a;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent: #bb86fc;
+            --accent-dim: rgba(187, 134, 252, 0.12);
+            --accent-glow: rgba(187, 134, 252, 0.25);
+            --primary: #6200ee;
+            --primary-hover: #7c4dff;
+            --success: #03dac6;
+            --spotify-green: #1DB954;
+            --error: #cf6679;
+            --border-radius: 12px;
+            --border-subtle: 1px solid rgba(255,255,255,0.07);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            /* Subtle noise-like background pattern */
+            background-image: radial-gradient(ellipse at 20% 20%, rgba(98, 0, 238, 0.08) 0%, transparent 60%),
+                              radial-gradient(ellipse at 80% 80%, rgba(187, 134, 252, 0.05) 0%, transparent 50%);
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: var(--border-subtle);
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-decoration: none;
+            background: linear-gradient(90deg, var(--accent), #ff79c6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+        .nav-back {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .nav-back:hover { color: var(--accent); }
+        .nav-back svg { width: 14px; height: 14px; }
+
+        /* ── MAIN CONTAINER ── */
+        main {
+            flex: 1;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem 5rem;
+            width: 100%;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(187, 134, 252, 0.3);
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px;
+            background: var(--spotify-green);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.25rem;
+            color: var(--text-main);
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent) 0%, #ff79c6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero h1 .spotify-text {
+            background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--spotify-green);
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 1rem 2.2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 24px rgba(29, 185, 84, 0.35);
+        }
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(29, 185, 84, 0.5);
+        }
+        .hero-cta svg { width: 20px; height: 20px; }
+
+        /* ── DIVIDER ── */
+        .divider {
+            border: none;
+            border-top: var(--border-subtle);
+            margin: 4rem 0;
+        }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* ── WHY CLAUDE SECTION ── */
+        .why-section {
+            animation: fadeUp 0.6s ease 0.1s both;
+            margin-bottom: 4rem;
+        }
+        .why-section h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        .why-section > p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.75;
+            max-width: 640px;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Quote callout */
+        .example-prompt {
+            background: var(--card-bg);
+            border: var(--border-subtle);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        .example-prompt .prompt-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.6rem;
+        }
+        .example-prompt p {
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Capability cards */
+        .strengths-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .strength-card {
+            background: var(--card-bg);
+            border: var(--border-subtle);
+            border-radius: var(--border-radius);
+            padding: 1.4rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .strength-card:hover {
+            border-color: rgba(187, 134, 252, 0.3);
+            transform: translateY(-2px);
+        }
+        .strength-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .strength-card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+        .strength-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ── HOW IT WORKS SECTION ── */
+        .how-section {
+            animation: fadeUp 0.6s ease 0.2s both;
+            margin-bottom: 4rem;
+        }
+        .how-section h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+        }
+        /* Vertical connector line */
+        .steps::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            bottom: 40px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), rgba(187,134,252,0.1));
+        }
+
+        .step {
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+            padding: 1.5rem 0;
+            position: relative;
+        }
+        .step-num {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: white;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 20px rgba(187, 134, 252, 0.2);
+        }
+        .step-content { padding-top: 6px; }
+        .step-content h3 {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-bottom: 0.35rem;
+        }
+        .step-content p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .step-content .tag {
+            display: inline-block;
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        /* ── COMPARISON TABLE ── */
+        .compare-section {
+            animation: fadeUp 0.6s ease 0.25s both;
+            margin-bottom: 4rem;
+        }
+        .compare-section h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: var(--border-subtle);
+        }
+        .compare-table th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: rgba(255,255,255,0.03);
+            border-bottom: var(--border-subtle);
+        }
+        .compare-table th:first-child { color: var(--text-muted); }
+        .compare-table th.col-claude { color: var(--accent); }
+        .compare-table th.col-spotify { color: var(--spotify-green); }
+
+        .compare-table td {
+            padding: 0.9rem 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .compare-table tr:last-child td { border-bottom: none; }
+        .compare-table td:first-child { color: var(--text-main); font-weight: 500; }
+        .compare-table td.yes { color: #03dac6; font-weight: 600; }
+        .compare-table td.no { color: var(--error); }
+        .compare-table td.highlight-cell { color: var(--accent); font-weight: 600; }
+
+        /* ── BRIDGE CALLOUT ── */
+        .bridge-callout {
+            background: linear-gradient(135deg, rgba(98, 0, 238, 0.2) 0%, rgba(187, 134, 252, 0.1) 100%);
+            border: 1px solid rgba(187, 134, 252, 0.3);
+            border-radius: var(--border-radius);
+            padding: 2rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+            animation: fadeUp 0.6s ease 0.3s both;
+        }
+        .bridge-callout-text h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.02em;
+        }
+        .bridge-callout-text p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .bridge-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--spotify-green);
+            color: #000;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.85rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(29, 185, 84, 0.3);
+        }
+        .bridge-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(29, 185, 84, 0.45);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: var(--border-subtle);
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        .footer-content {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+        .footer-seo {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px 20px;
+            font-size: 0.8rem;
+        }
+        .footer-seo a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-seo a:hover { color: var(--accent); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            main { padding: 2.5rem 1.25rem 4rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .bridge-callout { flex-direction: column; text-align: center; }
+            .bridge-cta { width: 100%; justify-content: center; }
+            .compare-table th, .compare-table td { padding: 0.75rem 0.9rem; font-size: 0.82rem; }
+            .steps::before { left: 17px; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">PlaylistBridge</a>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">PlaylistBridge</a>
+        <a href="/" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            Back to app
+        </a>
+    </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Claude AI → Spotify
         </div>
-    </nav>
+        <h1>
+            Turn <span class="highlight">Claude's</span> playlists<br>
+            into <span class="spotify-text">Spotify</span> links instantly
+        </h1>
+        <p class="subtitle">
+            Claude is one of the best AI models for music curation — but it can't press play. PlaylistBridge bridges that gap in seconds.
+        </p>
+        <a href="/?p=spotify" class="hero-cta">
+            <!-- Spotify icon -->
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            Convert Claude Playlist Now
+        </a>
+    </header>
 
-    <main class="container" style="max-width: 800px;">
-        <header class="hero" style="margin-bottom: 2rem;">
-            <h1>Convert Claude Playlists to Spotify</h1>
-            <p class="subtitle">Seamless AI music conversion for Anthropic's Claude.</p>
-        </header>
+    <hr class="divider">
 
-        <section class="input-section" style="padding: 3rem 2rem; text-align: left;">
-            <h2 style="margin-bottom: 1rem; color: var(--accent);">Why Claude Excels at Curation</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">Claude AI is incredible at understanding highly specific, nuanced requests—making it one of the absolute best AI models for music discovery. If you ask Claude for "ambient electronic music for focused work, avoiding anything with heavy bass," it delivers a beautifully curated, accurate list. But Claude can't play the music for you.</p>
-            
-            <h2 style="margin-bottom: 1rem; margin-top: 2rem; color: var(--accent);">Bridging the Gap</h2>
-            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">That's where PlaylistBridge comes in. We built the easiest way to bridge the gap between Claude's text output and your Spotify app.</p>
+    <!-- WHY CLAUDE -->
+    <section class="why-section">
+        <p class="section-label">Why Claude?</p>
+        <h2>Claude understands nuance like no other AI</h2>
+        <p>
+            Most AI models will give you a generic playlist when you ask for music. Claude understands deeply specific, layered requests — making it arguably the best AI for music discovery right now. The only problem? Claude outputs text, not audio.
+        </p>
 
-            <ul style="margin-bottom: 2rem; color: var(--text-muted); padding-left: 1.5rem; line-height: 1.8;">
-                <li><strong>Generate:</strong> Ask Claude to curate a playlist based on your exact mood or genre.</li>
-                <li><strong>Copy:</strong> Copy the text list Claude generates. PlaylistBridge's parsing algorithm automatically strips away Claude's conversational text, asterisks, and markdown formatting.</li>
-                <li><strong>Listen:</strong> Paste the raw text into our tool. In seconds, your plain text is transformed into a list of playable Spotify links.</li>
-            </ul>
+        <div class="example-prompt">
+            <div class="prompt-label">Example Claude prompt</div>
+            <p>"Give me 10 ambient electronic tracks for deep focus — avoid anything with heavy bass or vocals, leaning toward artists like Brian Eno and Floating Points, released after 2015."</p>
+        </div>
 
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="/?p=spotify" class="btn primary" style="font-size: 1.2rem; padding: 1rem 2rem;">Convert Claude Output Now</a>
+        <div class="strengths-grid">
+            <div class="strength-card">
+                <div class="strength-icon">🎯</div>
+                <h3>Highly specific requests</h3>
+                <p>Claude handles nuanced mood, genre, and era constraints better than generic playlist generators.</p>
             </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; PlaylistBridge. All rights reserved.</p>
+            <div class="strength-card">
+                <div class="strength-icon">🧠</div>
+                <h3>Context-aware curation</h3>
+                <p>Tell Claude your activity, energy level, or even the weather — it curates accordingly.</p>
+            </div>
+            <div class="strength-card">
+                <div class="strength-icon">📋</div>
+                <h3>Clean text output</h3>
+                <p>Claude formats playlists cleanly. PlaylistBridge's parser strips markdown automatically.</p>
+            </div>
+            <div class="strength-card">
+                <div class="strength-icon">🔄</div>
+                <h3>Iterative refinement</h3>
+                <p>Don't like 3 songs? Ask Claude to swap them. Then paste the updated list back.</p>
+            </div>
         </div>
-        <div class="footer-seo" style="margin-top: 1.5rem; font-size: 0.85rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
-    <a href="/chatgpt-to-spotify.html" style="color: var(--text-muted); text-decoration: none;">ChatGPT to Spotify</a>
-    <a href="/text-to-youtube-music.html" style="color: var(--text-muted); text-decoration: none;">Text to YouTube Music</a>
-    <a href="/claude-to-spotify.html" style="color: var(--text-muted); text-decoration: none;">Claude to Spotify</a>
-    <a href="/text-to-playlist.html" style="color: var(--text-muted); text-decoration: none;">Text to Playlist</a>
-    <a href="/paste-ai-playlist.html" style="color: var(--text-muted); text-decoration: none;">Paste AI Playlist</a>
-</div>
+    </section>
 
-    </footer>
+    <hr class="divider">
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section">
+        <p class="section-label">How it works</p>
+        <h2>Three steps to playing your Claude playlist</h2>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Ask Claude to curate a playlist</h3>
+                    <p>Open Claude and describe exactly what you want — mood, genre, tempo, era, artists to avoid. Claude excels at interpreting vague requests like "music for a rainy Sunday morning."</p>
+                    <span class="tag">Works with claude.ai & Claude app</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Copy Claude's text output</h3>
+                    <p>Just copy the raw list — numbered, bulleted, or plain. PlaylistBridge's parser automatically strips Claude's conversational text, asterisks, and markdown formatting.</p>
+                    <span class="tag">No cleanup needed</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Paste into PlaylistBridge → get Spotify links</h3>
+                    <p>Select Spotify as your platform, paste the list, and hit Get Links. Each track is matched via metadata lookup and turned into a direct Spotify search link — no login required.</p>
+                    <span class="tag">No account. No login. Instant.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- COMPARISON TABLE -->
+    <section class="compare-section">
+        <p class="section-label">Comparison</p>
+        <h2>Why this combo works</h2>
+
+        <table class="compare-table" role="table" aria-label="Feature comparison">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th class="col-claude">Claude AI</th>
+                    <th class="col-spotify">Spotify</th>
+                    <th style="color: var(--text-muted);">PlaylistBridge</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Highly specific curation</td>
+                    <td class="yes">✓ Excellent</td>
+                    <td class="no">✗ Limited</td>
+                    <td class="yes">✓ Via Claude</td>
+                </tr>
+                <tr>
+                    <td>Playable audio links</td>
+                    <td class="no">✗ Text only</td>
+                    <td class="yes">✓ Native</td>
+                    <td class="yes">✓ Converts</td>
+                </tr>
+                <tr>
+                    <td>No login required</td>
+                    <td class="yes">✓</td>
+                    <td class="no">✗ Account needed</td>
+                    <td class="yes">✓ Always</td>
+                </tr>
+                <tr>
+                    <td>Understands mood & context</td>
+                    <td class="yes">✓ Best-in-class</td>
+                    <td class="no">✗ Algorithm-based</td>
+                    <td class="highlight-cell">Powered by Claude</td>
+                </tr>
+                <tr>
+                    <td>Handles markdown & formatting</td>
+                    <td class="yes">✓ Outputs it</td>
+                    <td class="no">—</td>
+                    <td class="yes">✓ Auto-strips it</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- BRIDGE CALLOUT -->
+    <div class="bridge-callout">
+        <div class="bridge-callout-text">
+            <h3>Ready to hear your Claude playlist?</h3>
+            <p>Paste your list, select Spotify, and get instant links. No account needed.</p>
+        </div>
+        <a href="/?p=spotify" class="bridge-cta">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            Open PlaylistBridge
+        </a>
+    </div>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <div class="footer-content">
+        <p>&copy; PlaylistBridge. All rights reserved.</p>
+    </div>
+    <div class="footer-seo">
+        <a href="/chatgpt-to-spotify.html">ChatGPT to Spotify</a>
+        <a href="/text-to-youtube-music.html">Text to YouTube Music</a>
+        <a href="/claude-to-spotify.html">Claude to Spotify</a>
+        <a href="/text-to-playlist.html">Text to Playlist</a>
+        <a href="/paste-ai-playlist.html">Paste AI Playlist</a>
+    </div>
+</footer>
+
 </body>
 </html>
