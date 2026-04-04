@@ -56,6 +56,8 @@
     color: var(--text-muted);
     margin-top: 8px;
         }
+        #shareCardBtn { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+#shareCardBtn:hover { background: var(--accent); color: white; }
       </style>
 </head>
 <body>
@@ -209,6 +211,9 @@
                 <div id="bulkActions" class="bulk-actions-inline hidden">
                     <button id="copyAllBtn" class="btn-outline">📋 Copy All Links</button>
                     <button id="openAllBtn" class="btn-outline">⚠ Open First 15</button>
+                    <button id="shareCardBtn" class="btn-outline hidden">
+    🎨 Share Playlist Card
+                    </button>
                 </div>
                 <button id="shareBtn" class="btn-outline share-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
