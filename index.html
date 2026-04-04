@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="AI playlist player, play ChatGPT playlist, instant music player, no login music, YouTube playlist player">
+<meta name="robots" content="index, follow">
     <title>PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links</title>
     <meta name="description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
     <link rel="canonical" href="https://playlistbridge.netlify.app/" />
@@ -29,6 +31,7 @@
         {
           "@type": "WebApplication",
           "name": "PlaylistBridge",
+        "featureList": "InstantPlay, AI playlist conversion, Spotify links, YouTube Music links, no login required"
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "Web",
           "description": "Converts plain text song lists into instant playable links for YouTube Music, Spotify, and YouTube."
@@ -77,7 +80,7 @@
         </div>
         <h1 class="hero-title">Paste a list.<br>Start listening.</h1>
         <p class="hero-sub">Turn any AI-generated song list into instant links for Spotify, YouTube Music, or YouTube. No account needed.</p>
-        
+        <p class="experimental-note">⚡ InstantPlay is experimental. Songs play via YouTube. No copyrighted audio is hosted on this site.</p>
         <div class="counter-strip">
             <span class="counter-icon">🎧</span>
             <span id="playlistCount" class="counter-num">…</span>
@@ -265,6 +268,33 @@
     <div class="faq-inner">
         <h2 class="faq-title">Questions</h2>
         <div class="faq-list">
+            <details>
+    <summary>How does InstantPlay work?</summary>
+    <div class="faq-content">
+        <p>InstantPlay finds your song on YouTube and plays it directly on this page using YouTube's official embed. No audio is hosted by PlaylistBridge.</p>
+    </div>
+</details>
+
+<details>
+    <summary>Is InstantPlay free to use?</summary>
+    <div class="faq-content">
+        <p>Yes, completely free. No account needed.</p>
+    </div>
+</details>
+
+<details>
+    <summary>Why did a song get skipped?</summary>
+    <div class="faq-content">
+        <p>Some songs may be unavailable on YouTube in your region or have been removed. InstantPlay automatically skips these and moves to the next track.</p>
+    </div>
+</details>
+
+<details>
+    <summary>Does InstantPlay work on mobile?</summary>
+    <div class="faq-content">
+        <p>Yes. Background play is limited on mobile browsers — for uninterrupted listening install PlaylistBridge to your home screen via your browser menu.</p>
+    </div>
+</details>
             <details class="faq-item">
                 <summary>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</summary>
                 <p>Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required.</p>
