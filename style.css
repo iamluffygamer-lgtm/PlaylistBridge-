@@ -1512,10 +1512,11 @@ body {
     position: fixed;
     bottom: 0; left: 0; right: 0;
     height: 72px;
-    background: rgba(15, 15, 20, 0.92);
+    background: linear-gradient(135deg, #1a1730 0%, #12121a 100%);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 2px solid var(--accent);
+   box-shadow: 0 -8px 32px rgba(108,99,255,0.15);
     display: none;  /* shown by Player.init() */
     align-items: center;
     gap: 16px;
@@ -1691,3 +1692,19 @@ body.player-open { padding-bottom: 72px; }
     .pb-progress-wrap { display: none; }
     #pb-player-bar { gap: 10px; padding: 0 12px; }
 }
+.pb-volume {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+}
+.pb-volume-slider {
+    width: 70px;
+    height: 4px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+@media (max-width: 600px) {
+    .pb-volume { display: none; }
+                                              }
