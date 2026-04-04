@@ -32,7 +32,7 @@ const Player = (() => {
 
   // ── YouTube IFrame API ─────────────────────────────────
   function loadYTApi() {
-    if (window.YT) { onYTReady(); return; }
+    if (window.YT && window.YT.Player) { onYTReady(); return; }
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     document.head.appendChild(tag);
@@ -247,7 +247,12 @@ const Player = (() => {
     isShuffle = false;
 
     bar().style.display = 'flex';
+    // Reinitialise player if it was closed
+if (!ytPlayer || !isReady) {
     loadYTApi();
+} else {
+    playSong(0);
+}
     renderQueue();
 
     // Wire controls
@@ -269,7 +274,12 @@ const Player = (() => {
     stopPlayer();
     bar().style.display = 'none';
     playlist = [];
-  }
+    isReady = false;
+    ytPlayer = null;
+    // Reset iframe so YT API can reinitialise cleanly
+    const iframe = document.getElementById('pb-yt-iframe');
+    if (iframe) iframe.innerHTML = '';
+      }
 
   function toggleShuffle() {
     isShuffle = !isShuffle;
