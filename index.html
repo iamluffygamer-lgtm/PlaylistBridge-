@@ -325,8 +325,63 @@
         <button class="fm-tag" onclick="sendNegative('confusing ui')">Confusing UI</button>
     </div>
         </div>
+    <!-- Hidden YouTube iframe (audio only — height 0) -->
+<div id="pb-yt-iframe"></div>
+
+<!-- Mini Player Bar -->
+<div id="pb-player-bar">
+
+  <!-- Album art -->
+  <img id="pb-now-thumb" src="" alt="" class="pb-thumb">
+
+  <!-- Now playing info -->
+  <div class="pb-info">
+    <div id="pb-now-title"  class="pb-title">Select a song</div>
+    <div id="pb-now-artist" class="pb-artist"></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="pb-progress-wrap">
+    <div id="pb-progress" class="pb-progress">
+      <div id="pb-progress-bar" class="pb-progress-fill"></div>
+    </div>
+    <span id="pb-time" class="pb-time">0:00 / 0:00</span>
+  </div>
+
+  <!-- Controls -->
+  <div class="pb-controls">
+    <button id="pb-btn-shuffle" class="pb-ctrl pb-ctrl-sm" title="Shuffle">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+    </button>
+    <button id="pb-btn-prev" class="pb-ctrl" title="Previous">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+    </button>
+    <div id="pb-loading" class="pb-loading" style="display:none">
+      <div class="pb-spinner"></div>
+    </div>
+    <button id="pb-btn-play" class="pb-ctrl pb-ctrl-main" title="Play/Pause">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button id="pb-btn-next" class="pb-ctrl" title="Next">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+    </button>
+    <button id="pb-btn-close" class="pb-ctrl pb-ctrl-sm" title="Close">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </div>
+
+  <!-- Queue toggle -->
+  <button class="pb-queue-toggle" onclick="this.closest('#pb-player-bar').classList.toggle('pb-show-queue')">
+    Queue
+  </button>
+
+  <!-- Queue panel -->
+  <div id="pb-queue" class="pb-queue"></div>
+
+</div>
 
 <!-- ───── SCRIPTS ───── -->
+    <script src="/player.js"></script>
 <script src="/ui.js"></script>
 <script src="/script.js"></script>
 <script type="module">
