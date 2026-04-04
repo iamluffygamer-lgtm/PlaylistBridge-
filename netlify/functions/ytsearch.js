@@ -17,7 +17,7 @@ export async function handler(event) {
     for (const instance of INVIDIOUS_INSTANCES) {
       try {
         const res = await fetch(
-          `${instance}/api/v1/search?q=${encodeURIComponent(query)}&type=video&fields=videoId,title,lengthSeconds`,
+          `${instance}/api/v1/search?q=${encodeURIComponent(query + ' official audio')}&type=video&fields=videoId,title,lengthSeconds`,
           { signal: AbortSignal.timeout(3000) }
         );
         if (!res.ok) continue;
@@ -35,7 +35,7 @@ export async function handler(event) {
 
     // 2. Fallback: YouTube HTML scrape
     const ytRes = await fetch(
-      `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`,
+      `https://www.youtube.com/results?search_query=${encodeURIComponent(query + ' official audio')}`,
       { headers: { "Accept-Language": "en-US,en;q=0.9" } }
     );
     const html = await ytRes.text();
