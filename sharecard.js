@@ -20,9 +20,11 @@ const ShareCard = (() => {
         const ctx     = canvas.getContext('2d');
 
         // Load all images first
-        const images = await Promise.all(
-            songs.map(s => s.image ? loadImage(s.image).catch(() => null) : Promise.resolve(null))
-        );
+        const cards  = document.querySelectorAll('.track-card');
+const images = songs.map((song, i) => {
+    const img = cards[i]?.querySelector('.track-thumb');
+    return (img && img.complete && img.naturalWidth > 0) ? img : null;
+});
 
         await drawBackground(ctx, images, CARD_H);
         await drawArtCollage(ctx, images, songs);
