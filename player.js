@@ -257,6 +257,9 @@ const Player = (() => {
     btnClose()  .onclick = close;
     btnShuffle().onclick = toggleShuffle;
     progressEl().onclick = seekTo;
+    document.getElementById('pb-volume').oninput = function() {
+    if (ytPlayer) ytPlayer.setVolume(this.value);
+};
 
     // Start with first song
     playSong(0);
