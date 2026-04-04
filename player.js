@@ -80,6 +80,49 @@ const Player = (() => {
   // ── Fetch video ID ─────────────────────────────────────
   async function getVideoId(query) {
     if (cache[query]) return cache[query];
+
+    // Check Firestore cache
+    const key = query.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+    if (window.firebaseDb) {
+        try {
+            const snap = await window.firebaseGetDoc(
+                window.firebaseDoc(window.firebaseDb, 'songs', key)
+            );
+            if (snap.exists()) {
+                cache[query] = snap.data().videoId;
+                return cache[query];
+            }
+        } catch {}
+    }
+
+    setTrackLoading(true);
+    try {
+        const res  = await fetch('/.netlify/functions/ytsearch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query }),
+        });
+        const data = await res.json();
+        if (data.videoId) {
+            cache[query] = data.videoId;
+
+            // Store in Firestore
+            if (window.firebaseDb) {
+                window.firebaseSetDoc(
+                    window.firebaseDoc(window.firebaseDb, 'songs', key),
+                    { videoId: data.videoId, source: data.source || 'ytsearch', createdAt: window.firebaseServerTimestamp() }
+                ).catch(() => {});
+            }
+
+            return data.videoId;
+        }
+    } catch (e) {
+        console.warn('ytsearch failed for:', query);
+    } finally {
+        setTrackLoading(false);
+    }
+    return null;
+  }
     setTrackLoading(true);
     try {
       const res  = await fetch('/.netlify/functions/ytsearch', {
