@@ -219,6 +219,7 @@ async function handleGenerate(isAutoLoad = false) {
     showStatus('Links ready!');
     el.statusBar?.classList.add('hidden');
     el.bulkActions?.classList.remove('hidden');
+    document.getElementById('shareCardBtn')?.classList.remove('hidden')
 
     isProcessing = false;
     window.UI?.setLoading(false);
@@ -676,6 +677,14 @@ async function savePlaylist(songList) {
         }).catch(err => console.warn('Background save failed:', err));
     } catch (e) { console.error('savePlaylist error:', e); }
 }
-
+document.getElementById('shareCardBtn')?.addEventListener('click', () => {
+    const tracks = Array.from(document.querySelectorAll('.track-card')).map(card => ({
+        title:  card.querySelector('.track-title')?.textContent  || '',
+        artist: card.querySelector('.track-artist')?.textContent || '',
+        image:  card.querySelector('.track-thumb')?.src          || '',
+        query:  card.dataset.query || '',
+    }));
+    window.ShareCard?.shareOrDownload(tracks);
+});
 // ─── BOOT ───
 init();
