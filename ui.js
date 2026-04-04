@@ -112,7 +112,8 @@
             </div>
             <div class="track-art-wrap">
                 ${image
-                    ? `<img class="track-art" src="${escapeHTML(image)}" alt="" loading="lazy"
+                    ? `<img class="track-art track-thumb" src="${escapeHTML(image)}" alt="" loading="lazy" crossorigin="anonymous"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">`
                             onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">`
                     : ''}
                 <div class="track-art-fallback" style="${image ? 'display:none' : ''}">
