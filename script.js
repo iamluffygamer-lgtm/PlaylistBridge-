@@ -222,6 +222,7 @@ async function handleGenerate(isAutoLoad = false) {
 
     isProcessing = false;
     window.UI?.setLoading(false);
+    if (currentPlatform !== 'spotify') window.PlayerBridge?.init();
     setTimeout(showFeedbackPrompt,6000);
     // Step 2: background Play All hunt (YT only)
     if (currentPlatform === 'yt_music' || currentPlatform === 'youtube') {
