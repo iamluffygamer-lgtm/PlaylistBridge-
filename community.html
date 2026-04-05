@@ -527,28 +527,6 @@ async function renderArtCollage(arts) {
 }
 
 // ── Render art collage ────────────────────────────────
-async function renderArtCollage(songs) {
-    const wrap = document.createElement('div');
-    wrap.className = 'cm-art';
-
-    const picks = songs.slice(0, 4);
-    // Fetch art for up to 4 songs in parallel
-    const arts = await Promise.all(picks.map(s => getArtForSong(s)));
-
-    for (let i = 0; i < 4; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cm-art-cell';
-        if (arts[i]) {
-            const img = document.createElement('img');
-            img.src    = arts[i];
-            img.alt    = '';
-            img.loading = 'lazy';
-            cell.appendChild(img);
-        } else {
-            cell.innerHTML = `<span class="cm-art-cell-fallback">♪</span>`;
-        }
-        wrap.appendChild(cell);
-    }
 
     // Play overlay
     const overlay = document.createElement('div');
