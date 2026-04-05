@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Playlists — PlaylistBridge</title>
+    <meta name="description" content="Browse and play community-created playlists on PlaylistBridge. Discover music shared by other users.">
+    <link rel="canonical" href="https://playlistbridge.netlify.app/community">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <style>
+        /* ══ PAGE SHELL ══════════════════════════════════ */
+        body { overflow-x: hidden; }
+
+        /* ══ HERO ════════════════════════════════════════ */
+        .cm-hero {
+            position: relative;
+            padding: 80px 0 64px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .cm-hero-glow {
+            position: absolute;
+            top: -120px; left: 50%;
+            transform: translateX(-50%);
+            width: 700px; height: 400px;
+            background: radial-gradient(ellipse, rgba(108,99,255,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cm-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-soft);
+            border: 1px solid rgba(108,99,255,0.25);
+            border-radius: var(--r-pill);
+            padding: 5px 14px;
+            margin-bottom: 20px;
+        }
+        .cm-eyebrow-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { opacity:1; transform: scale(1); }
+            50%      { opacity:0.4; transform: scale(0.8); }
+        }
+        .cm-hero h1 {
+            font-size: clamp(36px, 7vw, 72px);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        .cm-hero h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, #6c63ff 0%, #c4b5fd 50%, #9d97ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .cm-hero p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 420px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+        .cm-stats-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .cm-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .cm-stat-num {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+        .cm-stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .cm-stat-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--border);
+        }
+
+        /* ══ FILTERS ══════════════════════════════════════ */
+        .cm-filters {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .cm-filter-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+        .cm-filter {
+            padding: 7px 18px;
+            border-radius: var(--r-pill);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all 140ms;
+            white-space: nowrap;
+        }
+        .cm-filter:hover { border-color: var(--border-focus); color: var(--text-primary); }
+        .cm-filter.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        /* ══ GRID ════════════════════════════════════════ */
+        .cm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        /* ══ PLAYLIST CARD ═══════════════════════════════ */
+        .cm-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 220ms cubic-bezier(0.16,1,0.3,1);
+            cursor: pointer;
+            position: relative;
+        }
+        .cm-card:hover {
+            border-color: rgba(108,99,255,0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(108,99,255,0.15);
+        }
+
+        /* Art collage — 2x2 grid */
+        .cm-art {
+            width: 100%;
+            aspect-ratio: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2px;
+            background: var(--bg-raised);
+            position: relative;
+            overflow: hidden;
+        }
+        .cm-art-cell {
+            overflow: hidden;
+            background: var(--bg-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cm-art-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 400ms;
+        }
+        .cm-card:hover .cm-art-cell img { transform: scale(1.06); }
+        .cm-art-cell-fallback {
+            font-size: 28px;
+            color: var(--text-muted);
+        }
+
+        /* Play overlay on art */
+        .cm-art-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 220ms;
+        }
+        .cm-card:hover .cm-art-overlay { background: rgba(0,0,0,0.45); }
+        .cm-play-circle {
+            width: 56px; height: 56px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.7);
+            transition: all 220ms cubic-bezier(0.16,1,0.3,1);
+            box-shadow: 0 8px 32px rgba(108,99,255,0.5);
+        }
+        .cm-card:hover .cm-play-circle {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .cm-play-circle svg { width: 22px; height: 22px; margin-left: 3px; }
+
+        /* Platform badge on art */
+        .cm-platform-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: var(--r-pill);
+            backdrop-filter: blur(8px);
+            z-index: 2;
+        }
+        .cm-platform-badge.spotify  { background: rgba(29,185,84,0.85);  color: #fff; }
+        .cm-platform-badge.yt_music { background: rgba(30,30,40,0.85);   color: #f1f1f1; border: 1px solid rgba(255,255,255,0.15); }
+        .cm-platform-badge.youtube  { background: rgba(255,68,68,0.85);  color: #fff; }
+
+        /* Card body */
+        .cm-card-body {
+            padding: 16px;
+        }
+        .cm-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cm-card-songs {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+        .cm-card-song {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .cm-card-song::before {
+            content: '';
+            width: 3px; height: 3px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+            opacity: 0.6;
+        }
+        .cm-card-more {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .cm-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .cm-card-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cm-card-meta span { color: var(--text-secondary); }
+        .cm-open-btn {
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--font-sans);
+            color: var(--accent);
+            background: var(--accent-soft);
+            border: 1px solid rgba(108,99,255,0.25);
+            border-radius: var(--r-pill);
+            padding: 5px 14px;
+            cursor: pointer;
+            transition: all 120ms;
+            white-space: nowrap;
+        }
+        .cm-open-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* ══ SKELETON ════════════════════════════════════ */
+        .cm-skeleton {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            animation: cm-shimmer 1.6s ease-in-out infinite;
+        }
+        .cm-skeleton-art {
+            width: 100%;
+            aspect-ratio: 1;
+            background: var(--bg-elevated);
+        }
+        .cm-skeleton-body { padding: 16px; }
+        .cm-skeleton-line {
+            height: 11px;
+            background: var(--bg-raised);
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .cm-skeleton-line.w60 { width: 60%; }
+        .cm-skeleton-line.w80 { width: 80%; }
+        .cm-skeleton-line.w45 { width: 45%; }
+        @keyframes cm-shimmer {
+            0%,100% { opacity: 1; }
+            50%      { opacity: 0.5; }
+        }
+
+        /* ══ EMPTY ════════════════════════════════════════ */
+        .cm-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 24px;
+        }
+        .cm-empty-icon { font-size: 48px; margin-bottom: 16px; }
+        .cm-empty h3 { font-size: 20px; color: var(--text-secondary); margin-bottom: 8px; }
+        .cm-empty p  { font-size: 14px; color: var(--text-muted); }
+        .cm-empty a  { color: var(--accent); text-decoration: none; }
+
+        /* ══ LOAD MORE ═══════════════════════════════════ */
+        .cm-load-more {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        .cm-load-more-btn {
+            padding: 12px 32px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--r-pill);
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all 140ms;
+        }
+        .cm-load-more-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+        .cm-load-more-btn:disabled { opacity: 0.3; cursor: default; }
+        .cm-load-more-btn.hidden { display: none; }
+
+        /* ══ RESPONSIVE ══════════════════════════════════ */
+        @media (max-width: 600px) {
+            .cm-hero { padding: 48px 0 40px; }
+            .cm-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .cm-card-body { padding: 12px; }
+            .cm-card-title { font-size: 13px; }
+            .cm-stat-divider { display: none; }
+        }
+        @media (max-width: 400px) {
+            .cm-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+    <div class="nav-inner">
+        <a href="/" class="nav-logo">
+            <span class="logo-mark">PB</span>
+            <span class="logo-text">PlaylistBridge</span>
+        </a>
+        <div class="nav-actions">
+            <a href="/community.html" class="nav-pill" style="text-decoration:none;">
+                <span class="nav-pill-dot"></span>
+                Community
+            </a>
+            <a href="/developer.html" class="nav-link">Developer</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+
+    <!-- Hero -->
+    <div class="cm-hero">
+        <div class="cm-hero-glow"></div>
+        <div class="cm-eyebrow">
+            <span class="cm-eyebrow-dot"></span>
+            Live · Updated in real time
+        </div>
+        <h1>Music people<br>actually <em>love</em></h1>
+        <p>Real playlists from real people. Click any to open and play instantly — no login needed.</p>
+        <div class="cm-stats-row">
+            <div class="cm-stat">
+                <div class="cm-stat-num" id="statTotal">—</div>
+                <div class="cm-stat-label">Playlists</div>
+            </div>
+            <div class="cm-stat-divider"></div>
+            <div class="cm-stat">
+                <div class="cm-stat-num" id="statSongs">—</div>
+                <div class="cm-stat-label">Songs</div>
+            </div>
+            <div class="cm-stat-divider"></div>
+            <div class="cm-stat">
+                <div class="cm-stat-num" id="statPlays">—</div>
+                <div class="cm-stat-label">Total Plays</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="cm-filters">
+        <span class="cm-filter-label">Filter</span>
+        <button class="cm-filter active" data-filter="all">All</button>
+        <button class="cm-filter" data-filter="yt_music">YouTube Music</button>
+        <button class="cm-filter" data-filter="spotify">Spotify</button>
+        <button class="cm-filter" data-filter="youtube">YouTube</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="cm-grid" id="cmGrid"></div>
+
+    <!-- Load more -->
+    <div class="cm-load-more">
+        <button class="cm-load-more-btn hidden" id="loadMoreBtn">Load more</button>
+    </div>
+
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>&copy; PlaylistBridge. All rights reserved.</p>
+        <p>Made by <a href="https://instagram.com/coder_smit" target="_blank" class="accent">@coder_smit</a></p>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/developer.html">Developer</a>
+        </div>
+    </div>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, query, orderBy, limit, startAfter,
+         getDocs, doc, updateDoc, increment, where }
+    from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey:            "AIzaSyDJA3jzuYXfclyqNXmaSTYjNVLk8ge7NEY",
+    authDomain:        "playlistbridge-142f6.firebaseapp.com",
+    projectId:         "playlistbridge-142f6",
+    storageBucket:     "playlistbridge-142f6.firebasestorage.app",
+    messagingSenderId: "906732155342",
+    appId:             "1:906732155342:web:b5b8ad3d5c31341cc17b9f",
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const grid        = document.getElementById('cmGrid');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+const PAGE        = 12;
+let lastDoc       = null;
+let currentFilter = 'all';
+let isLoading     = false;
+let totalPlaylists = 0;
+let totalSongs     = 0;
+let totalPlays     = 0;
+
+// ── iTunes art fetch ──────────────────────────────────
+async function renderArtCollage(arts) {
+    const wrap = document.createElement('div');
+    wrap.className = 'cm-art';
+    for (let i = 0; i < 4; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cm-art-cell';
+        if (arts[i]) {
+            const img = document.createElement('img');
+            img.src = arts[i];
+            img.alt = '';
+            img.loading = 'lazy';
+            cell.appendChild(img);
+        } else {
+            cell.innerHTML = `<span class="cm-art-cell-fallback">♪</span>`;
+        }
+        wrap.appendChild(cell);
+    }
+    const overlay = document.createElement('div');
+    overlay.className = 'cm-art-overlay';
+    overlay.innerHTML = `<div class="cm-play-circle"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>`;
+    wrap.appendChild(overlay);
+    return wrap;
+}
+
+// ── Render art collage ────────────────────────────────
+async function renderArtCollage(songs) {
+    const wrap = document.createElement('div');
+    wrap.className = 'cm-art';
+
+    const picks = songs.slice(0, 4);
+    // Fetch art for up to 4 songs in parallel
+    const arts = await Promise.all(picks.map(s => getArtForSong(s)));
+
+    for (let i = 0; i < 4; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cm-art-cell';
+        if (arts[i]) {
+            const img = document.createElement('img');
+            img.src    = arts[i];
+            img.alt    = '';
+            img.loading = 'lazy';
+            cell.appendChild(img);
+        } else {
+            cell.innerHTML = `<span class="cm-art-cell-fallback">♪</span>`;
+        }
+        wrap.appendChild(cell);
+    }
+
+    // Play overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'cm-art-overlay';
+    overlay.innerHTML = `
+        <div class="cm-play-circle">
+            <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        </div>`;
+    wrap.appendChild(overlay);
+
+    return wrap;
+}
+
+// ── Platform helpers ──────────────────────────────────
+function platformInfo(p) {
+    if (p === 'spotify')  return { label: 'Spotify',       cls: 'spotify'  };
+    if (p === 'yt_music') return { label: 'YT Music',      cls: 'yt_music' };
+    if (p === 'youtube')  return { label: 'YouTube',       cls: 'youtube'  };
+    return { label: p || 'Music', cls: 'yt_music' };
+}
+
+function timeAgo(ts) {
+    if (!ts?.toDate) return '';
+    const d = Math.floor((Date.now() - ts.toDate()) / 86400000);
+    if (d === 0) return 'today';
+    if (d === 1) return 'yesterday';
+    return `${d}d ago`;
+}
+
+// ── Render single card ────────────────────────────────
+async function renderCard(data, id) {
+    const card = document.createElement('div');
+    card.className = 'cm-card';
+
+    const { label, cls } = platformInfo(data.platform);
+    const songs   = data.songs || [];
+    const preview = songs.slice(0, 3);
+    const extra   = songs.length - 3;
+
+    // Art collage (async)
+    const artEl = await renderArtCollage(data.artUrls || []);
+
+    // Platform badge
+    const badge = document.createElement('div');
+    badge.className = `cm-platform-badge ${cls}`;
+    badge.textContent = label;
+    artEl.appendChild(badge);
+
+    card.appendChild(artEl);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'cm-card-body';
+    body.innerHTML = `
+        <div class="cm-card-title">${data.title || 'Untitled Playlist'}</div>
+        <div class="cm-card-songs">
+            ${preview.map(s => `<div class="cm-card-song">${s}</div>`).join('')}
+            ${extra > 0 ? `<div class="cm-card-more">+ ${extra} more songs</div>` : ''}
+        </div>
+        <div class="cm-card-footer">
+            <div class="cm-card-meta">
+                <span>${songs.length} songs</span>
+                · ${timeAgo(data.createdAt)}
+            </div>
+            <button class="cm-open-btn">▶ Play</button>
+        </div>
+    `;
+    card.appendChild(body);
+
+    // Click handlers
+    const openFn = () => {
+        updateDoc(doc(db, 'playlists', id), { plays: increment(1) }).catch(() => {});
+        const content = songs.join('|');
+        window.location.href = `/#p=${data.platform || 'yt_music'}&s=${encodeURIComponent(content)}`;
+    };
+    card.addEventListener('click', openFn);
+    body.querySelector('.cm-open-btn').addEventListener('click', e => { e.stopPropagation(); openFn(); });
+
+    return card;
+}
+
+// ── Show skeletons ────────────────────────────────────
+function showSkeletons(n = 6) {
+    for (let i = 0; i < n; i++) {
+        const sk = document.createElement('div');
+        sk.className = 'cm-skeleton';
+        sk.innerHTML = `
+            <div class="cm-skeleton-art"></div>
+            <div class="cm-skeleton-body">
+                <div class="cm-skeleton-line w60"></div>
+                <div class="cm-skeleton-line w80"></div>
+                <div class="cm-skeleton-line w45"></div>
+            </div>`;
+        grid.appendChild(sk);
+    }
+}
+
+// ── Load playlists ────────────────────────────────────
+async function load(reset = false) {
+    if (isLoading) return;
+    isLoading = true;
+    loadMoreBtn.disabled = true;
+
+    if (reset) {
+        lastDoc = null;
+        grid.innerHTML = '';
+        showSkeletons(6);
+    }
+
+    try {
+        const constraints = [orderBy('createdAt', 'desc'), limit(PAGE)];
+        if (currentFilter !== 'all') constraints.unshift(where('platform', '==', currentFilter));
+        if (lastDoc) constraints.push(startAfter(lastDoc));
+
+        const snap = await getDocs(query(collection(db, 'playlists'), ...constraints));
+
+        // Remove skeletons
+        grid.querySelectorAll('.cm-skeleton').forEach(s => s.remove());
+
+        if (snap.empty && reset) {
+            grid.innerHTML = `
+                <div class="cm-empty">
+                    <div class="cm-empty-icon">🎧</div>
+                    <h3>No playlists yet</h3>
+                    <p>Be the first to publish one from the <a href="/">home page</a>.</p>
+                </div>`;
+            return;
+        }
+
+        // Render cards (parallel for speed)
+        const cards = await Promise.all(
+            snap.docs.map(d => renderCard(d.data(), d.id))
+        );
+        cards.forEach(c => grid.appendChild(c));
+
+        // Update stats
+        snap.forEach(d => {
+            totalPlaylists++;
+            totalSongs += (d.data().songs?.length || 0);
+            totalPlays  += (d.data().plays || 0);
+        });
+        document.getElementById('statTotal').textContent = totalPlaylists;
+        document.getElementById('statSongs').textContent = totalSongs > 999
+            ? Math.floor(totalSongs/1000) + 'k+' : totalSongs;
+        document.getElementById('statPlays').textContent = totalPlays;
+
+        lastDoc = snap.docs[snap.docs.length - 1];
+
+        if (snap.size === PAGE) {
+            loadMoreBtn.classList.remove('hidden');
+            loadMoreBtn.disabled = false;
+        } else {
+            loadMoreBtn.classList.add('hidden');
+        }
+
+    } catch (e) {
+        console.error(e);
+        grid.querySelectorAll('.cm-skeleton').forEach(s => s.remove());
+        grid.innerHTML = `<div class="cm-empty"><h3>Failed to load. Try refreshing.</h3></div>`;
+    } finally {
+        isLoading = false;
+    }
+}
+
+// ── Filters ───────────────────────────────────────────
+document.querySelectorAll('.cm-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.cm-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        totalPlaylists = totalSongs = totalPlays = 0;
+        load(true);
+    });
+});
+
+loadMoreBtn.addEventListener('click', () => load(false));
+
+// ── Boot ──────────────────────────────────────────────
+load(true);
+</script>
+</body>
+</html>
