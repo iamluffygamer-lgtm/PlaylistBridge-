@@ -308,7 +308,7 @@ const Player = (() => {
     setTimeout(() => {
         renderQueue();
         updateExpandedView();
-    }, 50);
+    }, 50); }
   function collapse() {
     isExpanded = false;
     expanded().classList.remove('pb-expanded-open');
