@@ -253,12 +253,33 @@ const Player = (() => {
   function updateExpandedView() {
     const videoWrap = $('pb-exp-video');
     const artWrap   = $('pb-exp-art-wrap');
+    const iframe    = $('pb-yt-iframe');
     if (!videoWrap || !artWrap) return;
-    videoWrap.style.display = isVideoMode ? 'block' : 'none';
-    artWrap.style.display   = isVideoMode ? 'none'  : 'flex';
+
+    if (isVideoMode) {
+        // Move iframe into video container
+        const container = videoWrap.querySelector('.pb-exp-yt-container');
+        if (container && iframe && !container.contains(iframe)) {
+            container.innerHTML = '';
+            container.appendChild(iframe);
+            // Resize for visible playback
+            iframe.style.cssText = 'width:100%;height:100%;position:relative;left:0;top:0;';
+            // Force YT player to resize
+            if (ytPlayer && ytPlayer.setSize) ytPlayer.setSize('100%', '100%');
+        }
+        videoWrap.style.display = 'block';
+        artWrap.style.display   = 'none';
+    } else {
+        // Move iframe back offscreen
+        document.body.appendChild(iframe);
+        iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;';
+        videoWrap.style.display = 'none';
+        artWrap.style.display   = 'flex';
+    }
+
     if ($('pb-btn-video')) $('pb-btn-video').classList.toggle('pb-mode-active', isVideoMode);
     if ($('pb-btn-audio')) $('pb-btn-audio').classList.toggle('pb-mode-active', !isVideoMode);
-  }
+        }
 
   function renderQueue() {
     const el = queueEl();
@@ -284,10 +305,10 @@ const Player = (() => {
     isExpanded = true;
     expanded().classList.add('pb-expanded-open');
     document.body.style.overflow = 'hidden';
-    renderQueue();
-    updateExpandedView();
-  }
-
+    setTimeout(() => {
+        renderQueue();
+        updateExpandedView();
+    }, 50);
   function collapse() {
     isExpanded = false;
     expanded().classList.remove('pb-expanded-open');
