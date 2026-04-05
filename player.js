@@ -39,7 +39,7 @@ const Player = (() => {
   }
 
   window.onYouTubeIframeAPIReady = function () {
-    ytPlayer = new YT.Player('pb-yt-iframe', {
+    ytPlayer = new YT.Player('pb-yt- 5 tiframe', {
       height: '0', width: '0',
       playerVars: { autoplay: 1, controls: 0, playsinline: 1 },
       events: {
@@ -123,26 +123,7 @@ const Player = (() => {
     }
     return null;
   }
-    setTrackLoading(true);
-    try {
-      const res  = await fetch('/.netlify/functions/ytsearch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
-      });
-      const data = await res.json();
-      if (data.videoId) {
-        cache[query] = data.videoId;
-        return data.videoId;
-      }
-    } catch (e) {
-      console.warn('ytsearch failed for:', query);
-    } finally {
-      setTrackLoading(false);
-    }
-    return null;
-  }
-
+    
   // ── Playback ───────────────────────────────────────────
   async function playSong(index) {
     if (index < 0 || index >= playlist.length) return;
