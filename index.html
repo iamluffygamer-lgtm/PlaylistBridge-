@@ -58,6 +58,25 @@
         }
         #shareCardBtn { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 #shareCardBtn:hover { background: var(--accent); color: white; }
+        .cm-contribute-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--accent);
+    color: white;
+    border-radius: var(--r-pill);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 140ms;
+    box-shadow: 0 0 24px var(--accent-glow);
+}
+.cm-contribute-btn:hover {
+    background: #7b73ff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px var(--accent-glow);
+}
       </style>
 </head>
 <body>
@@ -219,6 +238,11 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                     Shareable Link
                 </button>
+                <div style="margin-top: 28px;">
+    <a href="/" class="cm-contribute-btn">
+        + Publish Your Playlist
+    </a>
+                </div>
             </div>
         </div>
 
