@@ -1,34 +1,43 @@
 /**
- * PlaylistBridge — player.js
- * Mini player: lazy load, cache, auto-next, skip broken videos
- * Plug in after script.js and ui.js
+ * PlaylistBridge — player.js (v3.0)
+ * Mini bar + expandable full-screen player
+ * Video / Audio toggle — YouTube Music style
  */
 
 const Player = (() => {
 
   // ── State ──────────────────────────────────────────────
-  let ytPlayer      = null;
-  let playlist      = [];   // [{ query, videoId, title, status }]
-  let currentIndex  = -1;
-  let isReady       = false;
-  let isShuffle     = false;
-  const cache       = {};   // query → videoId
+  let ytPlayer     = null;
+  let playlist     = [];
+  let currentIndex = -1;
+  let isReady      = false;
+  let isShuffle    = false;
+  let isExpanded   = false;
+  let isVideoMode  = false;
+  let progressTimer = null;
+  const cache      = {};
 
-  // ── DOM ────────────────────────────────────────────────
-  const bar         = () => document.getElementById('pb-player-bar');
-  const nowTitle    = () => document.getElementById('pb-now-title');
-  const nowArtist   = () => document.getElementById('pb-now-artist');
-  const nowThumb    = () => document.getElementById('pb-now-thumb');
-  const progressEl  = () => document.getElementById('pb-progress');
-  const progressBar = () => document.getElementById('pb-progress-bar');
-  const timeEl      = () => document.getElementById('pb-time');
-  const btnPlay     = () => document.getElementById('pb-btn-play');
-  const btnPrev     = () => document.getElementById('pb-btn-prev');
-  const btnNext     = () => document.getElementById('pb-btn-next');
-  const btnShuffle  = () => document.getElementById('pb-btn-shuffle');
-  const btnClose    = () => document.getElementById('pb-btn-close');
-  const queueEl     = () => document.getElementById('pb-queue');
-  const loadingEl   = () => document.getElementById('pb-loading');
+  // ── DOM refs ───────────────────────────────────────────
+  const $  = id => document.getElementById(id);
+  const bar         = () => $('pb-player-bar');
+  const expanded    = () => $('pb-expanded');
+  const btnPlay     = () => $('pb-btn-play');
+  const btnPrev     = () => $('pb-btn-prev');
+  const btnNext     = () => $('pb-btn-next');
+  const btnShuffle  = () => $('pb-btn-shuffle');
+  const btnClose    = () => $('pb-btn-close');
+  const btnExpand   = () => $('pb-btn-expand');
+  const btnCollapse = () => $('pb-btn-collapse');
+  const btnVideo    = () => $('pb-btn-video');
+  const btnAudio    = () => $('pb-btn-audio');
+  const progressEl  = () => $('pb-progress');
+  const progressBar = () => $('pb-progress-bar');
+  const progressExp = () => $('pb-progress-exp');
+  const progressExpBar = () => $('pb-progress-exp-bar');
+  const timeEl      = () => $('pb-time');
+  const timeExpEl   = () => $('pb-time-exp');
+  const loadingEl   = () => $('pb-loading');
+  const queueEl     = () => $('pb-queue');
 
   // ── YouTube IFrame API ─────────────────────────────────
   function loadYTApi() {
@@ -40,38 +49,31 @@ const Player = (() => {
 
   window.onYouTubeIframeAPIReady = function () {
     ytPlayer = new YT.Player('pb-yt-iframe', {
-      height: '0', width: '0',
-      playerVars: { autoplay: 1, controls: 0, playsinline: 1 },
+      height: '100%', width: '100%',
+      playerVars: { autoplay: 1, controls: 0, playsinline: 1, modestbranding: 1, rel: 0 },
       events: {
         onReady:       () => { isReady = true; },
-        onStateChange: onPlayerStateChange,
-        onError:       onPlayerError,
+        onStateChange: onStateChange,
+        onError:       onError,
       }
     });
   };
 
-  function onYTReady() {
-    // YT already loaded (e.g. page reload), re-init
-    window.onYouTubeIframeAPIReady();
-  }
+  function onYTReady() { window.onYouTubeIframeAPIReady(); }
 
-  function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.PLAYING) {
-      btnPlay().innerHTML = pauseIcon();
+  function onStateChange(e) {
+    if (e.data === YT.PlayerState.PLAYING) {
+      setPlayBtn(true);
       startProgressTimer();
     }
-    if (event.data === YT.PlayerState.PAUSED) {
-      btnPlay().innerHTML = playIcon();
+    if (e.data === YT.PlayerState.PAUSED) {
+      setPlayBtn(false);
       stopProgressTimer();
     }
-    if (event.data === YT.PlayerState.ENDED) {
-      playNext();
-    }
+    if (e.data === YT.PlayerState.ENDED) playNext();
   }
 
-  function onPlayerError(event) {
-    // Video unavailable/blocked — skip it
-    console.warn('Player error, skipping:', event.data);
+  function onError() {
     playlist[currentIndex].status = 'error';
     renderQueue();
     playNext();
@@ -81,45 +83,41 @@ const Player = (() => {
   async function getVideoId(query) {
     if (cache[query]) return cache[query];
 
-    // Check Firestore cache
     const key = query.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
     if (window.firebaseDb) {
-        try {
-            const snap = await window.firebaseGetDoc(
-                window.firebaseDoc(window.firebaseDb, 'songs', key)
-            );
-            if (snap.exists()) {
-                cache[query] = snap.data().videoId;
-                return cache[query];
-            }
-        } catch {}
+      try {
+        const snap = await window.firebaseGetDoc(
+          window.firebaseDoc(window.firebaseDb, 'songs', key)
+        );
+        if (snap.exists()) {
+          cache[query] = snap.data().videoId;
+          return cache[query];
+        }
+      } catch {}
     }
 
     setTrackLoading(true);
     try {
-        const res  = await fetch('/.netlify/functions/ytsearch', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query }),
-        });
-        const data = await res.json();
-        if (data.videoId) {
-            cache[query] = data.videoId;
-
-            // Store in Firestore
-            if (window.firebaseDb) {
-                window.firebaseSetDoc(
-                    window.firebaseDoc(window.firebaseDb, 'songs', key),
-                    { videoId: data.videoId, source: data.source || 'ytsearch', createdAt: window.firebaseServerTimestamp() }
-                ).catch(() => {});
-            }
-
-            return data.videoId;
+      const res  = await fetch('/.netlify/functions/ytsearch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      const data = await res.json();
+      if (data.videoId) {
+        cache[query] = data.videoId;
+        if (window.firebaseDb) {
+          window.firebaseSetDoc(
+            window.firebaseDoc(window.firebaseDb, 'songs', key),
+            { videoId: data.videoId, source: data.source || 'ytsearch', createdAt: window.firebaseServerTimestamp() }
+          ).catch(() => {});
         }
+        return data.videoId;
+      }
     } catch (e) {
-        console.warn('ytsearch failed for:', query);
+      console.warn('ytsearch failed for:', query);
     } finally {
-        setTrackLoading(false);
+      setTrackLoading(false);
     }
     return null;
   }
@@ -146,11 +144,7 @@ const Player = (() => {
       playlist[index].status  = 'loaded';
     }
 
-    if (isReady && ytPlayer) {
-      ytPlayer.loadVideoById(videoId);
-    }
-
-    // Lazy-load next song ID in background
+    if (isReady && ytPlayer) ytPlayer.loadVideoById(videoId);
     prefetchNext(index + 1);
   }
 
@@ -159,80 +153,111 @@ const Player = (() => {
     const track = playlist[index];
     if (track.videoId || track.status === 'error') return;
     const id = await getVideoId(track.query);
-    if (id) {
-      playlist[index].videoId = id;
-      playlist[index].status  = 'loaded';
-    }
+    if (id) { playlist[index].videoId = id; playlist[index].status = 'loaded'; }
   }
 
   function playNext() {
     let next = currentIndex + 1;
     if (isShuffle) {
-      const available = playlist
-        .map((_, i) => i)
+      const avail = playlist.map((_,i) => i)
         .filter(i => i !== currentIndex && playlist[i].status !== 'error');
-      if (!available.length) return;
-      next = available[Math.floor(Math.random() * available.length)];
+      if (!avail.length) return;
+      next = avail[Math.floor(Math.random() * avail.length)];
     }
     if (next < playlist.length) playSong(next);
     else stopPlayer();
   }
 
-  function playPrev() {
-    if (currentIndex > 0) playSong(currentIndex - 1);
-  }
+  function playPrev() { if (currentIndex > 0) playSong(currentIndex - 1); }
 
   function togglePlayPause() {
     if (!ytPlayer) return;
-    const state = ytPlayer.getPlayerState();
-    if (state === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
-    else ytPlayer.playVideo();
+    ytPlayer.getPlayerState() === YT.PlayerState.PLAYING
+      ? ytPlayer.pauseVideo()
+      : ytPlayer.playVideo();
   }
 
   function stopPlayer() {
     if (ytPlayer) ytPlayer.stopVideo();
-    btnPlay().innerHTML = playIcon();
+    setPlayBtn(false);
     stopProgressTimer();
   }
 
-  // ── Progress bar ───────────────────────────────────────
-  let progressTimer = null;
-
+  // ── Progress ───────────────────────────────────────────
   function startProgressTimer() {
     stopProgressTimer();
     progressTimer = setInterval(() => {
-      if (!ytPlayer || !ytPlayer.getDuration) return;
+      if (!ytPlayer?.getDuration) return;
       const cur = ytPlayer.getCurrentTime() || 0;
       const dur = ytPlayer.getDuration()    || 0;
       if (!dur) return;
       const pct = (cur / dur) * 100;
-      progressBar().style.width = pct + '%';
-      timeEl().textContent = `${fmt(cur)} / ${fmt(dur)}`;
+      if (progressBar())    progressBar().style.width    = pct + '%';
+      if (progressExpBar()) progressExpBar().style.width = pct + '%';
+      const str = `${fmt(cur)} / ${fmt(dur)}`;
+      if (timeEl())    timeEl().textContent    = str;
+      if (timeExpEl()) timeExpEl().textContent = str;
     }, 500);
   }
 
-  function stopProgressTimer() {
-    clearInterval(progressTimer);
-    progressTimer = null;
-  }
+  function stopProgressTimer() { clearInterval(progressTimer); progressTimer = null; }
 
   function fmt(s) {
     const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${sec.toString().padStart(2, '0')}`;
+    return `${m}:${Math.floor(s % 60).toString().padStart(2,'0')}`;
   }
 
-  // ── UI Updates ─────────────────────────────────────────
-  function updateNowPlaying(track) {
-    nowTitle().textContent  = track.title  || track.query;
-    nowArtist().textContent = track.artist || '';
-    if (track.image) nowThumb().src = track.image;
-    nowThumb().style.display = track.image ? 'block' : 'none';
+  function seekTo(e, el) {
+    if (!ytPlayer?.getDuration) return;
+    const rect = el.getBoundingClientRect();
+    ytPlayer.seekTo(ytPlayer.getDuration() * ((e.clientX - rect.left) / rect.width), true);
+  }
+
+  // ── UI helpers ─────────────────────────────────────────
+  function setPlayBtn(playing) {
+    const icon = playing
+      ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+    [$('pb-btn-play'), $('pb-btn-play-exp')].forEach(b => { if(b) b.innerHTML = icon; });
   }
 
   function setTrackLoading(on) {
-    loadingEl().style.display = on ? 'flex' : 'none';
-    btnPlay().style.display   = on ? 'none' : 'flex';
+    if (loadingEl()) loadingEl().style.display = on ? 'flex' : 'none';
+    if (btnPlay())   btnPlay().style.display   = on ? 'none' : 'flex';
+    const pe = $('pb-btn-play-exp');
+    if (pe) pe.style.display = on ? 'none' : 'flex';
+  }
+
+  function updateNowPlaying(track) {
+    // Mini bar
+    const t = $('pb-now-title');  if(t) t.textContent  = track.title  || track.query;
+    const a = $('pb-now-artist'); if(a) a.textContent  = track.artist || '';
+    const th = $('pb-now-thumb');
+    if (th) { th.src = track.image || ''; th.style.display = track.image ? 'block' : 'none'; }
+
+    // Expanded
+    const et = $('pb-exp-title');  if(et) et.textContent  = track.title  || track.query;
+    const ea = $('pb-exp-artist'); if(ea) ea.textContent  = track.artist || '';
+
+    // Expanded art (audio mode)
+    const art = $('pb-exp-art');
+    if (art) {
+      if (track.image) { art.src = track.image; art.style.display = 'block'; }
+      else art.style.display = 'none';
+    }
+
+    // Update video/audio view
+    updateExpandedView();
+  }
+
+  function updateExpandedView() {
+    const videoWrap = $('pb-exp-video');
+    const artWrap   = $('pb-exp-art-wrap');
+    if (!videoWrap || !artWrap) return;
+    videoWrap.style.display = isVideoMode ? 'block' : 'none';
+    artWrap.style.display   = isVideoMode ? 'none'  : 'flex';
+    if ($('pb-btn-video')) $('pb-btn-video').classList.toggle('pb-mode-active', isVideoMode);
+    if ($('pb-btn-audio')) $('pb-btn-audio').classList.toggle('pb-mode-active', !isVideoMode);
   }
 
   function renderQueue() {
@@ -241,98 +266,118 @@ const Player = (() => {
     el.innerHTML = '';
     playlist.forEach((track, i) => {
       const item = document.createElement('div');
-      item.className = 'pb-queue-item' +
-        (i === currentIndex ? ' pb-queue-active' : '') +
-        (track.status === 'error' ? ' pb-queue-error' : '');
+      item.className = 'pb-queue-item'
+        + (i === currentIndex ? ' pb-queue-active' : '')
+        + (track.status === 'error'  ? ' pb-queue-error'  : '');
       item.innerHTML = `
         <span class="pb-queue-num">${i + 1}</span>
         <span class="pb-queue-title">${track.title || track.query}</span>
         ${track.status === 'error' ? '<span class="pb-queue-skip">skipped</span>' : ''}
       `;
-      if (track.status !== 'error') {
-        item.addEventListener('click', () => playSong(i));
-      }
+      if (track.status !== 'error') item.addEventListener('click', () => playSong(i));
       el.appendChild(item);
     });
   }
 
-  function seekTo(e) {
-    if (!ytPlayer?.getDuration) return;
-    const rect = progressEl().getBoundingClientRect();
-    const pct  = (e.clientX - rect.left) / rect.width;
-    ytPlayer.seekTo(ytPlayer.getDuration() * pct, true);
+  // ── Expand / Collapse ──────────────────────────────────
+  function expand() {
+    isExpanded = true;
+    expanded().classList.add('pb-expanded-open');
+    document.body.style.overflow = 'hidden';
+    renderQueue();
+    updateExpandedView();
   }
 
-  // ── Public API ─────────────────────────────────────────
+  function collapse() {
+    isExpanded = false;
+    expanded().classList.remove('pb-expanded-open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Init ───────────────────────────────────────────────
   function init(tracks) {
-    // tracks: [{ query, title, artist, image }]
     playlist = tracks.map(t => ({ ...t, videoId: null, status: 'pending' }));
     currentIndex = -1;
-    isShuffle = false;
+    isShuffle    = false;
+    isVideoMode  = false;
 
     bar().style.display = 'flex';
-    // Reinitialise player if it was closed
-if (!ytPlayer || !isReady) {
-    loadYTApi();
-} else {
-    playSong(0);
-}
+    document.body.classList.add('player-open');
+
+    if (!ytPlayer || !isReady) {
+      loadYTApi();
+    } else {
+      playSong(0);
+    }
     renderQueue();
 
-    // Wire controls
+    // Mini bar controls
     btnPlay()   .onclick = togglePlayPause;
     btnNext()   .onclick = playNext;
     btnPrev()   .onclick = playPrev;
     btnClose()  .onclick = close;
     btnShuffle().onclick = toggleShuffle;
-    progressEl().onclick = seekTo;
-    document.getElementById('pb-volume').oninput = function() {
-    if (ytPlayer) ytPlayer.setVolume(this.value);
-};
+    if (progressEl()) progressEl().onclick = e => seekTo(e, progressEl());
+    const vol = $('pb-volume');
+    if (vol) vol.oninput = () => { if (ytPlayer) ytPlayer.setVolume(vol.value); };
 
-    // Start with first song
+    // Expand on bar click (not buttons)
+    bar().onclick = (e) => {
+      if (e.target.closest('.pb-ctrl, .pb-volume, .pb-queue-toggle, .pb-progress')) return;
+      expand();
+    };
+
+    // Expanded controls
+    if (btnCollapse()) btnCollapse().onclick = collapse;
+    const pe = $('pb-btn-play-exp');
+    if (pe) pe.onclick = togglePlayPause;
+    const neBtn = $('pb-btn-next-exp');
+    if (neBtn) neBtn.onclick = playNext;
+    const pvBtn = $('pb-btn-prev-exp');
+    if (pvBtn) pvBtn.onclick = playPrev;
+    const shBtn = $('pb-btn-shuffle-exp');
+    if (shBtn) shBtn.onclick = toggleShuffle;
+    if (progressExp()) progressExp().onclick = e => seekTo(e, progressExp());
+
+    // Video / Audio toggle
+    if ($('pb-btn-video')) $('pb-btn-video').onclick = () => { isVideoMode = true;  updateExpandedView(); };
+    if ($('pb-btn-audio')) $('pb-btn-audio').onclick = () => { isVideoMode = false; updateExpandedView(); };
+
     playSong(0);
   }
 
   function close() {
     stopPlayer();
+    collapse();
     bar().style.display = 'none';
-    playlist = [];
-    isReady = false;
-    ytPlayer = null;
-    // Reset iframe so YT API can reinitialise cleanly
-    const iframe = document.getElementById('pb-yt-iframe');
+    document.body.classList.remove('player-open');
+    document.body.style.overflow = '';
+    playlist  = [];
+    isReady   = false;
+    ytPlayer  = null;
+    const iframe = $('pb-yt-iframe');
     if (iframe) iframe.innerHTML = '';
-      }
+  }
 
   function toggleShuffle() {
     isShuffle = !isShuffle;
-    btnShuffle().classList.toggle('pb-active', isShuffle);
+    [$('pb-btn-shuffle'), $('pb-btn-shuffle-exp')]
+      .forEach(b => b?.classList.toggle('pb-active', isShuffle));
   }
-
-  // ── Icons ──────────────────────────────────────────────
-  function playIcon()  { return `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`; }
-  function pauseIcon() { return `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`; }
 
   return { init, close };
 
 })();
 
-// ── Hook into existing app ─────────────────────────────────
-// Called after generate completes — reads cards from the DOM
+// ── Hook ───────────────────────────────────────────────────
 function initPlayerFromCards() {
   const cards = document.querySelectorAll('.track-card');
   if (!cards.length) return;
-
-  const tracks = Array.from(cards).map(card => ({
+  Player.init(Array.from(cards).map(card => ({
     query:  card.dataset.query  || '',
     title:  card.querySelector('.track-title')?.textContent  || '',
     artist: card.querySelector('.track-artist')?.textContent || '',
     image:  card.querySelector('.track-thumb')?.src          || '',
-  }));
-
-  Player.init(tracks);
+  })));
 }
-
-// Expose globally so script.js can call it
 window.PlayerBridge = { init: initPlayerFromCards };

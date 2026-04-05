@@ -356,66 +356,416 @@
         <button class="fm-tag" onclick="sendNegative('confusing ui')">Confusing UI</button>
     </div>
         </div>
-    <!-- Hidden YouTube iframe (audio only — height 0) -->
-<div id="pb-yt-iframe"></div>
+<!-- ═══════════════════════════════════════════════════════
+     PLAYER HTML — paste just before </body> in index.html
+     Replace your existing pb-yt-iframe and pb-player-bar
+     ═══════════════════════════════════════════════════════ -->
 
-<!-- Mini Player Bar -->
+<!-- Hidden YT iframe (audio source) -->
+<div id="pb-yt-iframe" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;"></div>
+
+<!-- ── Mini Bar ── -->
 <div id="pb-player-bar">
-
-  <!-- Album art -->
-  <img id="pb-now-thumb" src="" alt="" class="pb-thumb">
-
-  <!-- Now playing info -->
-  <div class="pb-info">
-    <div id="pb-now-title"  class="pb-title">Select a song</div>
-    <div id="pb-now-artist" class="pb-artist"></div>
-  </div>
-
-  <!-- Progress -->
-  <div class="pb-progress-wrap">
-    <div id="pb-progress" class="pb-progress">
-      <div id="pb-progress-bar" class="pb-progress-fill"></div>
+    <img id="pb-now-thumb" src="" alt="" class="pb-thumb">
+    <div class="pb-info">
+        <div id="pb-now-title" class="pb-title">Select a song</div>
+        <div id="pb-now-artist" class="pb-artist"></div>
     </div>
-    <span id="pb-time" class="pb-time">0:00 / 0:00</span>
-  </div>
-
-  <!-- Controls -->
-  <div class="pb-controls">
-    <button id="pb-btn-shuffle" class="pb-ctrl pb-ctrl-sm" title="Shuffle">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
-    </button>
-    <button id="pb-btn-prev" class="pb-ctrl" title="Previous">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-    </button>
-    <div id="pb-loading" class="pb-loading" style="display:none">
-      <div class="pb-spinner"></div>
-    </div>
-    <button id="pb-btn-play" class="pb-ctrl pb-ctrl-main" title="Play/Pause">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-    </button>
-    <button id="pb-btn-next" class="pb-ctrl" title="Next">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-    </button>
-    <button id="pb-btn-close" class="pb-ctrl pb-ctrl-sm" title="Close">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-    </button>
-      <div class="pb-volume">
-    <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-    </svg>
-    <input type="range" id="pb-volume" min="0" max="100" value="80" class="pb-volume-slider">
+    <div class="pb-progress-wrap">
+        <div id="pb-progress" class="pb-progress">
+            <div id="pb-progress-bar" class="pb-progress-fill"></div>
         </div>
-  </div>
+        <span id="pb-time" class="pb-time">0:00 / 0:00</span>
+    </div>
+    <div class="pb-controls">
+        <button id="pb-btn-shuffle" class="pb-ctrl pb-ctrl-sm" title="Shuffle">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+        </button>
+        <button id="pb-btn-prev" class="pb-ctrl" title="Previous">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        <div id="pb-loading" class="pb-loading" style="display:none">
+            <div class="pb-spinner"></div>
+        </div>
+        <button id="pb-btn-play" class="pb-ctrl pb-ctrl-main">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button id="pb-btn-next" class="pb-ctrl" title="Next">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+        <button id="pb-btn-close" class="pb-ctrl pb-ctrl-sm" title="Close">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+    </div>
+    <div class="pb-volume">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        <input type="range" id="pb-volume" min="0" max="100" value="80" class="pb-volume-slider">
+    </div>
+</div>
 
-  <!-- Queue toggle -->
-  <button class="pb-queue-toggle" onclick="this.closest('#pb-player-bar').classList.toggle('pb-show-queue')">
-    Queue
-  </button>
+<!-- ── Expanded Full-Screen Player ── -->
+<div id="pb-expanded" class="pb-expanded">
 
-  <!-- Queue panel -->
-  <div id="pb-queue" class="pb-queue"></div>
+    <!-- Header -->
+    <div class="pb-exp-header">
+        <button id="pb-btn-collapse" class="pb-exp-btn-collapse">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+        </button>
+        <span class="pb-exp-header-label">Now Playing</span>
+        <div style="width:40px"></div>
+    </div>
+
+    <!-- Video/Audio toggle -->
+    <div class="pb-exp-mode-toggle">
+        <button id="pb-btn-audio" class="pb-mode-btn pb-mode-active">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            Audio
+        </button>
+        <button id="pb-btn-video" class="pb-mode-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            Video
+        </button>
+    </div>
+
+    <!-- Art / Video area -->
+    <div class="pb-exp-media">
+
+        <!-- Audio mode — big album art -->
+        <div id="pb-exp-art-wrap" class="pb-exp-art-wrap">
+            <img id="pb-exp-art" src="" alt="" class="pb-exp-art">
+            <div class="pb-exp-art-glow"></div>
+        </div>
+
+        <!-- Video mode — YouTube player -->
+        <div id="pb-exp-video" class="pb-exp-video" style="display:none">
+            <div id="pb-exp-yt-container" class="pb-exp-yt-container">
+                <!-- Video renders in pb-yt-iframe which is moved here in video mode -->
+                <div class="pb-exp-yt-placeholder">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48" style="color:rgba(255,255,255,0.2)"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                    <p>Video playing</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Track info -->
+    <div class="pb-exp-info">
+        <div id="pb-exp-title"  class="pb-exp-title">—</div>
+        <div id="pb-exp-artist" class="pb-exp-artist">—</div>
+    </div>
+
+    <!-- Progress -->
+    <div class="pb-exp-progress-wrap">
+        <div id="pb-progress-exp" class="pb-progress-exp">
+            <div id="pb-progress-exp-bar" class="pb-progress-exp-fill"></div>
+            <div class="pb-progress-exp-thumb"></div>
+        </div>
+        <div class="pb-exp-time-row">
+            <span id="pb-time-exp" class="pb-exp-time">0:00 / 0:00</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="pb-exp-controls">
+        <button id="pb-btn-shuffle-exp" class="pb-exp-ctrl pb-exp-ctrl-sm">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+        </button>
+        <button id="pb-btn-prev-exp" class="pb-exp-ctrl">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        <button id="pb-btn-play-exp" class="pb-exp-ctrl pb-exp-ctrl-main">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button id="pb-btn-next-exp" class="pb-exp-ctrl">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+        <div style="width:40px"></div>
+    </div>
+
+    <!-- Queue -->
+    <div class="pb-exp-queue-wrap">
+        <div class="pb-exp-queue-label">Queue</div>
+        <div id="pb-queue" class="pb-queue"></div>
+    </div>
 
 </div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     PLAYER CSS — add to end of style.css
+     ═══════════════════════════════════════════════════════ -->
+<style id="pb-styles">
+
+/* ── Mini Bar ─────────────────────────────────────────── */
+#pb-player-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    min-height: 72px;
+    height: auto;
+    background: linear-gradient(135deg, #1a1730 0%, #12121a 100%);
+    border-top: 2px solid var(--accent);
+    box-shadow: 0 -8px 32px rgba(108,99,255,0.2);
+    display: none;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 20px;
+    z-index: 900;
+    cursor: pointer;
+}
+.pb-thumb {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.pb-info { flex: 0 0 140px; min-width: 0; }
+.pb-title { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pb-artist { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.pb-progress-wrap { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 80px; }
+.pb-progress { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; cursor: pointer; transition: height 120ms; }
+.pb-progress:hover { height: 6px; }
+.pb-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.5s linear; }
+.pb-time { font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.pb-controls { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.pb-ctrl {
+    width: 36px; height: 36px; border-radius: 50%; border: none;
+    background: transparent; color: var(--text-secondary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 120ms; flex-shrink: 0;
+}
+.pb-ctrl svg { width: 18px; height: 18px; }
+.pb-ctrl:hover { color: var(--text-primary); background: rgba(255,255,255,0.07); }
+.pb-ctrl-sm svg { width: 15px; height: 15px; }
+.pb-ctrl-main { width: 44px; height: 44px; background: var(--accent); color: white; }
+.pb-ctrl-main:hover { background: #7b73ff; color: white; }
+.pb-ctrl-main svg { width: 22px; height: 22px; }
+.pb-active { color: var(--accent) !important; }
+.pb-loading { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+.pb-spinner { width: 20px; height: 20px; border: 2px solid rgba(108,99,255,0.3); border-top-color: var(--accent); border-radius: 50%; animation: pb-spin 0.7s linear infinite; }
+@keyframes pb-spin { to { transform: rotate(360deg); } }
+.pb-volume { display: flex; align-items: center; gap: 6px; flex-shrink: 0; color: var(--text-muted); }
+.pb-volume-slider { width: 70px; height: 4px; accent-color: var(--accent); cursor: pointer; }
+body.player-open { padding-bottom: 80px; }
+
+/* ── Expanded Player ──────────────────────────────────── */
+.pb-expanded {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0f;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 24px;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pb-expanded-open {
+    transform: translateY(0);
+}
+
+/* Blurred bg glow */
+.pb-expanded::before {
+    content: '';
+    position: fixed;
+    top: -100px; left: -100px; right: -100px;
+    height: 500px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(108,99,255,0.2) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Header */
+.pb-exp-header {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 8px;
+    flex-shrink: 0;
+}
+.pb-exp-btn-collapse {
+    width: 40px; height: 40px;
+    border-radius: 50%; border: none;
+    background: rgba(255,255,255,0.07);
+    color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 120ms;
+}
+.pb-exp-btn-collapse:hover { background: rgba(255,255,255,0.12); color: white; }
+.pb-exp-header-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* Mode toggle */
+.pb-exp-mode-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 3px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+.pb-mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 140ms;
+}
+.pb-mode-btn.pb-mode-active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 2px 12px rgba(108,99,255,0.4);
+}
+
+/* Media area */
+.pb-exp-media {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 24px;
+    padding: 0 20px;
+    flex-shrink: 0;
+}
+
+/* Audio art */
+.pb-exp-art-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pb-exp-art {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 20px;
+    object-fit: cover;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    display: block;
+}
+.pb-exp-art-glow {
+    position: absolute;
+    inset: 20px;
+    border-radius: 20px;
+    filter: blur(40px);
+    opacity: 0.4;
+    background: var(--accent);
+    z-index: -1;
+}
+
+/* Video area */
+.pb-exp-video {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+}
+.pb-exp-yt-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.pb-exp-yt-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* Track info */
+.pb-exp-info {
+    width: 100%;
+    max-width: 360px;
+    padding: 0 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.pb-exp-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pb-exp-artist {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* Progress */
+.pb-exp-progress-wrap {
+    width: 100%;
+    max-width: 360px;
+    padding: 0 20px;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+}
+.pb-progress-exp {
+    position: relative;
+    height: 4px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: height 120ms;
+    margin-bottom: 8px;
+}
+.pb-progress-exp:hover { height: 6px; }
+.pb-progress-exp-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.5s linear;
+}
+.pb-progress-exp-thumb {
+    position: absolute;
+    right: calc(100% - var(--pct, 0%));
+    top: 50%;
+    transform: translate(50%, -50%);
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: white;
+    opacity: 0;
+    transition: opacity 120ms;
+}
+.pb-progress-exp:hover .pb-progress-exp-thumb { opacity: 1; }
+.pb-exp-time-row { display: flex; justify-content: center; }
+.pb-exp-time { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+/* Expanded controls */
+.pb-exp-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 
 <!-- ───── SCRIPTS ───── -->
     
