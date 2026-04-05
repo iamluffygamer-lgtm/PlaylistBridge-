@@ -39,7 +39,7 @@ const Player = (() => {
   }
 
   window.onYouTubeIframeAPIReady = function () {
-    ytPlayer = new YT.Player('pb-yt- 5 tiframe', {
+    ytPlayer = new YT.Player('pb-yt-iframe', {
       height: '0', width: '0',
       playerVars: { autoplay: 1, controls: 0, playsinline: 1 },
       events: {
@@ -123,7 +123,7 @@ const Player = (() => {
     }
     return null;
   }
-    
+
   // ── Playback ───────────────────────────────────────────
   async function playSong(index) {
     if (index < 0 || index >= playlist.length) return;
