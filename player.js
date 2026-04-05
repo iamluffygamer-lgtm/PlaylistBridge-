@@ -253,33 +253,36 @@ const Player = (() => {
   function updateExpandedView() {
     const videoWrap = $('pb-exp-video');
     const artWrap   = $('pb-exp-art-wrap');
-    const iframe    = $('pb-yt-iframe');
     if (!videoWrap || !artWrap) return;
 
-    if (isVideoMode) {
-        // Move iframe into video container
-        const container = videoWrap.querySelector('.pb-exp-yt-container');
-        if (container && iframe && !container.contains(iframe)) {
-            container.innerHTML = '';
-            container.appendChild(iframe);
-            // Resize for visible playback
-            iframe.style.cssText = 'width:100%;height:100%;position:relative;left:0;top:0;';
-            // Force YT player to resize
-            if (ytPlayer && ytPlayer.setSize) ytPlayer.setSize('100%', '100%');
-        }
-        videoWrap.style.display = 'block';
-        artWrap.style.display   = 'none';
-    } else {
-        // Move iframe back offscreen
-        document.body.appendChild(iframe);
-        iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;';
-        videoWrap.style.display = 'none';
-        artWrap.style.display   = 'flex';
-    }
+    videoWrap.style.display = isVideoMode ? 'block' : 'none';
+    artWrap.style.display   = isVideoMode ? 'none'  : 'flex';
 
     if ($('pb-btn-video')) $('pb-btn-video').classList.toggle('pb-mode-active', isVideoMode);
     if ($('pb-btn-audio')) $('pb-btn-audio').classList.toggle('pb-mode-active', !isVideoMode);
+
+    // VIDEO MODE
+    if (isVideoMode && playlist[currentIndex]?.videoId) {
+        const container = $('pb-exp-yt-container');
+        if (container) {
+            const videoId = playlist[currentIndex].videoId;
+            const currentTime = ytPlayer?.getCurrentTime?.() || 0;
+
+            container.innerHTML = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${videoId}?autoplay=1&start=${Math.floor(currentTime)}&controls=1&modestbranding=1&rel=0&playsinline=1"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                    style="width:100%;height:100%;border-radius:16px;border:none;">
+                </iframe>
+            `;
         }
+    } else {
+        // AUDIO MODE → clear video
+        const container = $('pb-exp-yt-container');
+        if (container) container.innerHTML = '';
+    }
+      }
 
   function renderQueue() {
     const el = queueEl();
