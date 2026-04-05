@@ -220,6 +220,7 @@ async function handleGenerate(isAutoLoad = false) {
     el.statusBar?.classList.add('hidden');
     el.bulkActions?.classList.remove('hidden');
     document.getElementById('shareCardBtn')?.classList.remove('hidden')
+    document.getElementById('publishBtn')?.classList.remove('hidden')
 
     isProcessing = false;
     window.UI?.setLoading(false);
@@ -685,6 +686,53 @@ document.getElementById('shareCardBtn')?.addEventListener('click', () => {
         query:  card.dataset.query || '',
     }));
     window.ShareCard?.shareOrDownload(tracks);
+});
+document.getElementById('publishBtn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('publishBtn');
+    if (!window.firebaseDb) return;
+
+    const songs   = Array.from(document.querySelectorAll('.track-card')).map(card =>
+        card.querySelector('.track-title')?.textContent || ''
+    ).filter(Boolean);
+
+    if (songs.length < 2) return;
+
+    const artists  = Array.from(document.querySelectorAll('.track-card'))
+        .slice(0, 2)
+        .map(card => card.querySelector('.track-artist')?.textContent || '')
+        .filter(Boolean);
+
+    const title = artists.length >= 2
+        ? `${artists[0]}, ${artists[1]} + ${songs.length - 2} more`
+        : `${songs.length} songs`;
+const artUrls = Array.from(document.querySelectorAll('.track-card'))
+    .slice(0, 4)
+    .map(card => card.querySelector('.track-thumb')?.src || null)
+    .filter(Boolean);
+    btn.disabled    = true;
+    btn.textContent = 'Publishing…';
+
+    try {
+        await window.firebaseAddDoc(
+            window.firebaseCollection(window.firebaseDb, 'playlists'),
+            {
+                title,
+                songs,
+                platform: currentPlatform,
+                artUrls,
+                createdAt: window.firebaseServerTimestamp(),
+                plays: 0
+            }
+        );
+        btn.textContent = '✅ Published!';
+        setTimeout(() => {
+            btn.textContent = '🌍 Publish to Community';
+            btn.disabled = false;
+        }, 3000);
+    } catch {
+        btn.textContent = 'Failed. Try again.';
+        btn.disabled = false;
+    }
 });
 // ─── BOOT ───
 init();
