@@ -235,7 +235,7 @@ setTimeout(showFeedbackPrompt, 6000);
 if (currentPlatform === 'yt_music' || currentPlatform === 'youtube') {
     generatePlaylistIds(songList);
 }
-    
+}
 
 
 // ─── FETCH METADATA + RENDER ───
