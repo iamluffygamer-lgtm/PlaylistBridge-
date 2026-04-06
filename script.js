@@ -220,12 +220,16 @@ async function handleGenerate(isAutoLoad = false) {
     el.statusBar?.classList.add('hidden');
     el.bulkActions?.classList.remove('hidden');
     if (currentPlatform === 'spotify') {
+    document.getElementById('shareCardBtn')?.classList.remove('hidden');
+document.getElementById('publishBtn')?.classList.remove('hidden');
+
+if (currentPlatform === 'spotify') {
     document.getElementById('spotifyNudge')?.classList.remove('hidden');
 } else {
-    document.getElementById('shareCardBtn')?.classList.remove('hidden')
-    document.getElementById('publishBtn')?.classList.remove('hidden')
+    document.getElementById('spotifyNudge')?.classList.add('hidden');
+}
 
-    isProcessing = false;
+isProcessing = false;
     window.UI?.setLoading(false);
     if (currentPlatform !== 'spotify') window.PlayerBridge?.init();
     setTimeout(showFeedbackPrompt,6000);
