@@ -741,6 +741,19 @@ function initPlayerFromCards() {
             image:  card.querySelector('.track-thumb')?.src                 || '',
         }))
     );
+    // Show expand hint once
+    if (!localStorage.getItem('pb-expand-shown')) {
+        const toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:rgba(108,99,255,0.9);color:white;padding:6px 16px;border-radius:20px;font-size:12px;z-index:901;pointer-events:none;transition:opacity 0.5s;';
+        toast.textContent = '↑ Tap player to expand';
+        document.body.appendChild(toast);
+        setTimeout(() => { 
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 500);
+            localStorage.setItem('pb-expand-shown', '1');
+        }, 3000);
+    }
+        }
 }
 
 window.PlayerBridge = { init: initPlayerFromCards };
