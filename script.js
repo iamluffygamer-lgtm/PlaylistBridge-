@@ -219,6 +219,9 @@ async function handleGenerate(isAutoLoad = false) {
     showStatus('Links ready!');
     el.statusBar?.classList.add('hidden');
     el.bulkActions?.classList.remove('hidden');
+    if (currentPlatform === 'spotify') {
+    document.getElementById('spotifyNudge')?.classList.remove('hidden');
+} else {
     document.getElementById('shareCardBtn')?.classList.remove('hidden')
     document.getElementById('publishBtn')?.classList.remove('hidden')
 
@@ -734,5 +737,15 @@ const artUrls = Array.from(document.querySelectorAll('.track-card'))
         btn.disabled = false;
     }
 });
+function switchToYouTube() {
+    document.querySelectorAll('.platform-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.platform === 'youtube');
+    });
+    currentPlatform = 'youtube';
+    window.UI?.applyPlatformTheme('youtube');
+    window.UI?.updateCardLinks(q => getSearchLink(q, 'youtube'), 'youtube');
+    document.getElementById('spotifyNudge')?.classList.add('hidden');
+    window.PlayerBridge?.init();
+                                                        }
 // ─── BOOT ───
 init();
