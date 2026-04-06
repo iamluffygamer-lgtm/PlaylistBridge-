@@ -752,7 +752,6 @@ function initPlayerFromCards() {
             setTimeout(() => toast.remove(), 500);
             localStorage.setItem('pb-expand-shown', '1');
         }, 3000);
-    }
         }
 }
 
