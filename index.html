@@ -96,6 +96,17 @@
     flex-shrink: 0;
 }
 .nudge-btn:hover { background: #7b73ff; }
+        .pb-expand-hint {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    animation: bounce-up 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+@keyframes bounce-up {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-3px); }
+            }
       </style>
 </head>
 <body>
@@ -415,7 +426,11 @@
      MINI PLAYER BAR
 ══════════════════════════ -->
 <div id="pb-player-bar" role="region" aria-label="Music player">
-
+<div class="pb-expand-hint">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+</div>
     <!-- Album thumb -->
     <img id="pb-now-thumb" src="" alt="" class="pb-thumb">
 
