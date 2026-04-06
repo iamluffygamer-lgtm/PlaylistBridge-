@@ -66,6 +66,36 @@
     color: var(--text-muted);
     letter-spacing: 0.04em;
         }
+        .spotify-nudge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: var(--r-md);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: var(--sp-md);
+    flex-wrap: wrap;
+}
+.spotify-nudge.hidden { display: none; }
+.nudge-btn {
+    padding: 7px 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 120ms;
+    flex-shrink: 0;
+}
+.nudge-btn:hover { background: #7b73ff; }
       </style>
 </head>
 <body>
@@ -178,7 +208,11 @@
         <span id="statusText">Processing playlist…</span>
     </div>
 </div>
-
+<div id="spotifyNudge" class="spotify-nudge hidden">
+    🎧 Play instantly here (no ads, no login).
+    Switch to <strong>YouTube</strong> to unlock InstantPlay.
+    <button class="nudge-btn" onclick="switchToYouTube()">Play here instead</button>
+    </div>
 <!-- ───── RESULTS ───── -->
 <section id="resultsSection" class="results-section hidden">
 
