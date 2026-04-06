@@ -453,6 +453,8 @@ const Player = (() => {
         const container = $('pb-exp-yt-container');
         if (!container) return;
         const t = Math.floor(startTime || 0);
+        // Pause hidden audio player — video iframe has its own audio
+if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
         container.innerHTML =
             `<iframe
                 src="https://www.youtube.com/embed/${videoId}?autoplay=1&start=${t}&controls=1&modestbranding=1&rel=0&playsinline=1"
@@ -466,7 +468,8 @@ const Player = (() => {
         const container = $('pb-exp-yt-container');
         if (container) container.innerHTML = '';
     }
-
+// Resume hidden audio player
+if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
     function updateExpandedView() {
         const videoWrap = $('pb-exp-video');
         const artWrap   = $('pb-exp-art-wrap');
