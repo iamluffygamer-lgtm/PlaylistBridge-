@@ -6,7 +6,7 @@
     <meta name="keywords" content="AI playlist player, play ChatGPT playlist, instant music player, no login music, YouTube playlist player">
 <meta name="robots" content="index, follow">
     <title>PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links</title>
-    <meta name="description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
+    <meta name="description" content="Paste any AI-generated playlist and play it instantly in your browser. No login, no app. Spotify, YouTube Music and YouTube links in seconds.">
     <link rel="canonical" href="https://playlistbridge.netlify.app/" />
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playlistbridge.netlify.app/">
@@ -31,7 +31,7 @@
         {
           "@type": "WebApplication",
           "name": "PlaylistBridge",
-        "featureList": "InstantPlay, AI playlist conversion, Spotify links, YouTube Music links, no login required"
+        "featureList": "InstantPlay, AI playlist player, video mode, community playlists, share cards, Spotify links, YouTube Music links, no login required",
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "Web",
           "description": "Converts plain text song lists into instant playable links for YouTube Music, Spotify, and YouTube."
@@ -58,7 +58,14 @@
         }
         #shareCardBtn { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 #shareCardBtn:hover { background: var(--accent); color: white; }
-        .
+                .pb-exp-powered {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+        }
       </style>
 </head>
 <body>
@@ -312,6 +319,10 @@
                 <summary>Does InstantPlay work on mobile?</summary>
                 <p>Yes. Background play is limited on mobile browsers — for uninterrupted listening install PlaylistBridge to your home screen via your browser menu.</p>
             </details>
+            <details class="faq-item">
+  <summary>Can I watch music videos while listening?</summary>
+  <p>Yes. InstantPlay includes a Video mode that plays the official YouTube music video directly inside the player. You can switch between audio and video anytime.</p>
+            </details>
         </div>
     </div>
 </section>
@@ -356,137 +367,205 @@
         <button class="fm-tag" onclick="sendNegative('confusing ui')">Confusing UI</button>
     </div>
         </div>
-<!-- ═══════════════════════════════════════════════════════
-     PLAYER HTML — paste just before </body> in index.html
-     Replace your existing pb-yt-iframe and pb-player-bar
-     ═══════════════════════════════════════════════════════ -->
 
-<!-- Hidden YT iframe (audio source) -->
-<div id="pb-yt-iframe" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;"></div>
+    <!-- ═══════════════════════════════════════════════════════════════
+     PlaylistBridge — player-snippet.html (v4.0)
+     Paste this entire block just before </body> in index.html.
+     Replace ALL previous pb-* HTML (bar + expanded).
+     ═══════════════════════════════════════════════════════════════ -->
 
-<!-- ── Mini Bar ── -->
-<div id="pb-player-bar">
+<!-- Hidden YT iframe — audio source, never moved or shown -->
+<div id="pb-yt-iframe" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;pointer-events:none;"></div>
+
+<!-- ══════════════════════════
+     MINI PLAYER BAR
+══════════════════════════ -->
+<div id="pb-player-bar" role="region" aria-label="Music player">
+
+    <!-- Album thumb -->
     <img id="pb-now-thumb" src="" alt="" class="pb-thumb">
+
+    <!-- Track info -->
     <div class="pb-info">
         <div id="pb-now-title" class="pb-title">Select a song</div>
         <div id="pb-now-artist" class="pb-artist"></div>
     </div>
+
+    <!-- Progress bar (hidden on mobile via CSS) -->
     <div class="pb-progress-wrap">
-        <div id="pb-progress" class="pb-progress">
+        <div id="pb-progress" class="pb-progress" role="progressbar" aria-label="Playback progress">
             <div id="pb-progress-bar" class="pb-progress-fill"></div>
         </div>
         <span id="pb-time" class="pb-time">0:00 / 0:00</span>
     </div>
+
+    <!-- Controls -->
     <div class="pb-controls">
-        <button id="pb-btn-shuffle" class="pb-ctrl pb-ctrl-sm" title="Shuffle">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+
+        <!-- Shuffle -->
+        <button id="pb-btn-shuffle" class="pb-ctrl pb-ctrl-sm" title="Shuffle" aria-label="Shuffle" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+            </svg>
         </button>
-        <button id="pb-btn-prev" class="pb-ctrl" title="Previous">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+
+        <!-- Prev -->
+        <button id="pb-btn-prev" class="pb-ctrl" title="Previous" aria-label="Previous track">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+            </svg>
         </button>
-        <div id="pb-loading" class="pb-loading" style="display:none">
+
+        <!-- Loading spinner (shown while fetching videoId) -->
+        <div id="pb-loading" style="display:none;">
             <div class="pb-spinner"></div>
         </div>
-        <button id="pb-btn-play" class="pb-ctrl pb-ctrl-main">
+
+        <!-- Play / Pause -->
+        <button id="pb-btn-play" class="pb-ctrl pb-ctrl-main" title="Play / Pause" aria-label="Play">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <button id="pb-btn-next" class="pb-ctrl" title="Next">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+
+        <!-- Next -->
+        <button id="pb-btn-next" class="pb-ctrl" title="Next" aria-label="Next track">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            </svg>
         </button>
-        <button id="pb-btn-close" class="pb-ctrl pb-ctrl-sm" title="Close">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+
+        <!-- Close -->
+        <button id="pb-btn-close" class="pb-ctrl pb-ctrl-sm" title="Close player" aria-label="Close player">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
         </button>
+
     </div>
+
+    <!-- Volume (hidden on mobile via CSS) -->
     <div class="pb-volume">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-        <input type="range" id="pb-volume" min="0" max="100" value="80" class="pb-volume-slider">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+        </svg>
+        <input type="range" id="pb-volume" min="0" max="100" value="80"
+               aria-label="Volume" title="Volume">
     </div>
+
 </div>
+<!-- END MINI BAR -->
 
-<!-- ── Expanded Full-Screen Player ── -->
-<div id="pb-expanded" class="pb-expanded">
 
-    <!-- Header -->
+<!-- ══════════════════════════
+     EXPANDED FULL-SCREEN PLAYER
+══════════════════════════ -->
+<div id="pb-expanded" role="dialog" aria-modal="true" aria-label="Now playing">
+
+    <!-- Blurred album art background -->
+    <div class="pb-exp-bg" id="pb-exp-bg" aria-hidden="true"></div>
+    <div class="pb-exp-bg-overlay" aria-hidden="true"></div>
+
+    <!-- ── Header ── -->
     <div class="pb-exp-header">
-        <button id="pb-btn-collapse" class="pb-exp-btn-collapse">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+        <button id="pb-btn-collapse" aria-label="Collapse player">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+            </svg>
         </button>
         <span class="pb-exp-header-label">Now Playing</span>
-        <div style="width:40px"></div>
+        <span class="pb-exp-powered">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+    Powered by YouTube
+        </span>
+        <div class="pb-exp-header-spacer" aria-hidden="true"></div>
     </div>
 
-    <!-- Video/Audio toggle -->
-    <div class="pb-exp-mode-toggle">
-        <button id="pb-btn-audio" class="pb-mode-btn pb-mode-active">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+    <!-- ── Audio / Video toggle ── -->
+    <div class="pb-exp-mode-toggle" role="group" aria-label="Playback mode">
+        <button id="pb-btn-audio" class="pb-mode-btn pb-mode-active" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
             Audio
         </button>
-        <button id="pb-btn-video" class="pb-mode-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+        <button id="pb-btn-video" class="pb-mode-btn" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
+                <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+            </svg>
             Video
         </button>
     </div>
 
-    <!-- Art / Video area -->
+    <!-- ── Media (art or video) ── -->
     <div class="pb-exp-media">
 
         <!-- Audio mode — big album art -->
         <div id="pb-exp-art-wrap" class="pb-exp-art-wrap">
-            <img id="pb-exp-art" src="" alt="" class="pb-exp-art">
-            <div class="pb-exp-art-glow"></div>
+            <img id="pb-exp-art" src="" alt="Album art">
+            <div class="pb-exp-art-glow" aria-hidden="true"></div>
         </div>
 
-        <!-- Video mode — YouTube player -->
-        <div id="pb-exp-video" class="pb-exp-video" style="display:none">
-            <div id="pb-exp-yt-container" class="pb-exp-yt-container">
-                <!-- Video renders in pb-yt-iframe which is moved here in video mode -->
-                <div class="pb-exp-yt-placeholder">
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48" style="color:rgba(255,255,255,0.2)"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                    <p>Video playing</p>
-                </div>
-            </div>
+        <!-- Video mode — YouTube embed container -->
+        <div id="pb-exp-video" style="display:none;">
+            <div id="pb-exp-yt-container"></div>
         </div>
 
     </div>
 
-    <!-- Track info -->
+    <!-- ── Track info ── -->
     <div class="pb-exp-info">
-        <div id="pb-exp-title"  class="pb-exp-title">—</div>
-        <div id="pb-exp-artist" class="pb-exp-artist">—</div>
+        <div id="pb-exp-title">—</div>
+        <div id="pb-exp-artist">—</div>
     </div>
 
-    <!-- Progress -->
+    <!-- ── Progress bar ── -->
     <div class="pb-exp-progress-wrap">
-        <div id="pb-progress-exp" class="pb-progress-exp">
+        <div id="pb-progress-exp" role="progressbar" aria-label="Playback progress">
             <div id="pb-progress-exp-bar" class="pb-progress-exp-fill"></div>
-            <div class="pb-progress-exp-thumb"></div>
+            <div class="pb-progress-exp-thumb" aria-hidden="true"></div>
         </div>
         <div class="pb-exp-time-row">
             <span id="pb-time-exp" class="pb-exp-time">0:00 / 0:00</span>
         </div>
     </div>
 
-    <!-- Controls -->
+    <!-- ── Controls ── -->
     <div class="pb-exp-controls">
-        <button id="pb-btn-shuffle-exp" class="pb-exp-ctrl pb-exp-ctrl-sm">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+
+        <!-- Shuffle -->
+        <button id="pb-btn-shuffle-exp" class="pb-exp-ctrl pb-exp-ctrl-sm" title="Shuffle" aria-label="Shuffle" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+            </svg>
         </button>
-        <button id="pb-btn-prev-exp" class="pb-exp-ctrl">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+
+        <!-- Prev -->
+        <button id="pb-btn-prev-exp" class="pb-exp-ctrl" aria-label="Previous track">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+            </svg>
         </button>
-        <button id="pb-btn-play-exp" class="pb-exp-ctrl pb-exp-ctrl-main">
+
+        <!-- Play / Pause (big) -->
+        <button id="pb-btn-play-exp" class="pb-exp-ctrl pb-exp-ctrl-main" aria-label="Play">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <button id="pb-btn-next-exp" class="pb-exp-ctrl">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+
+        <!-- Next -->
+        <button id="pb-btn-next-exp" class="pb-exp-ctrl" aria-label="Next track">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            </svg>
         </button>
-        <div style="width:40px"></div>
+
+        <!-- Spacer to balance shuffle button -->
+        <div style="width:48px;" aria-hidden="true"></div>
+
     </div>
 
-    <!-- Queue -->
+    <!-- ── Queue ── -->
     <div class="pb-exp-queue-wrap">
         <div class="pb-exp-queue-label">Queue</div>
-        <div id="pb-queue" class="pb-queue"></div>
+        <div id="pb-queue" role="list" aria-label="Playback queue"></div>
     </div>
 
 </div>
