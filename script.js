@@ -219,8 +219,7 @@ async function handleGenerate(isAutoLoad = false) {
     showStatus('Links ready!');
     el.statusBar?.classList.add('hidden');
     el.bulkActions?.classList.remove('hidden');
-    if (currentPlatform === 'spotify') {
-    document.getElementById('shareCardBtn')?.classList.remove('hidden');
+document.getElementById('shareCardBtn')?.classList.remove('hidden');
 document.getElementById('publishBtn')?.classList.remove('hidden');
 
 if (currentPlatform === 'spotify') {
@@ -230,14 +229,15 @@ if (currentPlatform === 'spotify') {
 }
 
 isProcessing = false;
-    window.UI?.setLoading(false);
-    if (currentPlatform !== 'spotify') window.PlayerBridge?.init();
-    setTimeout(showFeedbackPrompt,6000);
-    // Step 2: background Play All hunt (YT only)
-    if (currentPlatform === 'yt_music' || currentPlatform === 'youtube') {
-        generatePlaylistIds(songList);
-    }
+window.UI?.setLoading(false);
+if (currentPlatform !== 'spotify') window.PlayerBridge?.init();
+setTimeout(showFeedbackPrompt, 6000);
+
+if (currentPlatform === 'yt_music' || currentPlatform === 'youtube') {
+    generatePlaylistIds(songList);
 }
+    
+
 
 // ─── FETCH METADATA + RENDER ───
 async function fetchMetadataAndRender(rawQuery) {
