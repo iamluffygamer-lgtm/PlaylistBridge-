@@ -222,7 +222,6 @@ async function handleGenerate(isAutoLoad = false) {
 document.getElementById('shareCardBtn')?.classList.remove('hidden');
 document.getElementById('publishBtn')?.classList.remove('hidden');
 
-if (currentPlatform === 'spotify') {
     document.getElementById('spotifyNudge')?.classList.remove('hidden');
 } else {
     document.getElementById('spotifyNudge')?.classList.add('hidden');
