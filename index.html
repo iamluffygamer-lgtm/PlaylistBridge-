@@ -179,7 +179,33 @@
                 <button class="example-chip" data-example="ai">AI sample</button>
             </div>
         </div>
-
+<!-- Listen Again Card -->
+<div id="listenAgainCard" class="listen-again-card hidden">
+    <div class="la-art-wrap">
+        <img id="laArt" src="" alt="" class="la-art">
+        <div class="la-art-overlay">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+        </div>
+    </div>
+    <div class="la-info">
+        <p class="la-label">Continue listening</p>
+        <p id="laTitle" class="la-title">—</p>
+        <p id="laTime" class="la-time">—</p>
+    </div>
+    <button id="laPlayBtn" class="la-play-btn">
+        ▶ Play
+    </button>
+    <button id="laDismissBtn" class="la-dismiss" title="Dismiss">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+    </button>
+</div>
+<p class="la-caution hidden" id="laCaution">
+    🔒 Saved on this device only — not shared with anyone.
+</p>
         <!-- Textarea -->
         <div class="textarea-container">
             <div id="aiBadge" class="ai-badge hidden">
