@@ -750,7 +750,8 @@ function switchToYouTube() {
     window.UI?.updateCardLinks(q => getSearchLink(q, 'youtube'), 'youtube');
     document.getElementById('spotifyNudge')?.classList.add('hidden');
     window.PlayerBridge?.init();
-}
+}// ── LISTEN AGAIN ────────────────────────────────
+
 const LA_KEY = 'pb_last_playlist';
 
 function saveLastPlaylist(songs, platform) {
@@ -818,7 +819,7 @@ function initListenAgain() {
         caution.classList.add('hidden');
         handleGenerate(false);
     });
-        }
+
     // Dismiss
     document.getElementById('laDismissBtn').addEventListener('click', () => {
         card.classList.add('hidden');
@@ -826,5 +827,6 @@ function initListenAgain() {
         localStorage.removeItem(LA_KEY);
     });
 }
+
 // ─── BOOT ───
 init();
