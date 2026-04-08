@@ -45,6 +45,7 @@ const el = {
 // ─── INIT ───
 function init() {
     checkSessionHash();
+    initListenAgain();
     window.UI?.applyPlatformTheme(currentPlatform);
 
     el.generateBtn.addEventListener('click', () => handleGenerate(false));
@@ -215,7 +216,7 @@ async function handleGenerate(isAutoLoad = false) {
 
     incrementPlaylistCounter();
     if (!isAutoLoad) savePlaylist(songList);
-
+if (!isAutoLoad) saveLastPlaylist(songList, currentPlatform);
     showStatus('Links ready!');
     el.statusBar?.classList.add('hidden');
     el.bulkActions?.classList.remove('hidden');
@@ -749,6 +750,83 @@ function switchToYouTube() {
     window.UI?.updateCardLinks(q => getSearchLink(q, 'youtube'), 'youtube');
     document.getElementById('spotifyNudge')?.classList.add('hidden');
     window.PlayerBridge?.init();
-                                                        }
+}// ── LISTEN AGAIN ────────────────────────────────
+
+const LA_KEY = 'pb_last_playlist';
+
+function saveLastPlaylist(songs, platform) {
+    if (!songs || songs.length === 0) return;
+    const cards = document.querySelectorAll('.track-card');
+    const firstArt = cards[0]?.querySelector('.track-thumb')?.src || '';
+    const artists  = Array.from(cards).slice(0, 2)
+        .map(c => c.querySelector('.track-artist')?.textContent || '')
+        .filter(Boolean);
+    const title = artists.length >= 2
+        ? `${artists[0]}, ${artists[1]}${songs.length > 2 ? ` +${songs.length - 2} more` : ''}`
+        : `${songs.length} songs`;
+
+    localStorage.setItem(LA_KEY, JSON.stringify({
+        title,
+        songs,
+        platform,
+        art: firstArt,
+        timestamp: Date.now()
+    }));
+}
+
+function timeAgoShort(ts) {
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1)   return 'just now';
+    if (mins < 60)  return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24)   return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+}
+
+function initListenAgain() {
+    const raw = localStorage.getItem(LA_KEY);
+    if (!raw) return;
+
+    let data;
+    try { data = JSON.parse(raw); } catch { localStorage.removeItem(LA_KEY); return; }
+    if (!data.songs?.length) return;
+
+    const card    = document.getElementById('listenAgainCard');
+    const caution = document.getElementById('laCaution');
+    const art     = document.getElementById('laArt');
+    const title   = document.getElementById('laTitle');
+    const time    = document.getElementById('laTime');
+
+    if (data.art) { art.src = data.art; art.style.display = 'block'; }
+    else art.style.display = 'none';
+    title.textContent = data.title || `${data.songs.length} songs`;
+    time.textContent  = timeAgoShort(data.timestamp);
+
+    card.classList.remove('hidden');
+    caution.classList.remove('hidden');
+
+    // Play
+    document.getElementById('laPlayBtn').addEventListener('click', () => {
+        el.input.value = data.songs.join('\n');
+        // Set platform
+        el.platformBtns.forEach(b => {
+            b.classList.toggle('selected', b.dataset.platform === data.platform);
+        });
+        currentPlatform = data.platform || 'yt_music';
+        window.UI?.applyPlatformTheme(currentPlatform);
+        card.classList.add('hidden');
+        caution.classList.add('hidden');
+        handleGenerate(false);
+    });
+
+    // Dismiss
+    document.getElementById('laDismissBtn').addEventListener('click', () => {
+        card.classList.add('hidden');
+        caution.classList.add('hidden');
+        localStorage.removeItem(LA_KEY);
+    });
+}
+
 // ─── BOOT ───
 init();
