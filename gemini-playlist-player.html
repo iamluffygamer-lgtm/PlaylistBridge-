@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Your Gemini Playlist on Spotify & YouTube Music | PlaylistBridge</title>
+    <meta name="description" content="Got a playlist from Google Gemini? Paste it into PlaylistBridge and get instant Spotify or YouTube Music links. No login, no account required. Works in seconds.">
+    <meta name="keywords" content="Gemini playlist, play Gemini music, Google Gemini songs, Gemini to Spotify, Gemini to YouTube Music, AI playlist player">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://playlistbridge.netlify.app/gemini-playlist-player.html" />
+
+    <meta property="og:title" content="Play Your Gemini Playlist on Spotify & YouTube Music | PlaylistBridge">
+    <meta property="og:description" content="Paste a Gemini-generated song list and get instant playable links for Spotify or YouTube Music. No account needed.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://playlistbridge.netlify.app/gemini-playlist-player.html">
+    <meta property="og:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Play a Google Gemini Playlist",
+      "description": "Turn a Google Gemini AI-generated playlist into instant Spotify or YouTube Music links using PlaylistBridge.",
+      "totalTime": "PT30S",
+      "step": [
+        { "@type": "HowToStep", "name": "Ask Gemini for a playlist", "text": "Open Google Gemini and ask for a song list — any genre, mood, or era." },
+        { "@type": "HowToStep", "name": "Copy the song list", "text": "Copy Gemini's text output. No need to clean it up." },
+        { "@type": "HowToStep", "name": "Paste into PlaylistBridge", "text": "Go to PlaylistBridge, paste the list, and choose Spotify or YouTube Music." },
+        { "@type": "HowToStep", "name": "Get instant links", "text": "PlaylistBridge generates a direct listening link for every song in seconds." }        ,
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do I play a Google Gemini playlist on Spotify?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Ask Gemini for a playlist, copy the text output, paste it into PlaylistBridge, select Spotify, and hit Get Links. You get direct Spotify links for every track — no login needed." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does PlaylistBridge work with Gemini on Android?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Copy your Gemini playlist from the Gemini Android app, open PlaylistBridge in your browser, paste the list, and get instant music links." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I use Gemini playlists on YouTube Music without an account?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Select YouTube Music in PlaylistBridge — it generates free search links that work without a YouTube Music subscription." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg: #0f0f11;
+            --card: #1a1a1f;
+            --text: #e8e8f0;
+            --muted: #8888a0;
+            --border: 1px solid rgba(255,255,255,0.07);
+            --r: 12px;
+            --gemini: #4285f4;
+            --gemini-2: #34a853;
+            --gemini-dim: rgba(66,133,244,0.12);
+            --gemini-border: rgba(66,133,244,0.35);
+            --spotify: #1db954;
+            --yt: #ff4444;
+            --accent: #bb86fc;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(ellipse at 20% 10%, rgba(66,133,244,0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 85%, rgba(52,168,83,0.06) 0%, transparent 50%);
+        }
+
+        /* NAV */
+        .navbar { position: sticky; top: 0; background: rgba(15,15,17,0.88); backdrop-filter: blur(12px); border-bottom: var(--border); z-index: 100; }
+        .nav-inner { max-width: 860px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; text-decoration: none; background: linear-gradient(90deg, var(--accent), #ff79c6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-back { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .nav-back:hover { color: var(--gemini); }
+        .nav-back svg { width: 14px; height: 14px; }
+
+        main { flex: 1; max-width: 860px; margin: 0 auto; padding: 4rem 1.5rem 5rem; width: 100%; }
+
+        /* HERO */
+        .hero { text-align: center; margin-bottom: 4rem; animation: up 0.5s ease both; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--gemini-dim); border: 1px solid var(--gemini-border);
+            color: var(--gemini); font-size: 0.78rem; font-weight: 700;
+            padding: 6px 14px; border-radius: 20px; margin-bottom: 1.5rem;
+            letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .badge-dot { width: 6px; height: 6px; background: var(--gemini); border-radius: 50%; animation: pulse 2s infinite; }
+        h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.2rem; }
+        .g { background: linear-gradient(135deg, #4285f4, #34a853); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .s { background: linear-gradient(135deg, #1db954, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .sub { color: var(--muted); font-size: 1.05rem; max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.7; }
+        .ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .cta-s { display: inline-flex; align-items: center; gap: 8px; background: var(--spotify); color: #000; font-weight: 700; font-size: 0.95rem; padding: 0.9rem 1.8rem; border-radius: 50px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(29,185,84,0.3); }
+        .cta-s:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(29,185,84,0.5); }
+        .cta-y { display: inline-flex; align-items: center; gap: 8px; background: var(--yt); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 0.9rem 1.8rem; border-radius: 50px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(255,68,68,0.25); }
+        .cta-y:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,68,68,0.4); }
+
+        hr { border: none; border-top: var(--border); margin: 4rem 0; }
+        .label { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gemini); margin-bottom: 1rem; }
+        h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+
+        /* SECTION */
+        section { animation: up 0.5s ease 0.1s both; margin-bottom: 4rem; }
+
+        /* GEMINI STRENGTHS */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .card { background: var(--card); border: var(--border); border-radius: var(--r); padding: 1.4rem; transition: border-color 0.2s, transform 0.2s; }
+        .card:hover { border-color: var(--gemini-border); transform: translateY(-2px); }
+        .card .icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+        .card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; }
+        .card p { font-size: 0.83rem; color: var(--muted); line-height: 1.5; }
+
+        /* PROMPT EXAMPLE */
+        .prompt { background: var(--card); border: var(--border); border-left: 3px solid var(--gemini); border-radius: 0 var(--r) var(--r) 0; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+        .prompt-lbl { font-size: 0.72rem; font-weight: 700; color: var(--gemini); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+        .prompt p { font-size: 0.95rem; font-style: italic; color: var(--text); line-height: 1.6; }
+
+        /* STEPS */
+        .steps { display: flex; flex-direction: column; position: relative; }
+        .steps::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: 40px; width: 2px; background: linear-gradient(to bottom, var(--gemini), transparent); }
+        .step { display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.5rem 0; }
+        .step-n { flex-shrink: 0; width: 40px; height: 40px; background: #0d1f3c; border: 2px solid var(--gemini); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--gemini); position: relative; z-index: 1; }
+        .step-c { padding-top: 6px; }
+        .step-c h3 { font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+        .step-c p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+        .tag { display: inline-block; background: var(--gemini-dim); color: var(--gemini); font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 0.5rem; }
+
+        /* VS SECTION */
+        .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .vs-card { background: var(--card); border: var(--border); border-radius: var(--r); padding: 1.5rem; }
+        .vs-card.pb { border-color: var(--gemini-border); }
+        .vs-card .vs-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+        .vs-card.native .vs-title { color: var(--muted); }
+        .vs-card.pb .vs-title { color: var(--gemini); }
+        .vs-item { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.75rem; font-size: 0.875rem; }
+        .vs-item .vi { flex-shrink: 0; font-size: 0.9rem; }
+        .vs-item.yes .vi::before { content: '✓'; color: #34a853; }
+        .vs-item.no .vi::before { content: '✗'; color: #e53935; }
+        .vs-item p { color: var(--muted); line-height: 1.4; }
+
+        /* CALLOUT */
+        .callout { background: linear-gradient(135deg, rgba(66,133,244,0.14) 0%, rgba(52,168,83,0.08) 100%); border: 1px solid var(--gemini-border); border-radius: var(--r); padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+        .callout h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.4rem; }
+        .callout p { color: var(--muted); font-size: 0.9rem; }
+        .callout-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--gemini); color: #fff; font-weight: 700; font-size: 0.95rem; padding: 0.85rem 1.8rem; border-radius: 50px; text-decoration: none; white-space: nowrap; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(66,133,244,0.35); }
+        .callout-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(66,133,244,0.5); }
+
+        footer { border-top: var(--border); padding: 2rem 1.5rem; text-align: center; }
+        .fc { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+        .fl { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; font-size: 0.8rem; }
+        .fl a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .fl a:hover { color: var(--accent); }
+
+        @keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+        @media (max-width: 600px) {
+            main { padding: 2.5rem 1.25rem 4rem; }
+            h1 { font-size: 1.9rem; }
+            .ctas { flex-direction: column; align-items: center; }
+            .cta-s, .cta-y { width: 100%; justify-content: center; }
+            .vs-grid { grid-template-columns: 1fr; }
+            .callout { flex-direction: column; text-align: center; }
+            .callout-btn { width: 100%; justify-content: center; }
+            .steps::before { left: 17px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/" class="logo">PlaylistBridge</a>
+        <a href="/" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to app
+        </a>
+    </div>
+</nav>
+
+<main>
+
+    <header class="hero">
+        <div class="badge"><span class="badge-dot"></span>Gemini → Music</div>
+        <h1>Play your <span class="g">Gemini</span> playlist<br>on <span class="s">Spotify</span> & YouTube</h1>
+        <p class="sub">Google Gemini curates great music — but it can't press play. Paste your Gemini tracklist into PlaylistBridge and start listening instantly. No account needed.</p>
+        <div class="ctas">
+            <a href="/?p=spotify" class="cta-s">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                Open in Spotify
+            </a>
+            <a href="/?p=yt_music" class="cta-y">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm4.992 12.96l-7.488 4.32A1.077 1.077 0 018 16.32V7.68a1.077 1.077 0 011.504-.96l7.488 4.32a1.077 1.077 0 010 1.92z"/></svg>
+                Open in YouTube Music
+            </a>
+        </div>
+    </header>
+
+    <hr>
+
+    <!-- WHY GEMINI -->
+    <section>
+        <p class="label">Why Gemini?</p>
+        <h2>Gemini has Google's entire music knowledge</h2>
+        <p style="color:var(--muted);font-size:1rem;line-height:1.75;max-width:640px;margin-bottom:1rem;">Google Gemini draws on Google's enormous knowledge graph — including YouTube's music catalogue, Google Search music data, and years of music trends. It's particularly strong on current and mainstream music, cross-genre discovery, and regional music from around the world.</p>
+
+        <div class="prompt">
+            <div class="prompt-lbl">Example Gemini prompt</div>
+            <p>"Give me a 12-song playlist mixing Afrobeats and R&B for a late-night vibe — include both well-known and emerging artists, released between 2020 and 2025."</p>
+        </div>
+
+        <div class="cards">
+            <div class="card"><div class="icon">🌍</div><h3>Global music coverage</h3><p>Gemini excels at non-English music — K-pop, Afrobeats, Latin, J-pop, Bollywood. Broader than most AI models.</p></div>
+            <div class="card"><div class="icon">📈</div><h3>Current chart awareness</h3><p>Strong knowledge of recent releases and trending artists. Great for staying up to date.</p></div>
+            <div class="card"><div class="icon">🎭</div><h3>Mood & activity playlists</h3><p>Ask for "study music", "gym playlist", or "cooking jazz" — Gemini understands context well.</p></div>
+            <div class="card"><div class="icon">🔗</div><h3>YouTube-native knowledge</h3><p>Gemini knows YouTube content deeply — great for finding tracks that live primarily on YouTube.</p></div>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- HOW IT WORKS -->
+    <section>
+        <p class="label">How it works</p>
+        <h2>From Gemini to music in 3 steps</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-n">1</div>
+                <div class="step-c">
+                    <h3>Ask Gemini for a playlist</h3>
+                    <p>Open gemini.google.com or the Gemini app. Ask for any style of tracklist. Be specific — genre, mood, era, or region all help Gemini give better results.</p>
+                    <span class="tag">Works with Gemini 1.5, 2.0, and all versions</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-n">2</div>
+                <div class="step-c">
+                    <h3>Copy Gemini's text output</h3>
+                    <p>Just copy the raw list — numbered, bulleted, or plain. PlaylistBridge automatically strips Gemini's conversational intro text, markdown, and formatting symbols.</p>
+                    <span class="tag">No manual cleanup needed</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-n">3</div>
+                <div class="step-c">
+                    <h3>Paste into PlaylistBridge → instant links</h3>
+                    <p>Paste the list, select Spotify or YouTube Music, and hit Get Links. Each track is matched via iTunes metadata lookup and turned into a direct playable link.</p>
+                    <span class="tag">No login. No account. Free forever.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- WHY NOT JUST GEMINI NATIVE -->
+    <section>
+        <p class="label">Why PlaylistBridge?</p>
+        <h2>What Gemini's native music integration can't do</h2>
+        <p style="color:var(--muted);font-size:0.95rem;line-height:1.75;margin-bottom:1.5rem;">Gemini has a YouTube Music integration — but it requires a Google account, only works with YouTube Music, and locks you into Google's ecosystem. PlaylistBridge is different.</p>
+        <div class="vs-grid">
+            <div class="vs-card native">
+                <div class="vs-title">Gemini + YouTube Music native</div>
+                <div class="vs-item no"><span class="vi"></span><p>Requires Google account sign-in</p></div>
+                <div class="vs-item no"><span class="vi"></span><p>YouTube Music only</p></div>
+                <div class="vs-item no"><span class="vi"></span><p>Can't export to Spotify</p></div>
+                <div class="vs-item yes"><span class="vi"></span><p>Direct playback inside Gemini</p></div>
+            </div>
+            <div class="vs-card pb">
+                <div class="vs-title">Gemini + PlaylistBridge</div>
+                <div class="vs-item yes"><span class="vi"></span><p>No account, no login ever</p></div>
+                <div class="vs-item yes"><span class="vi"></span><p>Spotify, YouTube Music, and YouTube</p></div>
+                <div class="vs-item yes"><span class="vi"></span><p>Works with any AI model's output</p></div>
+                <div class="vs-item yes"><span class="vi"></span><p>Instant links in under 5 seconds</p></div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <div class="callout">
+        <div>
+            <h3>Ready to play your Gemini playlist?</h3>
+            <p>Paste your list. No login. Works with Spotify, YouTube Music, and YouTube.</p>
+        </div>
+        <a href="/" class="callout-btn">→ Open PlaylistBridge</a>
+    </div>
+
+</main>
+
+<footer>
+    <div class="fc"><p>&copy; PlaylistBridge. All rights reserved.</p></div>
+    <div class="fl">
+        <a href="/chatgpt-to-spotify.html">ChatGPT to Spotify</a>
+        <a href="/claude-to-spotify.html">Claude to Spotify</a>
+        <a href="/gemini-playlist-player.html">Gemini Playlist Player</a>
+        <a href="/grok-playlist-player.html">Grok Playlist Player</a>
+        <a href="/text-to-youtube-music.html">Text to YouTube Music</a>
+        <a href="/paste-ai-playlist.html">Paste AI Playlist</a>
+        <a href="/text-to-playlist.html">Text to Playlist</a>
+        <a href="/how-to-play-chatgpt-playlist.html">How to Play ChatGPT Playlist</a>
+    </div>
+</footer>
+
+</body>
+</html>
