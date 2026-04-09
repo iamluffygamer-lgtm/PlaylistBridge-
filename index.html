@@ -12,7 +12,14 @@
     <meta property="og:url" content="https://playlistbridge.netlify.app/">
     <meta property="og:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
     <meta property="og:description" content="Convert AI-generated playlists into instant Spotify, YouTube Music and YouTube links. Paste a song list and start listening immediately.">
+    <meta property="og:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:site_name" content="PlaylistBridge">
     <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
+    <meta property="twitter:description" content="Paste any AI playlist and get instant Spotify, YouTube Music or YouTube links. No login, no account.">
+    <meta property="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,23 +36,77 @@
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "SoftwareApplication",
+          "name": "PlaylistBridge",
+          "url": "https://playlistbridge.netlify.app/",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web, Android, iOS",
+          "description": "Converts plain text song lists into instant playable links for YouTube Music, Spotify, and YouTube. Works with ChatGPT, Claude, Gemini, Grok, or any AI-generated playlist.",
+          "featureList": [
+            "Instant AI playlist conversion",
+            "No login required",
+            "Spotify links",
+            "YouTube Music links",
+            "YouTube links",
+            "PWA - works offline",
+            "Community playlists",
+            "InstantPlay via YouTube"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "ratingCount": "1"
+          }
+        },
+        {
           "@type": "WebApplication",
           "name": "PlaylistBridge",
-        "featureList": "InstantPlay, AI playlist player, video mode, community playlists, share cards, Spotify links, YouTube Music links, no login required",
+          "url": "https://playlistbridge.netlify.app/",
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "Web",
           "description": "Converts plain text song lists into instant playable links for YouTube Music, Spotify, and YouTube."
         },
         {
           "@type": "FAQPage",
-          "mainEntity": [{
-            "@type": "Question",
-            "name": "Can I convert a ChatGPT playlist to Spotify or YouTube Music?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required."
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I convert a ChatGPT playlist to Spotify or YouTube Music?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does PlaylistBridge work with Claude, Gemini, or Grok playlists?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. PlaylistBridge works with any AI model's playlist output — Claude, Gemini, Grok, Perplexity, or plain text lists from anywhere. Just paste and get links."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need a Spotify account to use PlaylistBridge?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. PlaylistBridge generates direct search links for Spotify, YouTube Music, and YouTube. No account, no login, no subscription required."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I play a song list without a music streaming account?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Select YouTube Music or YouTube as your platform — both allow free playback without an account. PlaylistBridge generates the links instantly."
+              }
             }
-          }]
+          ]
         }
       ]
     }
@@ -651,7 +712,7 @@
 <script src="/script.js"></script>
     <script src="/player.js"></script>
     <script src="/sharecard.js"></script>
-    <script src="/os.js"></script>
+    <script src="os.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
