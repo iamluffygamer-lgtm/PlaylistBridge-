@@ -19,6 +19,7 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
     <meta property="twitter:description" content="Paste any AI playlist and play it right here. No login, no account.">
+    <meta property="twitter:description" content="Paste any AI playlist and get instant Spotify, YouTube Music or YouTube links. No login, no account.">
     <meta property="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,66 +85,26 @@
             },
             {
               "@type": "Question",
-              "name": "Does this create a real playlist?",
+              "name": "Does PlaylistBridge work with Claude, Gemini, or Grok playlists?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "PlaylistBridge generates instant listening links and may offer a temporary YouTube queue. It does not save playlists permanently to your account."
+                "text": "Yes. PlaylistBridge works with any AI model's playlist output — Claude, Gemini, Grok, Perplexity, or plain text lists from anywhere. Just paste and get links."
               }
             },
             {
               "@type": "Question",
-              "name": "Do I need to sign up?",
+              "name": "Do I need a Spotify account to use PlaylistBridge?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No. The app works entirely without logins, accounts, or saving your personal data."
+                "text": "No. PlaylistBridge generates direct search links for Spotify, YouTube Music, and YouTube. No account, no login, no subscription required."
               }
             },
             {
               "@type": "Question",
-              "name": "Which music platforms are supported?",
+              "name": "Can I play a song list without a music streaming account?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Currently, we generate search links for Spotify, YouTube Music, and standard YouTube."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How does InstantPlay work?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "InstantPlay finds your song on YouTube and plays it directly on this page using YouTube's official embed. No audio is hosted by PlaylistBridge."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Is InstantPlay free to use?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes, completely free. No account needed."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Why did a song get skipped?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Some songs may be unavailable on YouTube in your region or have been removed. InstantPlay automatically skips these and moves to the next track."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Does InstantPlay work on mobile?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes. Background play is limited on mobile browsers — install PlaylistBridge to your home screen for uninterrupted listening."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Can I watch music videos while listening?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes. InstantPlay includes a Video mode that plays the official YouTube music video directly inside the player."
+                "text": "Yes. Select YouTube Music or YouTube as your platform — both allow free playback without an account. PlaylistBridge generates the links instantly."
               }
             }
           ]
@@ -634,57 +595,9 @@
 <!-- SCRIPTS -->
 <script src="/ui.js"></script>
 <script src="/script.js"></script>
-<script src="/player.js"></script>
-<script src="/sharecard.js"></script>
-<script src="os.js"></script>
-
-<!-- Recent playlists (local, max 5) -->
-<script>
-(function() {
-    var KEY = 'pb_recent_playlists', MAX = 5;
-    function get() { try { return JSON.parse(localStorage.getItem(KEY)||'[]'); } catch(e){ return []; } }
-    function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch(e){} }
-    function render() {
-        var wrap = document.getElementById('recentPlaylistsWrap');
-        var list = document.getElementById('recentPlaylistsList');
-        var items = get();
-        if (!items.length) { wrap.classList.add('hidden'); return; }
-        wrap.classList.remove('hidden');
-        list.innerHTML = items.map(function(item, i) {
-            return '<button class="recent-item" data-i="'+i+'">'
-                + '<svg class="recent-item-icon" viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>'
-                + '<span class="recent-item-name">'+escHtml(item.name)+'</span>'
-                + '<span class="recent-item-meta">'+item.count+' songs</span>'
-                + '</button>';
-        }).join('');
-        list.querySelectorAll('.recent-item').forEach(function(btn){
-            btn.addEventListener('click', function(){
-                var item = get()[+btn.dataset.i];
-                var ta = document.getElementById('songInput');
-                if (ta && item) { ta.value = item.text; ta.dispatchEvent(new Event('input')); ta.focus(); }
-            });
-        });
-    }
-    function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    window.addEventListener('pb:playlistGenerated', function(e){
-        var d = e.detail||{}, text = d.text, count = d.count;
-        if (!text||!count) return;
-        var lines = text.split('\n').filter(function(l){return l.trim();});
-        var name = (lines[0]||'Playlist').replace(/^\d+[\.\-\)]\s*/,'').split(/[–\-]/)[0].trim().slice(0,32)||'Playlist';
-        var recent = get().filter(function(r){return r.text!==text;});
-        recent.unshift({name:name, text:text, count:count, ts:Date.now()});
-        save(recent.slice(0,MAX));
-        render();
-    });
-
-    var clearBtn = document.getElementById('clearRecentBtn');
-    if (clearBtn) clearBtn.addEventListener('click', function(){ save([]); render(); });
-
-    render();
-})();
-</script>
-
+    <script src="/player.js"></script>
+    <script src="/sharecard.js"></script>
+    <script src="os.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
