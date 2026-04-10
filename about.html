@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>About PlaylistBridge — Built by Smit Patil</title>
+  <meta name="description" content="PlaylistBridge is a free AI playlist converter built by Smit Patil, a self-taught 17-year-old developer from India. No login. No account. Just paste and play.">
+  <meta name="keywords" content="about PlaylistBridge, who built PlaylistBridge, Smit Patil, AI playlist tool, playlist converter, no login music">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://playlistbridge.netlify.app/about.html" />
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About PlaylistBridge — Built by Smit Patil">
+  <meta property="og:description" content="A free AI playlist converter built by one 17-year-old developer from India. No login, no account, no friction. Just paste a song list and start listening.">
+  <meta property="og:url" content="https://playlistbridge.netlify.app/about.html">
+  <meta property="og:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+  <meta property="og:site_name" content="PlaylistBridge">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About PlaylistBridge — Built by Smit Patil">
+  <meta name="twitter:description" content="A free AI playlist converter. No login. Built by a 17-year-old from India.">
+  <meta name="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "name": "About PlaylistBridge",
+        "url": "https://playlistbridge.netlify.app/about.html",
+        "description": "PlaylistBridge is a free AI playlist converter built by Smit Patil. It converts AI-generated song lists into instant Spotify, YouTube Music, and YouTube links with no login required.",
+        "about": {
+          "@type": "WebApplication",
+          "name": "PlaylistBridge",
+          "url": "https://playlistbridge.netlify.app",
+          "author": {
+            "@type": "Person",
+            "name": "Smit Patil",
+            "url": "https://playlistbridge.netlify.app/developer.html"
+          }
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is PlaylistBridge?",
+            "acceptedAnswer": { "@type": "Answer", "text": "PlaylistBridge is a free web tool that converts AI-generated song lists into instant playable links for Spotify, YouTube Music, and YouTube. No login or account is required." }
+          },
+          {
+            "@type": "Question",
+            "name": "Who built PlaylistBridge?",
+            "acceptedAnswer": { "@type": "Answer", "text": "PlaylistBridge was built by Smit Patil, a self-taught indie developer from India. He built and shipped it using Vanilla JavaScript, Netlify serverless functions, Firebase Firestore, and the iTunes Search API." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is PlaylistBridge free to use?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. PlaylistBridge is completely free. No account, no subscription, no login ever required." }
+          },
+          {
+            "@type": "Question",
+            "name": "Does PlaylistBridge store my data?",
+            "acceptedAnswer": { "@type": "Answer", "text": "No. PlaylistBridge does not log or store the song lists you paste. Sessions are processed in-browser only. See the Privacy Policy for full details." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:      #080808;
+      --bg2:     #0d0d0d;
+      --surface: #111111;
+      --border:  #1c1c1c;
+      --text:    #e8e8e8;
+      --muted:   #4e4e4e;
+      --soft:    #888;
+      --dim:     #252525;
+      --green:   #00ff88;
+      --amber:   #ffb300;
+      --pink:    #ff79c6;
+      --accent:  #bb86fc;
+      --mono:    'Space Mono', monospace;
+      --display: 'Bebas Neue', sans-serif;
+      --body:    'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* scanlines — matches dev.html */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+      pointer-events: none; z-index: 100; opacity: 0.3;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      padding: 1.1rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.93);
+      backdrop-filter: blur(12px);
+    }
+    .nav-back {
+      color: var(--muted); text-decoration: none;
+      font-family: var(--mono); font-size: 0.72rem;
+      letter-spacing: 0.04em; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--green); }
+    .nav-id {
+      font-family: var(--mono); font-size: 0.66rem;
+      color: var(--muted); display: flex; align-items: center; gap: 0.5rem;
+    }
+    .dot-live {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+      animation: glow 2s infinite;
+    }
+    @keyframes glow { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* ── WRAP ── */
+    .wrap {
+      max-width: 1000px; margin: 0 auto;
+      padding: 5rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap:last-of-type { border-bottom: none; }
+
+    .tag {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: var(--muted); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 2rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 9rem 2.5rem 5rem;
+      max-width: 1000px; margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-tag {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--muted); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-tag::after {
+      content: '';
+      display: block; width: 40px; height: 1px;
+      background: var(--muted);
+    }
+
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(5rem, 14vw, 11rem);
+      line-height: 0.92; letter-spacing: 0.01em;
+      margin-bottom: 3rem;
+    }
+    .hero-title .t1 { color: var(--text); display: block; }
+    .hero-title .t2 {
+      display: block;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--pink) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-title .t3 { color: var(--muted); display: block; }
+
+    .hero-sub {
+      font-size: 1.05rem; color: var(--soft);
+      max-width: 520px; line-height: 1.8;
+      border-left: 2px solid var(--border);
+      padding-left: 1.25rem;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── ORIGIN STORY ── */
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: start;
+    }
+    .story-label {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: var(--accent); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .story-big {
+      font-family: var(--display);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 0.95; letter-spacing: 0.01em;
+      margin-bottom: 2rem;
+    }
+    .story-body p {
+      font-size: 0.95rem; color: var(--soft);
+      line-height: 1.85; margin-bottom: 1.25rem;
+    }
+    .story-body p strong { color: var(--text); font-weight: 500; }
+    .story-body p em { color: var(--accent); font-style: normal; }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      background: rgba(187,134,252,0.04);
+    }
+    .pull-quote p {
+      font-family: var(--display);
+      font-size: 1.4rem; letter-spacing: 0.03em;
+      color: var(--text); line-height: 1.3;
+      margin: 0 !important;
+    }
+
+    /* ── WHAT IT DOES ── */
+    .what-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    .what-cell {
+      background: var(--bg);
+      padding: 2rem 1.75rem;
+      transition: background 0.2s;
+    }
+    .what-cell:hover { background: var(--surface); }
+    .what-num {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: var(--muted); margin-bottom: 1.25rem;
+      letter-spacing: 0.1em;
+    }
+    .what-title {
+      font-family: var(--display);
+      font-size: 1.6rem; letter-spacing: 0.04em;
+      color: var(--text); margin-bottom: 0.75rem;
+      line-height: 1.1;
+    }
+    .what-body { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    .stat {
+      background: var(--bg2);
+      padding: 2rem 1.5rem;
+    }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 3rem; letter-spacing: 0.02em;
+      color: var(--green); line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-label {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: var(--muted); letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── BUILT BY ── */
+    .built-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem; align-items: start;
+    }
+    .built-id {
+      position: sticky; top: 8rem;
+    }
+    .built-name {
+      font-family: var(--display);
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      line-height: 0.9; letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .built-name .fn { color: var(--text); display: block; }
+    .built-name .ln {
+      background: linear-gradient(135deg, var(--green), var(--amber));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: block;
+    }
+    .built-pills {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .pill {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: 1px solid var(--border); color: var(--muted);
+      padding: 4px 10px; border-radius: 3px;
+    }
+    .pill.green { border-color: rgba(0,255,136,0.3); color: var(--green); }
+    .pill.amber { border-color: rgba(255,179,0,0.3); color: var(--amber); }
+    .pill.accent { border-color: rgba(187,134,252,0.3); color: var(--accent); }
+
+    .built-links { display: flex; flex-direction: column; gap: 0.5rem; }
+    .built-link {
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--muted); text-decoration: none;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .built-link:hover { border-color: var(--green); color: var(--green); }
+
+    .built-story p {
+      font-size: 0.95rem; color: var(--soft);
+      line-height: 1.85; margin-bottom: 1.25rem;
+    }
+    .built-story p strong { color: var(--text); font-weight: 500; }
+
+    /* ── VALUES ── */
+    .values-list { margin-top: 2.5rem; }
+    .value-row {
+      display: flex; align-items: flex-start;
+      gap: 2rem; padding: 1.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .value-row:last-child { border-bottom: none; }
+    .value-n {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: var(--muted); letter-spacing: 0.1em;
+      padding-top: 4px; flex-shrink: 0; width: 2rem;
+    }
+    .value-title {
+      font-family: var(--display);
+      font-size: 1.4rem; letter-spacing: 0.04em;
+      color: var(--text); margin-bottom: 0.4rem;
+      flex-shrink: 0; width: 180px; line-height: 1.1;
+    }
+    .value-body { font-size: 0.875rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── CTA ── */
+    .cta-wrap {
+      text-align: center;
+      padding: 6rem 2.5rem;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .cta-big {
+      font-family: var(--display);
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      line-height: 0.9; letter-spacing: 0.02em;
+      margin-bottom: 2.5rem;
+    }
+    .cta-big .c1 { color: var(--muted); display: block; }
+    .cta-big .c2 { color: var(--text); display: block; }
+    .cta-big .c3 {
+      background: linear-gradient(135deg, var(--accent), var(--pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: block;
+    }
+    .cta-buttons {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+    .cta-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--green); color: #000;
+      font-family: var(--mono); font-size: 0.8rem;
+      font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 1rem 2rem; text-decoration: none;
+      border: none; transition: opacity 0.2s;
+    }
+    .cta-primary:hover { opacity: 0.85; }
+    .cta-secondary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: transparent; color: var(--muted);
+      font-family: var(--mono); font-size: 0.8rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 1rem 2rem; text-decoration: none;
+      border: 1px solid var(--border); transition: border-color 0.2s, color 0.2s;
+    }
+    .cta-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: center;
+      gap: 1rem; max-width: 1000px; margin: 0 auto;
+    }
+    .fsig { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.06em; }
+    .flinks { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+    .flinks a { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .flinks a:hover { color: var(--green); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .wrap { padding: 4rem 1.25rem; }
+      .hero { padding: 8rem 1.25rem 4rem; }
+      .story-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .what-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .built-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .built-id { position: static; }
+      .value-row { flex-wrap: wrap; gap: 0.5rem; }
+      .value-title { width: 100%; }
+      .cta-wrap { padding: 4rem 1.25rem; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .cta-primary, .cta-secondary { width: 100%; justify-content: center; }
+      footer { padding: 2rem 1.25rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-back">← back to app</a>
+  <div class="nav-id">
+    <span class="dot-live"></span>
+    about.html
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-tag">000 — what is this</p>
+  <h1 class="hero-title">
+    <span class="t1">PLAYLIST</span>
+    <span class="t2">BRIDGE</span>
+    <span class="t3">ABOUT</span>
+  </h1>
+  <p class="hero-sub">
+    A free tool that turns any AI-generated song list into
+    instant links for <strong>Spotify</strong>, <strong>YouTube Music</strong>,
+    and <strong>YouTube</strong>.<br><br>
+    No login. No account. No friction.
+    <strong>Paste a list. Start listening.</strong>
+  </p>
+</div>
+
+<!-- ORIGIN STORY -->
+<div class="wrap">
+  <p class="tag">001 — the origin</p>
+  <div class="story-grid">
+    <div>
+      <div class="story-label">Why it exists</div>
+      <div class="story-big">THE<br>PROBLEM<br>IT SOLVES</div>
+    </div>
+    <div class="story-body">
+      <p>
+        AI models like <strong>ChatGPT, Claude, and Gemini</strong> are genuinely great music curators.
+        Ask them for a playlist and they'll give you something surprisingly good — specific, thoughtful, tailored.
+      </p>
+      <p>
+        The problem is what happens next. You have a list of song names in a chat window,
+        and getting them into a music app means <em>searching each one manually</em>.
+        For a 20-song playlist, that's 20 separate searches. It's tedious enough that most people just don't bother.
+      </p>
+      <div class="pull-quote">
+        <p>OTHER TOOLS MADE YOU JUMP THROUGH HOOPS.<br>THIS ONE DOESN'T.</p>
+      </div>
+      <p>
+        Every other solution at the time required OAuth logins, Spotify account connections,
+        and multi-step authorization flows just to search for a song. 
+        <strong>PlaylistBridge does none of that.</strong>
+        Paste your list, pick a platform, get links. Done in under 5 seconds.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT IT DOES -->
+<div class="wrap">
+  <p class="tag">002 — what it does</p>
+  <h2 style="font-family:var(--display);font-size:clamp(2.5rem,5vw,4.5rem);line-height:0.95;letter-spacing:0.02em;">HOW IT<br>WORKS</h2>
+  <div class="what-grid">
+    <div class="what-cell">
+      <div class="what-num">01 / PARSE</div>
+      <div class="what-title">ANY FORMAT</div>
+      <p class="what-body">Numbered lists, bullet points, bold markdown, plain lines — PlaylistBridge strips all formatting automatically. Paste it raw, exactly as the AI gave it to you.</p>
+    </div>
+    <div class="what-cell">
+      <div class="what-num">02 / MATCH</div>
+      <div class="what-title">METADATA LOOKUP</div>
+      <p class="what-body">Every track is looked up via the iTunes Search API. Title, artist, and artwork are resolved in parallel — a 20-song list is typically done in under 5 seconds.</p>
+    </div>
+    <div class="what-cell">
+      <div class="what-num">03 / LINK</div>
+      <div class="what-title">INSTANT LINKS</div>
+      <p class="what-body">Direct search links for Spotify, YouTube Music, or YouTube. One click per song. No account connection, no OAuth, no permissions. Just links that work.</p>
+    </div>
+    <div class="what-cell">
+      <div class="what-num">04 / PLAY</div>
+      <div class="what-title">INSTANTPLAY</div>
+      <p class="what-body">Optional in-browser player powered by YouTube. Plays your whole list sequentially without leaving the page. Lock screen controls, queue, shuffle — the works.</p>
+    </div>
+    <div class="what-cell">
+      <div class="what-num">05 / SHARE</div>
+      <div class="what-title">COMMUNITY</div>
+      <p class="what-body">Publish your playlist to the community feed. Browse what others are listening to. Every session gets a shareable link you can send to anyone.</p>
+    </div>
+    <div class="what-cell">
+      <div class="what-num">06 / FREE</div>
+      <div class="what-title">ALWAYS FREE</div>
+      <p class="what-body">No paywall. No premium tier. No "sign up to unlock". PlaylistBridge is and will remain free. The value is in making music accessible, not in gatekeeping it.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="wrap">
+  <p class="tag">003 — by the numbers</p>
+  <h2 style="font-family:var(--display);font-size:clamp(2.5rem,5vw,4.5rem);line-height:0.95;letter-spacing:0.02em;margin-bottom:0;">SINCE<br>LAUNCH</h2>
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">users in month one</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">#1</div>
+      <div class="stat-label">Google ranking</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">ads spent to get there</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1</div>
+      <div class="stat-label">developer. just one.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUILT BY -->
+<div class="wrap">
+  <p class="tag">004 — the human behind it</p>
+  <div class="built-inner">
+    <div class="built-id">
+      <div class="built-name">
+        <span class="fn">SMIT</span>
+        <span class="ln">PATIL</span>
+      </div>
+      <div class="built-pills">
+        <span class="pill green">Self-taught</span>
+        <span class="pill amber">India</span>
+        <span class="pill accent">Indie Dev</span>
+        <span class="pill">Vanilla JS</span>
+        <span class="pill">Firebase</span>
+        <span class="pill">Netlify</span>
+      </div>
+      <div class="built-links">
+        <a href="https://instagram.com/coder_smit" target="_blank" rel="noopener" class="built-link">
+          Instagram <span>@coder_smit →</span>
+        </a>
+        <a href="https://dev.to/coder_smit" target="_blank" rel="noopener" class="built-link">
+          DEV Community <span>dev.to/coder_smit →</span>
+        </a>
+        <a href="/developer.html" class="built-link">
+          Full Developer Profile <span>→</span>
+        </a>
+        <a href="/contact.html" class="built-link">
+          Contact <span>→</span>
+        </a>
+      </div>
+    </div>
+    <div class="built-story">
+      <p>
+        PlaylistBridge was built by <strong>Smit Patil</strong>, a self-taught indie developer from India.
+        He designed, coded, and shipped the entire product solo — frontend, backend serverless functions,
+        database, PWA layer, and SEO — using Vanilla JavaScript, Netlify, Firebase, and a lot of late nights.
+      </p>
+      <p>
+        The idea came from a genuinely frustrating personal experience: getting a great playlist from an AI
+        and having no fast way to actually listen to it. Instead of complaining about it,
+        <strong>he built the solution in a weekend and shipped it.</strong>
+      </p>
+      <p>
+        Within a month, PlaylistBridge reached its first 200 users entirely through organic search —
+        no advertising, no social media campaign, no budget.
+        It ranks #1 on Google for its core keywords and receives referral traffic
+        from users of ChatGPT, Gemini, and other AI tools.
+      </p>
+      <p>
+        This isn't a startup with a team and investors.
+        It's one developer who saw a gap, filled it, and shipped.
+        <strong>Every feature on PlaylistBridge exists because a real user asked for it.</strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- VALUES -->
+<div class="wrap">
+  <p class="tag">005 — what we stand for</p>
+  <h2 style="font-family:var(--display);font-size:clamp(2.5rem,5vw,4.5rem);line-height:0.95;letter-spacing:0.02em;">THE<br>PRINCIPLES</h2>
+  <div class="values-list">
+    <div class="value-row">
+      <div class="value-n">01</div>
+      <div class="value-title">ZERO FRICTION</div>
+      <p class="value-body">The moment you ask a user to create an account, half of them leave. PlaylistBridge requires nothing. No login, no email, no OAuth dance. Value is immediate, from the first paste.</p>
+    </div>
+    <div class="value-row">
+      <div class="value-n">02</div>
+      <div class="value-title">NO MUSIC HOSTED</div>
+      <p class="value-body">PlaylistBridge doesn't store, serve, or stream music. It generates links to official platforms. Audio comes from YouTube directly. This isn't a loophole — it's the right way to build a music tool without stepping on rights holders.</p>
+    </div>
+    <div class="value-row">
+      <div class="value-n">03</div>
+      <div class="value-title">PRIVACY FIRST</div>
+      <p class="value-body">Your song taste is yours. We don't log what you paste, don't track which songs you search, don't build a profile. Paste, get links, close the tab. Nothing lingers on our servers.</p>
+    </div>
+    <div class="value-row">
+      <div class="value-n">04</div>
+      <div class="value-title">SHIP AND LEARN</div>
+      <p class="value-body">PlaylistBridge wasn't specced for six months. It was built, launched, and improved based on how real users actually used it. Real usage teaches you things no planning can.</p>
+    </div>
+    <div class="value-row">
+      <div class="value-n">05</div>
+      <div class="value-title">FREE. FULL STOP.</div>
+      <p class="value-body">No premium tier. No paywall. No "upgrade to unlock". If this tool helps you, that's enough. It will stay free.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="cta-big">
+    <span class="c1">READY TO</span>
+    <span class="c2">ACTUALLY</span>
+    <span class="c3">LISTEN?</span>
+  </div>
+  <div class="cta-buttons">
+    <a href="/" class="cta-primary">Open PlaylistBridge →</a>
+    <a href="/developer.html" class="cta-secondary">Meet the Developer</a>
+    <a href="/contact.html" class="cta-secondary">Get in Touch</a>
+  </div>
+</div>
+
+<footer>
+  <span class="fsig">© PlaylistBridge · Built by Smit Patil</span>
+  <div class="flinks">
+    <a href="/">Home</a>
+    <a href="/about.html">About</a>
+    <a href="/developer.html">Developer</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+  </div>
+</footer>
+
+</body>
+</html>
