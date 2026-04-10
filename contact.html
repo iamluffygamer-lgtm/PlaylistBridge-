@@ -6,9 +6,9 @@
     <title>Contact | PlaylistBridge</title>
     <meta name="description" content="Get in touch with the PlaylistBridge team. Report bugs, suggest features, or just say hello. Built by a solo developer who loves music and code.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://playlistbridge.netlify.app/contact.html" />
+    <link rel="canonical" href="https://playlistbridge.in/contact.html" />
     <meta property="og:title" content="Contact | PlaylistBridge">
-    <meta property="og:url" content="https://playlistbridge.netlify.app/contact.html">
+    <meta property="og:url" content="https://playlistbridge.in/contact.html">
     <meta property="og:type" content="website">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -18,360 +18,290 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg:      #0a0a0c;
-            --surface: #111115;
-            --card:    #17171c;
-            --lift:    #1e1e25;
-            --text:    #ededf5;
-            --muted:   #6b6b80;
-            --soft:    #9898b0;
-            --accent:  #bb86fc;
-            --accent2: #ff79c6;
-            --green:   #34d399;
-            --border:  rgba(255,255,255,0.06);
-            --r: 14px;
+            --bg: #080808;
+            --bg2: #0d0d0d;
+            --surface: #131313;
+            --border: #1c1c1c;
+            --text: #e8e8e8;
+            --muted: #4e4e4e;
+            --dim: #252525;
+            --green: #00ff88;
+            --amber: #ffb300;
+            --mono: 'Space Mono', monospace;
+            --display: 'Bebas Neue', sans-serif;
+            --body: 'DM Sans', sans-serif;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 400;
+            font-family: var(--body);
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
         }
-
-        /* ── AMBIENT BG ── */
         body::before {
             content: '';
-            position: fixed;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 60% 40% at 80% 10%, rgba(187,134,252,0.07) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 50% at 10% 85%, rgba(255,121,198,0.05) 0%, transparent 55%);
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
             pointer-events: none;
-            z-index: 0;
+            z-index: 100;
+            opacity: 0.3;
         }
 
-        /* ── NAV ── */
-        .navbar {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(10,10,12,0.85);
-            backdrop-filter: blur(16px);
+        /* NAV */
+        nav {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(8,8,8,0.93);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
+            padding: 1.1rem 2.5rem;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .nav-inner {
-            max-width: 900px; margin: 0 auto;
-            padding: 1rem 1.5rem;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo {
-            font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem;
-            text-decoration: none;
-            background: linear-gradient(90deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .nav-back {
-            color: var(--muted); text-decoration: none; font-size: 0.85rem;
-            font-weight: 500; display: flex; align-items: center; gap: 6px;
-            transition: color 0.2s;
-        }
-        .nav-back:hover { color: var(--accent); }
-        .nav-back svg { width: 14px; height: 14px; }
+        .nav-back { color: var(--muted); text-decoration: none; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em; transition: color 0.2s; }
+        .nav-back:hover { color: var(--green); }
+        .nav-id { font-family: var(--mono); font-size: 0.66rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+        .dot-live { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: glow 2s infinite; }
+        @keyframes glow { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-        /* ── MAIN ── */
+        /* MAIN */
         main {
-            flex: 1; position: relative; z-index: 1;
-            max-width: 900px; margin: 0 auto;
-            padding: 5rem 1.5rem 6rem; width: 100%;
+            flex: 1;
+            max-width: 1080px; margin: 0 auto;
+            padding: 5rem 2.5rem 6rem; width: 100%;
         }
 
-        /* ── HEADER ── */
-        .header { margin-bottom: 4rem; }
-
-        .eyebrow {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.72rem; letter-spacing: 0.14em;
-            text-transform: uppercase; color: var(--accent);
-            margin-bottom: 1.25rem;
-            display: flex; align-items: center; gap: 10px;
+        /* HEADER */
+        .page-tag {
+            font-family: var(--mono); font-size: 0.62rem;
+            color: var(--green); letter-spacing: 0.2em; text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.75rem;
         }
-        .eyebrow::after {
-            content: '';
-            display: block; flex: 1; max-width: 60px;
-            height: 1px; background: linear-gradient(90deg, var(--accent), transparent);
-        }
-
+        .page-tag::after { content:''; flex:1; height:1px; background:var(--border); max-width:60px; }
         h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(2.8rem, 7vw, 5rem);
-            font-weight: 800; line-height: 1.0;
-            letter-spacing: -0.04em;
+            font-family: var(--display);
+            font-size: clamp(3rem, 8vw, 7rem);
+            line-height: 0.9;
             margin-bottom: 1.5rem;
         }
-        h1 .word-got { color: var(--text); }
-        h1 .word-something {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        h1 .word-say { color: var(--soft); }
-
         .header-sub {
-            font-size: 1.05rem; color: var(--muted);
+            font-size: 0.95rem; color: var(--muted);
             max-width: 480px; line-height: 1.75;
+            margin-bottom: 4rem;
         }
-        .header-sub strong { color: var(--soft); font-weight: 500; }
+        .header-sub strong { color: var(--text); font-weight: 600; }
 
-        /* ── GRID ── */
+        /* CONTACT GRID */
         .contact-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-            margin-bottom: 1.25rem;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 1px;
         }
 
-        /* ── CARDS ── */
         .contact-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--r);
+            background: var(--bg);
             padding: 2rem;
             position: relative;
             overflow: hidden;
-            transition: border-color 0.25s, transform 0.25s;
+            transition: background 0.25s;
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
         }
+        .contact-card:hover { background: var(--bg2); }
         .contact-card::before {
             content: '';
-            position: absolute; inset: 0;
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
             opacity: 0; transition: opacity 0.3s;
-            border-radius: var(--r);
         }
-        .contact-card:hover { transform: translateY(-3px); }
-
-        /* Email card */
+        .contact-card:hover::before { opacity: 1; }
         .card-email { grid-column: 1 / -1; }
-        .card-email::before { background: radial-gradient(ellipse at 0% 0%, rgba(187,134,252,0.12), transparent 60%); }
-        .card-email:hover { border-color: rgba(187,134,252,0.4); }
-        .card-email:hover::before { opacity: 1; }
 
-        /* Bug card */
-        .card-bug::before { background: radial-gradient(ellipse at 0% 100%, rgba(251,191,36,0.1), transparent 60%); }
-        .card-bug:hover { border-color: rgba(251,191,36,0.35); }
-        .card-bug:hover::before { opacity: 1; }
-
-        /* Feature card */
-        .card-feature::before { background: radial-gradient(ellipse at 100% 0%, rgba(52,211,153,0.1), transparent 60%); }
-        .card-feature:hover { border-color: rgba(52,211,153,0.35); }
-        .card-feature:hover::before { opacity: 1; }
-
-        .card-icon {
-            font-size: 2rem; line-height: 1;
-            position: relative; z-index: 1;
+        .card-tag {
+            font-family: var(--mono); font-size: 0.6rem;
+            color: var(--muted); letter-spacing: 0.15em;
+            text-transform: uppercase; display: block;
         }
-        .card-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.68rem; letter-spacing: 0.12em;
-            text-transform: uppercase;
-            position: relative; z-index: 1;
-        }
-        .card-email .card-label { color: var(--accent); }
-        .card-bug .card-label { color: #fbbf24; }
-        .card-feature .card-label { color: var(--green); }
+        .card-email .card-tag { color: var(--green); }
+        .card-bug .card-tag { color: var(--amber); }
+        .card-feature .card-tag { color: var(--green); }
 
         .card-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.3rem; font-weight: 800;
-            letter-spacing: -0.02em;
-            position: relative; z-index: 1;
+            font-family: var(--display);
+            font-size: 2rem; line-height: 1;
         }
-
         .card-desc {
-            font-size: 0.875rem; color: var(--muted);
-            line-height: 1.65; position: relative; z-index: 1;
-            flex: 1;
+            font-size: 0.88rem; color: var(--muted);
+            line-height: 1.7; flex: 1;
         }
 
-        /* Email display */
+        /* EMAIL DISPLAY */
         .email-display {
             display: flex; align-items: center;
             gap: 0.75rem; flex-wrap: wrap;
-            position: relative; z-index: 1;
-            margin-top: auto;
+            margin-top: 0.5rem;
         }
         .email-address {
-            font-family: 'DM Mono', monospace;
-            font-size: 1rem; font-weight: 500;
+            font-family: var(--mono);
+            font-size: 0.88rem;
             color: var(--text);
-            background: var(--lift);
-            border: 1px solid rgba(187,134,252,0.2);
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 0.55rem 1rem;
             letter-spacing: 0.02em;
             transition: border-color 0.2s;
         }
-        .card-email:hover .email-address { border-color: rgba(187,134,252,0.5); }
-
+        .contact-card:hover .email-address { border-color: rgba(0,255,136,0.3); }
         .copy-btn {
             display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(187,134,252,0.12);
-            border: 1px solid rgba(187,134,252,0.25);
-            color: var(--accent);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.82rem; font-weight: 500;
-            padding: 0.6rem 1rem;
-            border-radius: 8px; cursor: pointer;
-            transition: background 0.2s, border-color 0.2s;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            padding: 0.55rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
             flex-shrink: 0;
         }
-        .copy-btn:hover { background: rgba(187,134,252,0.2); border-color: rgba(187,134,252,0.4); }
-        .copy-btn.copied {
-            background: rgba(52,211,153,0.12);
-            border-color: rgba(52,211,153,0.35);
-            color: var(--green);
+        .copy-btn:hover { border-color: var(--green); color: var(--green); }
+        .copy-btn.copied { border-color: var(--green); color: var(--green); }
+        .copy-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+        .open-mail-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--green); color: #000;
+            font-family: var(--mono); font-weight: 700;
+            font-size: 0.7rem; padding: 0.55rem 1rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
         }
-        .copy-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+        .open-mail-btn:hover { opacity: 0.85; }
 
         .card-arrow {
-            position: absolute; bottom: 1.75rem; right: 1.75rem;
-            color: var(--muted); font-size: 1.1rem;
-            transition: transform 0.2s, color 0.2s;
-            z-index: 1;
+            position: absolute; bottom: 1.5rem; right: 1.5rem;
+            font-family: var(--mono); color: var(--dim);
+            transition: color 0.2s, transform 0.2s;
         }
-        .contact-card:hover .card-arrow { transform: translate(3px, -3px); color: var(--accent); }
+        .contact-card:hover .card-arrow { color: var(--green); transform: translate(3px,-3px); }
 
-        /* ── RESPONSE TIME STRIP ── */
+        /* RESPONSE STRIP */
         .response-strip {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: var(--r);
-            padding: 1.25rem 1.75rem;
+            padding: 1.25rem 2rem;
             display: flex; align-items: center;
             gap: 1rem; flex-wrap: wrap;
             margin-bottom: 4rem;
         }
         .response-dot {
-            width: 8px; height: 8px;
+            width: 7px; height: 7px;
             background: var(--green);
             border-radius: 50%;
-            box-shadow: 0 0 8px rgba(52,211,153,0.6);
+            box-shadow: 0 0 8px rgba(0,255,136,0.6);
             animation: pulse 2.5s ease-in-out infinite;
             flex-shrink: 0;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.75); }
-        }
-        .response-text { font-size: 0.875rem; color: var(--muted); }
-        .response-text strong { color: var(--soft); font-weight: 500; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.75)} }
+        .response-text { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+        .response-text strong { color: var(--text); }
 
-        /* ── DIVIDER ── */
+        /* DIVIDER */
         .divider {
             display: flex; align-items: center; gap: 1rem;
-            margin-bottom: 3rem; color: var(--muted);
-            font-size: 0.8rem; font-family: 'DM Mono', monospace;
-            letter-spacing: 0.08em; text-transform: uppercase;
+            margin-bottom: 2rem; color: var(--muted);
+            font-family: var(--mono); font-size: 0.62rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
         }
-        .divider::before, .divider::after {
-            content: ''; flex: 1;
-            height: 1px; background: var(--border);
-        }
+        .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
 
-        /* ── FAQ / QUICK ANSWERS ── */
+        /* FAQ */
         .faq-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
         }
         .faq-item {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--r); padding: 1.5rem;
-            transition: border-color 0.2s;
+            background: var(--bg);
+            padding: 1.75rem 2rem;
+            transition: background 0.2s;
         }
-        .faq-item:hover { border-color: rgba(187,134,252,0.2); }
+        .faq-item:hover { background: var(--bg2); }
         .faq-q {
-            font-family: 'Syne', sans-serif;
-            font-size: 0.9rem; font-weight: 700;
-            margin-bottom: 0.6rem; line-height: 1.4;
+            font-family: var(--mono); font-size: 0.75rem;
+            color: var(--text); font-weight: 700;
+            margin-bottom: 0.6rem; line-height: 1.5;
         }
-        .faq-a { font-size: 0.85rem; color: var(--muted); line-height: 1.65; }
-        .faq-a a { color: var(--accent); text-decoration: none; }
+        .faq-a { font-size: 0.87rem; color: var(--muted); line-height: 1.7; }
+        .faq-a a { color: var(--green); text-decoration: none; }
         .faq-a a:hover { text-decoration: underline; }
 
-        /* ── FOOTER ── */
+        /* FOOTER */
         footer {
-            position: relative; z-index: 1;
             border-top: 1px solid var(--border);
-            padding: 2rem 1.5rem; text-align: center;
+            padding: 2rem 2.5rem;
+            display: flex; flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center; gap: 0.75rem;
         }
-        .fc { font-size: 0.85rem; color: var(--muted); }
-        .fl {
-            display: flex; flex-wrap: wrap; justify-content: center;
-            gap: 10px 18px; font-size: 0.8rem; margin-top: 0.75rem;
-        }
-        .fl a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-        .fl a:hover { color: var(--accent); }
+        .fc { font-family: var(--mono); font-size: 0.65rem; color: var(--dim); }
+        .fc strong { color: var(--muted); }
+        .fl { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+        .fl a { font-family: var(--mono); font-size: 0.62rem; color: var(--dim); text-decoration: none; transition: color 0.2s; }
+        .fl a:hover { color: var(--green); }
 
-        /* ── RESPONSIVE ── */
         @media (max-width: 640px) {
-            main { padding: 3rem 1.25rem 4rem; }
-            h1 { font-size: 2.5rem; }
+            nav { padding: 1rem 1.5rem; }
+            main { padding: 3rem 1.5rem 4rem; }
             .contact-grid { grid-template-columns: 1fr; }
             .card-email { grid-column: 1; }
+            .faq-grid { grid-template-columns: 1fr; }
             .email-display { flex-direction: column; align-items: flex-start; }
-            .copy-btn { width: 100%; justify-content: center; }
+            footer { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-inner">
-        <a href="/" class="logo">PlaylistBridge</a>
-        <a href="/" class="nav-back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-            Back to app
-        </a>
+<nav>
+    <a href="/index.html" class="nav-back">← playlistbridge.netlify.app</a>
+    <div class="nav-id">
+        <span class="dot-live"></span>
+        <span>contact</span>
     </div>
 </nav>
 
 <main>
 
-    <!-- HEADER -->
-    <div class="header">
-        <div class="eyebrow">Get in touch</div>
-        <h1>
-            <span class="word-got">Got </span><span class="word-something">something</span><br>
-            <span class="word-say">to say?</span>
-        </h1>
-        <p class="header-sub">
-            PlaylistBridge is built and maintained by <strong>one person</strong>.
-            Every message is read. Bug reports, feature ideas, or just a hello —
-            it all genuinely helps.
-        </p>
-    </div>
+    <div class="page-tag">get in touch</div>
+    <h1>GOT<br>SOMETHING<br>TO SAY?</h1>
+    <p class="header-sub">
+        PlaylistBridge is built and maintained by <strong>one person</strong>.
+        Every message is read. Bug reports, feature ideas, or just a hello —
+        it all genuinely helps.
+    </p>
 
-    <!-- CONTACT CARDS -->
     <div class="contact-grid">
 
-        <!-- EMAIL — spans full width -->
+        <!-- EMAIL — full width -->
         <div class="contact-card card-email">
-            <div class="card-icon">✉️</div>
-            <div class="card-label">Direct email</div>
-            <div class="card-title">Drop me a message</div>
+            <span class="card-tag">Direct email</span>
+            <div class="card-title">DROP ME A MESSAGE</div>
             <p class="card-desc">
                 The fastest way to reach me. Whether it's a bug, a partnership idea,
                 a feature request, or feedback — I read everything and reply when I can.
@@ -385,21 +315,17 @@
                     </svg>
                     <span id="copyText">Copy</span>
                 </button>
-                <a href="mailto:pilgrim3201@gmail.com"
-                   style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#000;font-weight:700;font-size:0.82rem;padding:0.6rem 1rem;border-radius:8px;text-decoration:none;transition:opacity 0.2s;"
-                   onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:pilgrim3201@gmail.com" class="open-mail-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     Open Mail App
                 </a>
             </div>
         </div>
 
         <!-- BUG REPORT -->
-        <a href="mailto:pilgrim3201@gmail.com?subject=Bug%20Report%20-%20PlaylistBridge&body=Hi%2C%0A%0AHere%27s%20a%20bug%20I%20found%3A%0A%0AWhat%20happened%3A%0AWhat%20I%20expected%3A%0ABrowser%2FDevice%3A"
-           class="contact-card card-bug">
-            <div class="card-icon">🐛</div>
-            <div class="card-label">Bug report</div>
-            <div class="card-title">Found something broken?</div>
+        <a href="mailto:pilgrim3201@gmail.com?subject=Bug%20Report%20%E2%80%94%20PlaylistBridge&body=Describe%20the%20bug%3A%0A%0ASteps%20to%20reproduce%3A%0A%0ABrowser%2FDevice%3A%0A%0ASong%20or%20input%20that%20caused%20the%20issue%3A" class="contact-card card-bug">
+            <span class="card-tag">Bug report</span>
+            <div class="card-title">FOUND SOMETHING BROKEN?</div>
             <p class="card-desc">
                 Songs not matching? Player acting up? Links broken?
                 Click to send a pre-filled bug report. The more detail, the faster I can fix it.
@@ -408,11 +334,9 @@
         </a>
 
         <!-- FEATURE REQUEST -->
-        <a href="mailto:pilgrim3201@gmail.com?subject=Feature%20Idea%20-%20PlaylistBridge&body=Hi%2C%0A%0AHere%27s%20a%20feature%20idea%3A%0A%0AWhat%20it%20would%20do%3A%0AWhy%20it%20would%20be%20useful%3A"
-           class="contact-card card-feature">
-            <div class="card-icon">💡</div>
-            <div class="card-label">Feature request</div>
-            <div class="card-title">Have an idea?</div>
+        <a href="mailto:pilgrim3201@gmail.com?subject=Feature%20Request%20%E2%80%94%20PlaylistBridge&body=Feature%20idea%3A%0A%0AWhy%20it%20would%20be%20useful%3A%0A%0AAny%20platform%20or%20integration%20involved%3A" class="contact-card card-feature">
+            <span class="card-tag">Feature request</span>
+            <div class="card-title">HAVE AN IDEA?</div>
             <p class="card-desc">
                 Want Apple Music support? A different AI? A new feature?
                 Seriously, user ideas have already shaped this product.
@@ -423,7 +347,7 @@
 
     </div>
 
-    <!-- RESPONSE TIME -->
+    <!-- RESPONSE STRIP -->
     <div class="response-strip">
         <div class="response-dot"></div>
         <p class="response-text">
@@ -458,7 +382,7 @@
 </main>
 
 <footer>
-    <p class="fc">&copy; PlaylistBridge. All rights reserved.</p>
+    <span class="fc">© PlaylistBridge · Built by <strong>Smit Patil</strong></span>
     <div class="fl">
         <a href="/">Home</a>
         <a href="/about.html">About</a>
@@ -474,32 +398,17 @@
         const btn   = document.getElementById('copyBtn');
         const text  = document.getElementById('copyText');
         const icon  = document.getElementById('copyIcon');
-
         navigator.clipboard.writeText(email).then(() => {
             btn.classList.add('copied');
             text.textContent = 'Copied!';
             icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
-
             setTimeout(() => {
                 btn.classList.remove('copied');
                 text.textContent = 'Copy';
                 icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
             }, 2500);
-        }).catch(() => {
-            // Fallback for browsers that block clipboard
-            const el = document.createElement('textarea');
-            el.value = email;
-            el.style.position = 'absolute';
-            el.style.left = '-9999px';
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            text.textContent = 'Copied!';
-            setTimeout(() => { text.textContent = 'Copy'; }, 2500);
         });
     }
 </script>
-
 </body>
 </html>
