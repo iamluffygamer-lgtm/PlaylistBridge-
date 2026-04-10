@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="AI playlist player, play ChatGPT playlist, instant music player, no login music, YouTube playlist player">
-<meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow">
     <title>PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links</title>
     <meta name="description" content="Paste any AI-generated playlist and play it instantly in your browser. No login, no app. Spotify, YouTube Music and YouTube links in seconds.">
     <link rel="canonical" href="https://playlistbridge.netlify.app/" />
@@ -18,19 +18,20 @@
     <meta property="og:site_name" content="PlaylistBridge">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
+    <meta property="twitter:description" content="Paste any AI playlist and play it right here. No login, no account.">
     <meta property="twitter:description" content="Paste any AI playlist and get instant Spotify, YouTube Music or YouTube links. No login, no account.">
     <meta property="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/style.css">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -112,67 +113,54 @@
     }
     </script>
     <style>
-        .experimental-note {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 8px;
-        }
+        .experimental-note { font-size: 11px; color: var(--text-muted); margin-top: 6px; text-align: center; }
         #shareCardBtn { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-#shareCardBtn:hover { background: var(--accent); color: white; }
-                .pb-exp-powered {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-        }
-        .spotify-nudge {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    background: var(--accent-soft);
-    border: 1px solid rgba(108,99,255,0.3);
-    border-radius: var(--r-md);
-    padding: 12px 16px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: var(--sp-md);
-    flex-wrap: wrap;
-}
-.spotify-nudge.hidden { display: none; }
-.nudge-btn {
-    padding: 7px 16px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--r-pill);
-    font-size: 13px;
-    font-weight: 600;
-    font-family: var(--font-sans);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 120ms;
-    flex-shrink: 0;
-}
-.nudge-btn:hover { background: #7b73ff; }
-        .pb-expand-hint {
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    animation: bounce-up 2s ease-in-out infinite;
-    flex-shrink: 0;
-}
-@keyframes bounce-up {
-    0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(-3px); }
-            }
-      </style>
+        #shareCardBtn:hover { background: var(--accent); color: white; }
+        .pb-exp-powered { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
+        .spotify-nudge { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--accent-soft); border: 1px solid rgba(108,99,255,0.3); border-radius: var(--r-md); padding: 12px 16px; font-size: 13px; color: var(--text-secondary); margin-bottom: var(--sp-md); flex-wrap: wrap; }
+        .spotify-nudge.hidden { display: none; }
+        .nudge-btn { padding: 7px 16px; background: var(--accent); color: white; border: none; border-radius: var(--r-pill); font-size: 13px; font-weight: 600; font-family: var(--font-sans); cursor: pointer; white-space: nowrap; transition: background 120ms; flex-shrink: 0; }
+        .nudge-btn:hover { background: #7b73ff; }
+        .pb-expand-hint { color: var(--text-muted); display: flex; align-items: center; animation: bounce-up 2s ease-in-out infinite; flex-shrink: 0; }
+        @keyframes bounce-up { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+        /* Hero Counter */
+        .hero-counter { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 18px; }
+        .hero-counter-num { font-size: 22px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+        .hero-counter-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+        /* Footer links */
+        .footer-links { display: flex; align-items: center; gap: var(--sp-lg); }
+        .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color var(--t-fast); }
+        .footer-links a:hover { color: var(--text-primary); }
+        .install-banner { background: linear-gradient(135deg, var(--bg-elevated), var(--bg-raised)); border-bottom: 1px solid rgba(255,92,58,0.25); padding: 10px var(--sp-lg); position: sticky; top: 0; z-index: 101; animation: slide-down 0.3s var(--ease); }
+        @keyframes slide-down { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .install-banner-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: var(--sp-md); }
+        .install-icon { font-size: 20px; flex-shrink: 0; }
+        .install-text { flex: 1; display: flex; flex-direction: column; font-size: 13px; line-height: 1.3; }
+        .install-text strong { color: var(--text-primary); font-weight: 700; }
+        .install-text span { color: var(--text-secondary); }
+        .install-btn { background: var(--accent); color: white; border: none; border-radius: var(--r-pill); padding: 7px 18px; font-size: 13px; font-weight: 700; font-family: var(--font-sans); cursor: pointer; white-space: nowrap; box-shadow: 0 0 16px var(--accent-glow); transition: opacity 0.15s; }
+        .install-btn:hover { opacity: 0.85; }
+        .install-dismiss { background: transparent; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 4px; line-height: 1; }
+    </style>
 </head>
 <body>
 
-<!-- ───── NAVBAR ───── -->
+<!-- PWA INSTALL BANNER -->
+<div id="installBanner" class="install-banner hidden">
+  <div class="install-banner-inner">
+    <span class="install-icon">📲</span>
+    <div class="install-text">
+      <strong>Add to Home Screen</strong>
+      <span>Listen in the background, works offline</span>
+    </div>
+    <button id="installBtn" class="install-btn">Install</button>
+    <button id="installDismiss" class="install-dismiss">✕</button>
+  </div>
+</div>
+
+<!-- NAVBAR -->
 <nav class="navbar" id="navbar">
     <div class="nav-inner">
         <a href="/" class="nav-logo">
@@ -184,122 +172,137 @@
                 <span class="nav-pill-dot"></span>
                 Community
             </button>
-            <a href="/developer.html" class="nav-link">Developer</a>
+            <a href="/developer.html" class="nav-link">Dev API</a>
         </div>
     </div>
 </nav>
 
-<!-- ───── HERO ───── -->
 <main>
+
+<!-- HERO -->
 <section class="hero-section">
     <div class="hero-inner">
-        <div class="hero-badge">
-            <span class="badge-pulse"></span>
-            Built for AI playlists
+        <div class="hero-eyebrow">
+            <span class="eyebrow-tag">
+                <span class="eyebrow-dot"></span>
+                Works with ChatGPT · Claude · Gemini · Grok
+            </span>
         </div>
-        <h1 class="hero-title">Paste a list.<br>Start listening.</h1>
-        <p class="hero-sub">Turn any AI-generated song list into instant links for Spotify, YouTube Music, or YouTube. No account needed.</p>
-        <p class="experimental-note">⚡ InstantPlay is experimental. Songs play via YouTube. No copyrighted audio is hosted on this site.</p>
-        <div class="counter-strip">
-            <span class="counter-icon">🎧</span>
-            <span id="playlistCount" class="counter-num">…</span>
-            <span class="counter-label">playlists generated</span>
+        <h1 class="hero-title">Paste a list.<br><em>Play instantly.</em></h1>
+        <p class="hero-sub">Drop any AI-generated song list — it plays right here. Free. No login.</p>
+        <div class="hero-proof-row">
+            <span class="proof-chip">✓ No login</span>
+            <span class="proof-chip">✓ Plays here</span>
+            <span class="proof-chip">✓ Free forever</span>
+        </div>
+        <div class="hero-counter">
+            <span class="hero-counter-num" id="playlistCount">…</span>
+            <span class="hero-counter-label">playlists generated by real users</span>
         </div>
     </div>
 </section>
 
-<!-- ───── INPUT SECTION ───── -->
-<section class="input-section">
-    <div class="card input-card">
+<!-- COMPOSER (main input) -->
+<section class="composer-section">
+    <div class="composer-wrap">
 
-        <!-- Platform selector -->
-        <div class="platform-row">
-            <span class="section-label">Platform</span>
-            <div class="platform-selector" id="platformSelector">
-                <button class="platform-btn selected" data-platform="yt_music">
-                    <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/></svg>
-                    YT Music
-                </button>
-                <button class="platform-btn" data-platform="spotify">
-                    <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-                    Spotify
-                </button>
-                <button class="platform-btn" data-platform="youtube">
-                    <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
-                    YouTube
-                </button>
+        <!-- Listen Again Card -->
+        <div id="listenAgainCard" class="listen-again-card hidden">
+            <div class="la-art-wrap">
+                <img id="laArt" src="" alt="" class="la-art">
+                <div class="la-art-overlay">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>
+                </div>
             </div>
-        </div>
-
-        <!-- Examples row -->
-        <div class="examples-row">
-            <span class="section-label">Try an example</span>
-            <div class="example-chips">
-                <button class="example-chip" data-example="pop">Pop hits</button>
-                <button class="example-chip" data-example="classic">90s classics</button>
-                <button class="example-chip" data-example="ai">AI sample</button>
+            <div class="la-info">
+                <p class="la-label">Continue listening</p>
+                <p id="laTitle" class="la-title">—</p>
+                <p id="laTime" class="la-time">—</p>
             </div>
-        </div>
-<!-- Listen Again Card -->
-<div id="listenAgainCard" class="listen-again-card hidden">
-    <div class="la-art-wrap">
-        <img id="laArt" src="" alt="" class="la-art">
-        <div class="la-art-overlay">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                <path d="M8 5v14l11-7z"/>
-            </svg>
-        </div>
-    </div>
-    <div class="la-info">
-        <p class="la-label">Continue listening</p>
-        <p id="laTitle" class="la-title">—</p>
-        <p id="laTime" class="la-time">—</p>
-    </div>
-    <button id="laPlayBtn" class="la-play-btn">
-        ▶ Play
-    </button>
-    <button id="laDismissBtn" class="la-dismiss" title="Dismiss">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
-    </button>
-</div>
-<p class="la-caution hidden" id="laCaution">
-    🔒 Saved on this device only — not shared with anyone.
-</p>
-        <!-- Textarea -->
-        <div class="textarea-container">
-            <div id="aiBadge" class="ai-badge hidden">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                AI list detected & cleaned
-            </div>
-            <textarea 
-                id="songInput" 
-                class="song-input" 
-                placeholder="Paste your playlist here…&#10;&#10;Example:&#10;1. Bohemian Rhapsody – Queen&#10;2. Blinding Lights – The Weeknd&#10;3. Hotel California – Eagles"
-                spellcheck="false"
-            ></textarea>
-            <div id="suggestionBox" class="suggestion-box hidden"></div>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls-row">
-            <button id="generateBtn" class="btn-generate">
-                <span class="btn-generate-text">Get Links</span>
-                <span class="btn-generate-loader hidden">
-                    <span class="spinner"></span>
-                </span>
-                <kbd class="btn-kbd">⌘↵</kbd>
+            <button id="laPlayBtn" class="la-play-btn">▶ Play</button>
+            <button id="laDismissBtn" class="la-dismiss" title="Dismiss">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
-            <button id="clearBtn" class="btn-ghost">Clear</button>
+        </div>
+        <p class="la-caution hidden" id="laCaution">🔒 Saved on this device only.</p>
+
+        <!-- COMPOSER CARD -->
+        <div class="composer-card card">
+
+            <!-- Platform selector + examples (top bar) -->
+            <div class="composer-topbar">
+                <div class="platform-selector" id="platformSelector">
+                    <button class="platform-btn selected" data-platform="yt_music">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/></svg>
+                        YT Music
+                    </button>
+                    <button class="platform-btn" data-platform="spotify">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                        Spotify
+                    </button>
+                    <button class="platform-btn" data-platform="youtube">
+                        <svg class="platform-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+                        YouTube
+                    </button>
+                </div>
+                <div class="example-chips">
+                    <button class="example-chip" data-example="pop">Pop hits</button>
+                    <button class="example-chip" data-example="classic">90s classics</button>
+                    <button class="example-chip" data-example="ai">AI sample</button>
+                </div>
+            </div>
+
+            <!-- Paste area -->
+            <div class="textarea-container">
+                <div id="aiBadge" class="ai-badge hidden">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    AI list detected &amp; cleaned
+                </div>
+                <textarea
+                    id="songInput"
+                    class="song-input"
+                    placeholder="Paste your playlist here…&#10;&#10;Example:&#10;1. Bohemian Rhapsody – Queen&#10;2. Blinding Lights – The Weeknd&#10;3. Hotel California – Eagles"
+                    spellcheck="false"
+                ></textarea>
+                <div id="suggestionBox" class="suggestion-box hidden"></div>
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-row">
+                <button id="generateBtn" class="btn-play-now">
+                    <span class="btn-play-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M8 5v14l11-7z"/></svg>
+                    </span>
+                    <span class="btn-generate-text">Play Instantly</span>
+                    <span class="btn-generate-loader hidden">
+                        <span class="spinner"></span>
+                    </span>
+                    <kbd class="btn-kbd">⌘↵</kbd>
+                </button>
+                <button id="clearBtn" class="btn-ghost">Clear</button>
+                <span class="cta-hint">No account needed · songs play right here</span>
+            </div>
+
+        </div>
+
+        <p id="statusMsg" class="status-message"></p>
+
+        <!-- Recent Playlists -->
+        <div id="recentPlaylistsWrap" class="recent-playlists-wrap hidden">
+            <div class="recent-header">
+                <span class="recent-label">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                    Recent
+                </span>
+                <button id="clearRecentBtn" class="recent-clear-btn">Clear all</button>
+            </div>
+            <div id="recentPlaylistsList" class="recent-playlists-list"></div>
         </div>
 
     </div>
-
-    <p id="statusMsg" class="status-message"></p>
 </section>
 
-<!-- ───── STATUS BAR ───── -->
+<!-- STATUS BAR -->
 <div id="statusBar" class="status-bar hidden">
     <div class="status-bar-inner">
         <span class="status-pulse"></span>
@@ -307,18 +310,18 @@
     </div>
 </div>
 <div id="spotifyNudge" class="spotify-nudge hidden">
-    🎧 Play instantly here (no ads, no login).
-    Switch to <strong>YouTube</strong> to unlock InstantPlay.
+    🎧 Play instantly here (no ads, no login). Switch to <strong>YouTube</strong> to unlock InstantPlay.
     <button class="nudge-btn" onclick="switchToYouTube()">Play here instead</button>
-    </div>
-<!-- ───── RESULTS ───── -->
+</div>
+
+<!-- RESULTS -->
 <section id="resultsSection" class="results-section hidden">
 
     <!-- Artist mode -->
     <div id="artistModeSection" class="artist-mode hidden">
         <div class="card artist-card">
             <div class="artist-avatar">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13M9 18c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-2c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13M9 18c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-2c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
             </div>
             <div class="artist-info">
                 <p class="artist-mode-label">Artist detected</p>
@@ -330,8 +333,6 @@
 
     <!-- Playlist mode -->
     <div id="playlistModeSection">
-
-        <!-- Play all row -->
         <div class="play-all-row" id="playAllRow" style="display:none">
             <a id="playAllBtn" href="#" target="_blank" class="play-all-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -341,33 +342,38 @@
             <p id="playAllSubtext" class="play-all-subtext"></p>
         </div>
 
-        <!-- Track count + share -->
         <div class="results-header">
             <div class="results-meta">
                 <span class="results-count-label">Tracks found</span>
                 <span id="countDisplay" class="results-count">0</span>
             </div>
-            <div class="results-actions">
-                <div id="bulkActions" class="bulk-actions-inline hidden">
-                    <button id="copyAllBtn" class="btn-outline">📋 Copy All Links</button>
-                    <button id="openAllBtn" class="btn-outline">⚠ Open First 15</button>
-                    <button id="shareCardBtn" class="btn-outline hidden">
-    🎨 Share Playlist Card
+            <!-- Secondary actions: visually de-emphasized -->
+            <details class="secondary-actions-details">
+                <summary class="secondary-actions-toggle">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                    More
+                </summary>
+                <div class="secondary-actions-panel">
+                    <div id="bulkActions" class="bulk-actions-inline hidden">
+                        <button id="copyAllBtn" class="btn-outline">📋 Copy All Links</button>
+                        <button id="openAllBtn" class="btn-outline">⚠ Open First 15</button>
+                        <button id="shareCardBtn" class="btn-outline hidden">🎨 Share Card</button>
+                    </div>
+                    <button id="shareBtn" class="btn-outline share-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        Save Playlist Link
                     </button>
                 </div>
-                <button id="shareBtn" class="btn-outline share-btn">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                    Save Playlist Link
-                </button>
-                        </div>
-</div>
-        <!-- Track list — space is always reserved -->
-        <ul id="resultsList" class="track-list"></ul>
+            </details>
+        </div>
 
+        <p class="results-hint">↓ Click any track to play it here</p>
+
+        <ul id="resultsList" class="track-list"></ul>
     </div>
 </section>
 
-<!-- ───── SEO / HOW IT WORKS ───── -->
+<!-- HOW IT WORKS -->
 <section class="how-section">
     <div class="how-inner">
         <h2 class="how-title">How it works</h2>
@@ -376,13 +382,13 @@
                 <div class="step-num">01</div>
                 <div class="step-body">
                     <h3>Paste your list</h3>
-                    <p>Works with any AI output — ChatGPT, Claude, Gemini. Numbered lists, plain text, dash-separated, anything.</p>
+                    <p>Works with any AI output — ChatGPT, Claude, Gemini. Numbered lists, plain text, anything.</p>
                 </div>
             </div>
             <div class="how-step">
                 <div class="step-num">02</div>
                 <div class="step-body">
-                    <h3>We match metadata</h3>
+                    <h3>We match the tracks</h3>
                     <p>Songs are matched against platform metadata so you get the right track, not a cover.</p>
                 </div>
             </div>
@@ -390,14 +396,14 @@
                 <div class="step-num">03</div>
                 <div class="step-body">
                     <h3>Listen instantly</h3>
-                    <p>Open individual tracks or share the whole session. No login, no saving, no friction.</p>
+                    <p>Click any track to play it right here. No login, no saving, no friction.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ───── FEEDBACK ───── -->
+<!-- FEEDBACK -->
 <section class="feedback-section hidden" id="feedbackSection">
     <div class="card feedback-card">
         <h2 class="feedback-title">Was PlaylistBridge helpful?</h2>
@@ -414,64 +420,39 @@
     </div>
 </section>
 
-<!-- ───── FAQ ───── -->
+<!-- FAQ -->
 <section class="faq-section">
     <div class="faq-inner">
         <h2 class="faq-title">Questions</h2>
         <div class="faq-list">
-            <details class="faq-item">
-                <summary>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</summary>
-                <p>Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required.</p>
-            </details>
-            <details class="faq-item">
-                <summary>Does this create a real playlist?</summary>
-                <p>PlaylistBridge generates instant listening links and may offer a temporary YouTube queue. It does not save playlists permanently to your account.</p>
-            </details>
-            <details class="faq-item">
-                <summary>Do I need to sign up?</summary>
-                <p>No. The app works entirely without logins, accounts, or saving your personal data.</p>
-            </details>
-            <details class="faq-item">
-                <summary>Which music platforms are supported?</summary>
-                <p>Currently, we generate search links for Spotify, YouTube Music, and standard YouTube.</p>
-            </details>
-            <details class="faq-item">
-                <summary>How does InstantPlay work?</summary>
-                <p>InstantPlay finds your song on YouTube and plays it directly on this page using YouTube's official embed. No audio is hosted by PlaylistBridge.</p>
-            </details>
-            <details class="faq-item">
-                <summary>Is InstantPlay free to use?</summary>
-                <p>Yes, completely free. No account needed.</p>
-            </details>
-            <details class="faq-item">
-                <summary>Why did a song get skipped?</summary>
-                <p>Some songs may be unavailable on YouTube in your region or have been removed. InstantPlay automatically skips these and moves to the next track.</p>
-            </details>
-            <details class="faq-item">
-                <summary>Does InstantPlay work on mobile?</summary>
-                <p>Yes. Background play is limited on mobile browsers — for uninterrupted listening install PlaylistBridge to your home screen via your browser menu.</p>
-            </details>
-            <details class="faq-item">
-  <summary>Can I watch music videos while listening?</summary>
-  <p>Yes. InstantPlay includes a Video mode that plays the official YouTube music video directly inside the player. You can switch between audio and video anytime.</p>
-            </details>
+            <details class="faq-item"><summary>Can I convert a ChatGPT playlist to Spotify or YouTube Music?</summary><p>Yes. Paste your AI-generated playlist and instantly get platform-ready links. No login or account is required.</p></details>
+            <details class="faq-item"><summary>Does this create a real playlist?</summary><p>PlaylistBridge generates instant listening links and may offer a temporary YouTube queue. It does not save playlists permanently to your account.</p></details>
+            <details class="faq-item"><summary>Do I need to sign up?</summary><p>No. The app works entirely without logins, accounts, or saving your personal data.</p></details>
+            <details class="faq-item"><summary>Which music platforms are supported?</summary><p>Currently, we generate search links for Spotify, YouTube Music, and standard YouTube.</p></details>
+            <details class="faq-item"><summary>How does InstantPlay work?</summary><p>InstantPlay finds your song on YouTube and plays it directly on this page using YouTube's official embed. No audio is hosted by PlaylistBridge.</p></details>
+            <details class="faq-item"><summary>Is InstantPlay free to use?</summary><p>Yes, completely free. No account needed.</p></details>
+            <details class="faq-item"><summary>Why did a song get skipped?</summary><p>Some songs may be unavailable on YouTube in your region or have been removed. InstantPlay automatically skips these and moves to the next track.</p></details>
+            <details class="faq-item"><summary>Does InstantPlay work on mobile?</summary><p>Yes. Background play is limited on mobile browsers — install PlaylistBridge to your home screen for uninterrupted listening.</p></details>
+            <details class="faq-item"><summary>Can I watch music videos while listening?</summary><p>Yes. InstantPlay includes a Video mode that plays the official YouTube music video directly inside the player.</p></details>
         </div>
     </div>
 </section>
 </main>
 
-<!-- ───── FOOTER ───── -->
+<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-inner">
         <a href="/" class="footer-logo">PlaylistBridge</a>
+        <nav class="footer-links">
+            <a href="/contact.html">Contact</a>
+            <a href="/privacy.html">Privacy</a>
+            <a href="/terms.html">Terms</a>
+        </nav>
         <p class="footer-copy">Made by <a href="https://instagram.com/coder_smit" target="_blank">@coder_smit</a></p>
-        <div class="footer-links">
-            <a href="/developer.html">Developer</a>
-        </div>
     </div>
 </footer>
 
-<!-- ───── COMMUNITY MODAL ───── -->
+<!-- COMMUNITY MODAL -->
 <div id="communityModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-panel">
         <div class="modal-header">
@@ -483,14 +464,14 @@
         <div id="modalTrendingList" class="modal-list"></div>
     </div>
 </div>
-    <div id="feedbackModal">
-    <p class="fm-question">Did PlaylistBridge work for your playlist?</p>
 
+<!-- QUICK FEEDBACK -->
+<div id="feedbackModal">
+    <p class="fm-question">Did PlaylistBridge work for your playlist?</p>
     <div id="feedbackButtons" class="fm-buttons">
         <button class="fm-btn fm-yes" onclick="sendPositive()">👍 Yes, it worked</button>
         <button class="fm-btn fm-no" onclick="showNegativeOptions()">👎 Not really</button>
     </div>
-
     <div id="negativeOptions" class="fm-negative hidden">
         <p class="fm-sub">What went wrong?</p>
         <button class="fm-tag" onclick="sendNegative('wrong songs')">Wrong songs</button>
@@ -498,162 +479,89 @@
         <button class="fm-tag" onclick="sendNegative('slow loading')">Slow loading</button>
         <button class="fm-tag" onclick="sendNegative('confusing ui')">Confusing UI</button>
     </div>
-        </div>
+</div>
 
-    <!-- ═══════════════════════════════════════════════════════════════
-     PlaylistBridge — player-snippet.html (v4.0)
-     Paste this entire block just before </body> in index.html.
-     Replace ALL previous pb-* HTML (bar + expanded).
-     ═══════════════════════════════════════════════════════════════ -->
-
-<!-- Hidden YT iframe — audio source, never moved or shown -->
+<!-- Hidden YT iframe -->
 <div id="pb-yt-iframe" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;pointer-events:none;"></div>
 
-<!-- ══════════════════════════
-     MINI PLAYER BAR
-══════════════════════════ -->
+<!-- MINI PLAYER BAR -->
 <div id="pb-player-bar" role="region" aria-label="Music player">
-<div class="pb-expand-hint">
-    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-    </svg>
-</div>
-    <!-- Album thumb -->
+    <div class="pb-expand-hint">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+    </div>
     <img id="pb-now-thumb" src="" alt="" class="pb-thumb">
-
-    <!-- Track info -->
     <div class="pb-info">
         <div id="pb-now-title" class="pb-title">Select a song</div>
         <div id="pb-now-artist" class="pb-artist"></div>
     </div>
-
-    <!-- Progress bar (hidden on mobile via CSS) -->
     <div class="pb-progress-wrap">
         <div id="pb-progress" class="pb-progress" role="progressbar" aria-label="Playback progress">
             <div id="pb-progress-bar" class="pb-progress-fill"></div>
         </div>
         <span id="pb-time" class="pb-time">0:00 / 0:00</span>
     </div>
-
-    <!-- Controls -->
     <div class="pb-controls">
-
-        <!-- Shuffle -->
         <button id="pb-btn-shuffle" class="pb-ctrl pb-ctrl-sm" title="Shuffle" aria-label="Shuffle" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
         </button>
-
-        <!-- Prev -->
         <button id="pb-btn-prev" class="pb-ctrl" title="Previous" aria-label="Previous track">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
         </button>
-
-        <!-- Loading spinner (shown while fetching videoId) -->
-        <div id="pb-loading" style="display:none;">
-            <div class="pb-spinner"></div>
-        </div>
-
-        <!-- Play / Pause -->
+        <div id="pb-loading" style="display:none;"><div class="pb-spinner"></div></div>
         <button id="pb-btn-play" class="pb-ctrl pb-ctrl-main" title="Play / Pause" aria-label="Play">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
-
-        <!-- Next -->
         <button id="pb-btn-next" class="pb-ctrl" title="Next" aria-label="Next track">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
         </button>
-
-        <!-- Close -->
         <button id="pb-btn-close" class="pb-ctrl pb-ctrl-sm" title="Close player" aria-label="Close player">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
-
     </div>
-
-    <!-- Volume (hidden on mobile via CSS) -->
     <div class="pb-volume">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-        </svg>
-        <input type="range" id="pb-volume" min="0" max="100" value="80"
-               aria-label="Volume" title="Volume">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        <input type="range" id="pb-volume" min="0" max="100" value="80" aria-label="Volume" title="Volume">
     </div>
-
 </div>
-<!-- END MINI BAR -->
 
-
-<!-- ══════════════════════════
-     EXPANDED FULL-SCREEN PLAYER
-══════════════════════════ -->
+<!-- EXPANDED PLAYER -->
 <div id="pb-expanded" role="dialog" aria-modal="true" aria-label="Now playing">
-
-    <!-- Blurred album art background -->
     <div class="pb-exp-bg" id="pb-exp-bg" aria-hidden="true"></div>
     <div class="pb-exp-bg-overlay" aria-hidden="true"></div>
-
-    <!-- ── Header ── -->
     <div class="pb-exp-header">
         <button id="pb-btn-collapse" aria-label="Collapse player">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
         </button>
         <span class="pb-exp-header-label">Now Playing</span>
         <span class="pb-exp-powered">
-    <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-    Powered by YouTube
+            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            Powered by YouTube
         </span>
         <div class="pb-exp-header-spacer" aria-hidden="true"></div>
     </div>
-
-    <!-- ── Audio / Video toggle ── -->
     <div class="pb-exp-mode-toggle" role="group" aria-label="Playback mode">
         <button id="pb-btn-audio" class="pb-mode-btn pb-mode-active" aria-pressed="true">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
-                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
             Audio
         </button>
         <button id="pb-btn-video" class="pb-mode-btn" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
-                <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
             Video
         </button>
     </div>
-
-    <!-- ── Media (art or video) ── -->
     <div class="pb-exp-media">
-
-        <!-- Audio mode — big album art -->
         <div id="pb-exp-art-wrap" class="pb-exp-art-wrap">
             <img id="pb-exp-art" src="" alt="Album art">
             <div class="pb-exp-art-glow" aria-hidden="true"></div>
         </div>
-
-        <!-- Video mode — YouTube embed container -->
         <div id="pb-exp-video" style="display:none;">
             <div id="pb-exp-yt-container"></div>
         </div>
-
     </div>
-
-    <!-- ── Track info ── -->
     <div class="pb-exp-info">
         <div id="pb-exp-title">—</div>
         <div id="pb-exp-artist">—</div>
     </div>
-
-    <!-- ── Progress bar ── -->
     <div class="pb-exp-progress-wrap">
         <div id="pb-progress-exp" role="progressbar" aria-label="Playback progress">
             <div id="pb-progress-exp-bar" class="pb-progress-exp-fill"></div>
@@ -663,51 +571,28 @@
             <span id="pb-time-exp" class="pb-exp-time">0:00 / 0:00</span>
         </div>
     </div>
-
-    <!-- ── Controls ── -->
     <div class="pb-exp-controls">
-
-        <!-- Shuffle -->
         <button id="pb-btn-shuffle-exp" class="pb-exp-ctrl pb-exp-ctrl-sm" title="Shuffle" aria-label="Shuffle" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
         </button>
-
-        <!-- Prev -->
         <button id="pb-btn-prev-exp" class="pb-exp-ctrl" aria-label="Previous track">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
         </button>
-
-        <!-- Play / Pause (big) -->
         <button id="pb-btn-play-exp" class="pb-exp-ctrl pb-exp-ctrl-main" aria-label="Play">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
-
-        <!-- Next -->
         <button id="pb-btn-next-exp" class="pb-exp-ctrl" aria-label="Next track">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
         </button>
-
-        <!-- Spacer to balance shuffle button -->
         <div style="width:48px;" aria-hidden="true"></div>
-
     </div>
-
-    <!-- ── Queue ── -->
     <div class="pb-exp-queue-wrap">
         <div class="pb-exp-queue-label">Queue</div>
         <div id="pb-queue" role="list" aria-label="Playback queue"></div>
     </div>
-
 </div>
 
-<!-- ───── SCRIPTS ───── -->
-    
+<!-- SCRIPTS -->
 <script src="/ui.js"></script>
 <script src="/script.js"></script>
     <script src="/player.js"></script>
@@ -716,7 +601,6 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
     const firebaseConfig = {
        apiKey: "AIzaSyDJA3jzuYXfclyqNXmaSTYjNVLk8ge7NEY",
        authDomain: "playlistbridge-142f6.firebaseapp.com",
@@ -726,31 +610,46 @@
        appId: "1:906732155342:web:b5b8ad3d5c31341cc17b9f",
        measurementId: "G-JV9F025368"
     };
-
     try {
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        window.firebaseDb = db;
-        window.firebaseDoc = doc;
-        window.firebaseGetDoc = getDoc;
-        window.firebaseUpdateDoc = updateDoc;
-        window.firebaseIncrement = increment;
-        window.firebaseSetDoc = setDoc;
-        window.firebaseCollection = collection;
-        window.firebaseAddDoc = addDoc;
-        window.firebaseServerTimestamp = serverTimestamp;
-        window.firebaseQuery = query;
-        window.firebaseOrderBy = orderBy;
-        window.firebaseLimit = limit;
-        window.firebaseGetDocs = getDocs;
-
-        // setTimeout 0 ensures share-system.js has registered its
-        // firebase-ready listener before we fire the event
+        window.firebaseDb = db; window.firebaseDoc = doc; window.firebaseGetDoc = getDoc;
+        window.firebaseUpdateDoc = updateDoc; window.firebaseIncrement = increment;
+        window.firebaseSetDoc = setDoc; window.firebaseCollection = collection;
+        window.firebaseAddDoc = addDoc; window.firebaseServerTimestamp = serverTimestamp;
+        window.firebaseQuery = query; window.firebaseOrderBy = orderBy;
+        window.firebaseLimit = limit; window.firebaseGetDocs = getDocs;
         setTimeout(() => window.dispatchEvent(new Event('firebase-ready')), 0);
-    } catch (error) {
-        console.error("Firebase init failed:", error);
-    }
+    } catch (error) { console.error("Firebase init failed:", error); }
 </script>
 <script src="/share-system.js"></script>
+
+<!-- PWA Install Banner Logic -->
+<script>
+  (function() {
+    var banner      = document.getElementById('installBanner');
+    var installBtn  = document.getElementById('installBtn');
+    var dismissBtn  = document.getElementById('installDismiss');
+    if (!banner || !installBtn || !dismissBtn) return;
+
+    document.addEventListener('pb:installable', function() {
+      if (!localStorage.getItem('pb-install-dismissed')) {
+        banner.classList.remove('hidden');
+      }
+    });
+
+    installBtn.addEventListener('click', function() {
+      banner.classList.add('hidden');
+      if (window.PBInstall && window.PBInstall.canInstall) {
+        window.PBInstall.prompt();
+      }
+    });
+
+    dismissBtn.addEventListener('click', function() {
+      banner.classList.add('hidden');
+      localStorage.setItem('pb-install-dismissed', '1');
+    });
+  })();
+</script>
 </body>
-                </html>
+</html>
