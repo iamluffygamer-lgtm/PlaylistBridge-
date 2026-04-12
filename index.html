@@ -19,13 +19,15 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="PlaylistBridge – Convert AI Playlists to Spotify & YouTube Music Links">
     <meta property="twitter:description" content="Paste any AI playlist and play it right here. No login, no account.">
-        <meta property="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+    <meta property="twitter:description" content="Paste any AI playlist and get instant Spotify, YouTube Music or YouTube links. No login, no account.">
+    <meta property="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" onload="this.rel='stylesheet'" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap"></noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/home.css">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -142,11 +144,6 @@
         .install-btn { background: var(--accent); color: white; border: none; border-radius: var(--r-pill); padding: 7px 18px; font-size: 13px; font-weight: 700; font-family: var(--font-sans); cursor: pointer; white-space: nowrap; box-shadow: 0 0 16px var(--accent-glow); transition: opacity 0.15s; }
         .install-btn:hover { opacity: 0.85; }
         .install-dismiss { background: transparent; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 4px; line-height: 1; }
-        @font-face {
-  font-family: 'Syne';
-  size-adjust: 105%;
-  ascent-override: 90%;
-            }
     </style>
 </head>
 <body>
@@ -168,8 +165,8 @@
 <nav class="navbar" id="navbar">
     <div class="nav-inner">
         <a href="/" class="nav-logo">
-    <img src="/android-chrome-192x192.png" alt="PlaylistBridge" width="28" height="28" style="border-radius: 6px; flex-shrink: 0;">
-    <span class="logo-text">PlaylistBridge</span>
+            <span class="logo-mark">PB</span>
+            <span class="logo-text">PlaylistBridge</span>
         </a>
         <div class="nav-actions">
             <button id="openCommunityBtn" class="nav-pill">
@@ -182,6 +179,44 @@
 </nav>
 
 <main>
+
+<!-- GREETING + DISCOVERY ROWS -->
+<div class="home-greeting-wrap">
+    <h2 id="homeGreeting">Good evening.</h2>
+    <p class="home-greeting-sub">What do you want to listen to?</p>
+</div>
+
+<div class="home-rows-wrap">
+
+    <!-- Recently Played -->
+    <div class="home-row-section" id="homeRecentSection">
+        <div class="home-row-header">
+            <span class="home-row-title">Recently Played</span>
+        </div>
+        <div class="home-scroll-list" id="homeRecentRow"></div>
+    </div>
+
+    <!-- Pick a Vibe -->
+    <div class="home-row-section">
+        <div class="home-row-header">
+            <span class="home-row-title">Pick a Vibe</span>
+            <a href="/discover.html" class="home-row-see-all">See all →</a>
+        </div>
+        <div class="home-scroll-list" id="homeVibesRow"></div>
+    </div>
+
+    <!-- Trending Community -->
+    <div class="home-row-section" id="homeTrendingSection">
+        <div class="home-row-header">
+            <span class="home-row-title">Trending in Community</span>
+        </div>
+        <div class="home-scroll-list" id="homeTrendingRow"></div>
+    </div>
+
+</div>
+
+<hr class="home-rows-divider">
+<p class="composer-section-label">Or paste your own playlist</p>
 
 <!-- HERO -->
 <section class="hero-section">
@@ -628,6 +663,8 @@
     } catch (error) { console.error("Firebase init failed:", error); }
 </script>
 <script src="/share-system.js"></script>
+<script src="/discover.js"></script>
+<script src="/home.js"></script>
 
 <!-- PWA Install Banner Logic -->
 <script>
