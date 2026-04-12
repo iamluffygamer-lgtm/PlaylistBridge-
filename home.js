@@ -93,8 +93,8 @@ const HomeRows = (() => {
 
     // ── ROW: RECENTLY PLAYED ─────────────────────────────────────
     function renderRecentRow() {
-        const wrap = $('homeRecentRow');
-        if (!wrap) return;
+        const list = $('homeRecentRow');
+        if (!list) return;
 
         // Combine pb_last_playlist + pb_history
         const items = [];
@@ -114,12 +114,9 @@ const HomeRows = (() => {
         });
 
         if (!items.length) {
-            wrap.closest('.home-row-section')?.remove();
+            list.closest('.home-row-section')?.remove();
             return;
         }
-
-        const list = wrap.querySelector('.home-scroll-list');
-        if (!list) return;
 
         list.innerHTML = items.slice(0, 6).map(item => `
             <button class="home-card home-card-recent" data-songs='${JSON.stringify(item.songs)}' style="--card-art: url('${item.art || ''}')">
@@ -145,9 +142,7 @@ const HomeRows = (() => {
 
     // ── ROW: VIBES ───────────────────────────────────────────────
     function renderVibesRow() {
-        const wrap = $('homeVibesRow');
-        if (!wrap) return;
-        const list = wrap.querySelector('.home-scroll-list');
+        const list = $('homeVibesRow');
         if (!list) return;
 
         list.innerHTML = VIBES.map(v => `
@@ -172,13 +167,11 @@ const HomeRows = (() => {
 
     // ── ROW: TRENDING COMMUNITY ──────────────────────────────────
     async function renderTrendingRow() {
-        const wrap = $('homeTrendingRow');
-        if (!wrap) return;
-        const list = wrap.querySelector('.home-scroll-list');
+        const list = $('homeTrendingRow');
         if (!list) return;
 
         if (!window.firebaseDb) {
-            wrap.closest('.home-row-section')?.remove();
+            list.closest('.home-row-section')?.remove();
             return;
         }
 
@@ -189,7 +182,7 @@ const HomeRows = (() => {
                 window.firebaseLimit(8)
             );
             const snap = await window.firebaseGetDocs(q);
-            if (snap.empty) { wrap.closest('.home-row-section')?.remove(); return; }
+            if (snap.empty) { list.closest('.home-row-section')?.remove(); return; }
 
             const items = [];
             snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
@@ -220,7 +213,7 @@ const HomeRows = (() => {
             });
 
         } catch (e) {
-            wrap.closest('.home-row-section')?.remove();
+            list.closest('.home-row-section')?.remove();
         }
     }
 
@@ -265,9 +258,9 @@ const HomeRows = (() => {
 
         // Fallback if firebase never fires
         setTimeout(() => {
-            const trending = $('homeTrendingRow');
-            if (trending && !trending.querySelector('.home-card')) {
-                trending.closest('.home-row-section')?.remove();
+            const trendingList = $('homeTrendingRow');
+            if (trendingList && !trendingList.querySelector('.home-card')) {
+                trendingList.closest('.home-row-section')?.remove();
             }
         }, 4000);
     }
