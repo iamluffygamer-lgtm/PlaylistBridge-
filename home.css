@@ -1,0 +1,287 @@
+/* ================================================
+   PlaylistBridge — home.css
+   App-style homepage discovery rows.
+   NEW FILE — zero changes to style.css
+   ================================================ */
+
+/* ── Section wrapper ── */
+.home-rows-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--sp-lg) var(--sp-xl);
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+/* ── Greeting ── */
+.home-greeting-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 28px var(--sp-lg) 4px;
+}
+
+#homeGreeting {
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.home-greeting-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 400;
+}
+
+/* ── Row section ── */
+.home-row-section {}
+
+.home-row-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.home-row-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.home-row-see-all {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity 120ms;
+}
+
+.home-row-see-all:hover { opacity: 0.75; }
+
+/* ── Horizontal scroll list ── */
+.home-scroll-list {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.home-scroll-list::-webkit-scrollbar { display: none; }
+
+/* ── Base card ── */
+.home-card {
+    flex-shrink: 0;
+    width: 148px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 150ms var(--ease), border-color 150ms, box-shadow 150ms;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    position: relative;
+}
+
+.home-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,92,58,0.3);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+}
+
+.home-card:active { transform: translateY(-1px); }
+
+/* ── Card art ── */
+.home-card-art {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--bg-elevated);
+    position: relative;
+    overflow: hidden;
+}
+
+.home-card-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 300ms var(--ease);
+}
+
+.home-card:hover .home-card-art img { transform: scale(1.05); }
+
+.home-card-art-empty {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+/* ── Play overlay ── */
+.home-card-play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 150ms;
+    color: white;
+}
+
+.home-card:hover .home-card-play-overlay { opacity: 1; }
+
+/* ── Card info ── */
+.home-card-info {
+    padding: 10px 10px 12px;
+}
+
+.home-card-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    margin-bottom: 3px;
+}
+
+.home-card-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── 2x2 Art Grid (trending) ── */
+.home-card-art-grid {
+    width: 100%;
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-elevated);
+}
+
+.home-card-art-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 300ms var(--ease);
+}
+
+.home-card:hover .home-card-art-grid img { transform: scale(1.05); }
+
+/* Single image in grid takes full width */
+.home-card-art-grid img:only-child {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+}
+
+.home-card-art-grid img:first-child:nth-last-child(2),
+.home-card-art-grid img:first-child:nth-last-child(2) ~ img {
+    /* 2 images side by side */
+}
+
+/* ── Vibe cards ── */
+.home-card-vibe {
+    width: 130px;
+    background: var(--bg-raised);
+    border-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 14px 14px;
+    position: relative;
+    overflow: hidden;
+    gap: 0;
+}
+
+.home-card-vibe:hover {
+    border-color: var(--vibe-color, var(--accent));
+    box-shadow: 0 0 0 1px var(--vibe-color, var(--accent)), 0 8px 28px rgba(0,0,0,0.4);
+}
+
+.home-card-vibe-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 0% 0%, var(--vibe-color, transparent), transparent 70%);
+    opacity: 0.1;
+    pointer-events: none;
+    transition: opacity 200ms;
+}
+
+.home-card-vibe:hover .home-card-vibe-bg { opacity: 0.18; }
+
+.home-card-vibe-emoji {
+    font-size: 28px;
+    margin-bottom: 12px;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.home-card-vibe-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+}
+
+.vibe-play-overlay {
+    border-radius: 0;
+    background: rgba(0,0,0,0.4);
+}
+
+/* ── Divider between rows and composer ── */
+.home-rows-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 4px 0 0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ── Composer section title ── */
+.composer-section-label {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px var(--sp-lg) 12px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+    .home-rows-wrap { padding: 0 var(--sp-md) var(--sp-lg); gap: 28px; }
+    .home-greeting-wrap { padding: 24px var(--sp-md) 4px; }
+    .home-card { width: 132px; }
+    .home-card-vibe { width: 116px; padding: 14px 12px 12px; }
+    .home-card-vibe-emoji { font-size: 24px; margin-bottom: 10px; }
+    #homeGreeting { font-size: 26px; }
+}
