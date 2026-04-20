@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Perplexity AI Playlists to Spotify Instantly | PlaylistBridge</title>
+    <meta name="description" content="Perplexity AI recommends great songs — but can't play them. Paste its tracklist into PlaylistBridge and get instant Spotify links. Free, no login required.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <style>
+        :root {
+            --bg-color: #0f1117;
+            --card-bg: #1a1d26;
+            --card-hover: #22263a;
+            --text-main: #e0e2ef;
+            --text-muted: #8b8fa8;
+            --accent: #bb86fc;
+            --accent-dim: rgba(187, 134, 252, 0.12);
+            --primary: #6200ee;
+            --success: #03dac6;
+            --spotify-green: #1DB954;
+            --perplexity: #20C9C2;
+            --perplexity-dim: rgba(32, 201, 194, 0.12);
+            --perplexity-border: rgba(32, 201, 194, 0.35);
+            --error: #cf6679;
+            --border-radius: 12px;
+            --border-subtle: 1px solid rgba(255,255,255,0.07);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(ellipse at 10% 10%, rgba(32, 201, 194, 0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 90% 80%, rgba(29, 185, 84, 0.06) 0%, transparent 50%);
+        }
+
+        /* NAV */
+        .navbar { position: sticky; top: 0; background: rgba(15,17,23,0.88); backdrop-filter: blur(14px); border-bottom: var(--border-subtle); z-index: 1000; }
+        .nav-container { max-width: 860px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; text-decoration: none; background: linear-gradient(90deg, var(--accent), #ff79c6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-back { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .nav-back:hover { color: var(--perplexity); }
+        .nav-back svg { width: 14px; height: 14px; }
+
+        /* LAYOUT */
+        main { flex: 1; max-width: 860px; margin: 0 auto; padding: 4rem 1.5rem 5rem; width: 100%; }
+
+        /* HERO */
+        .hero { text-align: center; margin-bottom: 4rem; animation: fadeUp 0.6s ease both; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--perplexity-dim);
+            border: 1px solid var(--perplexity-border);
+            color: var(--perplexity);
+            font-size: 0.8rem; font-weight: 600; padding: 6px 14px;
+            border-radius: 20px; margin-bottom: 1.5rem;
+            letter-spacing: 0.03em; text-transform: uppercase;
+        }
+        .hero-badge .dot { width: 6px; height: 6px; background: var(--perplexity); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.25rem; }
+        .hero h1 .perplexity { background: linear-gradient(135deg, #20C9C2, #5de0da); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero h1 .spotify { background: linear-gradient(135deg, #1DB954, #1ed760); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.7; }
+        .hero-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--spotify-green); color: #000; font-weight: 700; font-size: 1rem; padding: 1rem 2.2rem; border-radius: 50px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 24px rgba(29,185,84,0.35); }
+        .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(29,185,84,0.5); }
+        .hero-cta svg { width: 20px; height: 20px; }
+
+        /* TRUST STRIP */
+        .trust-strip { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 2rem; }
+        .trust-item { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--text-muted); font-weight: 500; }
+        .trust-item svg { width: 15px; height: 15px; color: var(--perplexity); }
+
+        /* DIVIDER */
+        .divider { border: none; border-top: var(--border-subtle); margin: 4rem 0; }
+
+        /* SECTION LABEL */
+        .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--perplexity); margin-bottom: 1rem; }
+
+        /* WHY SECTION */
+        .why-section { animation: fadeUp 0.6s ease 0.1s both; margin-bottom: 4rem; }
+        .why-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        .why-section > p { color: var(--text-muted); font-size: 1rem; line-height: 1.75; max-width: 640px; margin-bottom: 2.5rem; }
+
+        .prompt-example {
+            background: var(--card-bg);
+            border: var(--border-subtle);
+            border-left: 3px solid var(--perplexity);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            padding: 1.25rem 1.5rem; margin-bottom: 2.5rem;
+        }
+        .prompt-example .prompt-label { font-size: 0.75rem; font-weight: 600; color: var(--perplexity); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+        .prompt-example p { color: var(--text-main); font-size: 0.95rem; font-style: italic; line-height: 1.6; }
+
+        .use-cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .use-case-card { background: var(--card-bg); border: var(--border-subtle); border-radius: var(--border-radius); padding: 1.4rem; transition: border-color 0.2s, transform 0.2s; }
+        .use-case-card:hover { border-color: var(--perplexity-border); transform: translateY(-2px); }
+        .use-case-card .icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+        .use-case-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; }
+        .use-case-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* PERPLEXITY EDGE BOX */
+        .perplexity-edge {
+            background: var(--perplexity-dim);
+            border: 1px solid var(--perplexity-border);
+            border-radius: var(--border-radius);
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .perplexity-edge .edge-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+        .perplexity-edge h3 { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; color: var(--perplexity); }
+        .perplexity-edge p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* STEPS */
+        .how-section { animation: fadeUp 0.6s ease 0.2s both; margin-bottom: 4rem; }
+        .how-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 2rem; letter-spacing: -0.02em; }
+        .steps { display: flex; flex-direction: column; position: relative; }
+        .steps::before { content: ''; position: absolute; left: 19px; top: 40px; bottom: 40px; width: 2px; background: linear-gradient(to bottom, var(--perplexity), rgba(32,201,194,0.1)); }
+        .step { display: flex; gap: 1.25rem; align-items: flex-start; padding: 1.5rem 0; }
+        .step-num { flex-shrink: 0; width: 40px; height: 40px; background: rgba(32,201,194,0.1); border: 2px solid var(--perplexity); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--perplexity); position: relative; z-index: 1; }
+        .step-content { padding-top: 6px; }
+        .step-content h3 { font-weight: 700; font-size: 1rem; margin-bottom: 0.35rem; }
+        .step-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+        .step-content .tag { display: inline-block; background: var(--perplexity-dim); color: var(--perplexity); font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 0.5rem; }
+
+        /* FORMATS */
+        .formats-section { animation: fadeUp 0.6s ease 0.25s both; margin-bottom: 4rem; }
+        .formats-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+        .format-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; }
+        .format-pill { background: var(--card-bg); border: var(--border-subtle); border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.85rem; font-family: 'Courier New', monospace; color: var(--text-muted); line-height: 1.5; }
+        .format-pill strong { display: block; font-size: 0.7rem; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: var(--perplexity); margin-bottom: 0.4rem; font-weight: 700; }
+
+        /* FAQ */
+        .faq-section { animation: fadeUp 0.6s ease 0.28s both; margin-bottom: 4rem; }
+        .faq-section h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 1.75rem; letter-spacing: -0.02em; }
+        .faq-item { border-bottom: var(--border-subtle); padding: 1.25rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-item h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .faq-item p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+
+        /* CTA CALLOUT */
+        .bridge-callout { background: linear-gradient(135deg, rgba(32,201,194,0.14) 0%, rgba(29,185,84,0.07) 100%); border: 1px solid var(--perplexity-border); border-radius: var(--border-radius); padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; animation: fadeUp 0.6s ease 0.3s both; }
+        .bridge-callout-text h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+        .bridge-callout-text p { color: var(--text-muted); font-size: 0.9rem; }
+        .bridge-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--spotify-green); color: #000; font-weight: 700; font-size: 0.95rem; padding: 0.85rem 1.8rem; border-radius: 50px; text-decoration: none; white-space: nowrap; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(29,185,84,0.3); }
+        .bridge-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(29,185,84,0.45); }
+
+        /* FOOTER */
+        footer { border-top: var(--border-subtle); padding: 2rem 1.5rem; text-align: center; }
+        .footer-content { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+        .footer-seo { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 20px; font-size: 0.8rem; }
+        .footer-seo a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-seo a:hover { color: var(--accent); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } }
+
+        @media (max-width: 600px) {
+            main { padding: 2.5rem 1.25rem 4rem; }
+            .hero h1 { font-size: 1.9rem; }
+            .bridge-callout { flex-direction: column; text-align: center; }
+            .bridge-cta { width: 100%; justify-content: center; }
+            .steps::before { left: 17px; }
+            .trust-strip { gap: 1rem; }
+        }
+    </style>
+    <link rel="canonical" href="https://playlistbridge.netlify.app/perplexity-to-spotify.html" />
+    <meta property="og:title" content="Convert Perplexity AI Playlists to Spotify Instantly | PlaylistBridge">
+    <meta property="og:description" content="Perplexity AI recommends great songs — but can't play them. Paste its tracklist into PlaylistBridge and get instant Spotify links. Free, no login required.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://playlistbridge.netlify.app/perplexity-to-spotify.html">
+    <meta property="og:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:image" content="https://playlistbridge.netlify.app/android-chrome-512x512.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert a Perplexity AI Playlist to Spotify",
+          "description": "Turn a Perplexity-generated song list into instant Spotify links using PlaylistBridge. No login required.",
+          "totalTime": "PT30S",
+          "step": [
+            { "@type": "HowToStep", "name": "Ask Perplexity for a playlist", "text": "Open Perplexity and ask for song recommendations with any genre, mood, or theme." },
+            { "@type": "HowToStep", "name": "Copy the song list", "text": "Copy Perplexity's text output. No cleanup needed." },
+            { "@type": "HowToStep", "name": "Paste into PlaylistBridge", "text": "Go to PlaylistBridge, select Spotify, and paste the list." },
+            { "@type": "HowToStep", "name": "Get instant Spotify links", "text": "PlaylistBridge matches each track and generates direct Spotify search links instantly." }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I convert a Perplexity playlist to Spotify without logging in?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. PlaylistBridge converts Perplexity AI playlists to Spotify search links with no login or account required." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Perplexity AI give good music recommendations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes — Perplexity is particularly strong for music discovery because it cites sources, explains why each track fits, and can reference recent releases that other AI models miss. Combine its recommendations with PlaylistBridge to hear them instantly on Spotify." }
+            },
+            {
+              "@type": "Question",
+              "name": "What Perplexity output formats does PlaylistBridge support?",
+              "acceptedAnswer": { "@type": "Answer", "text": "PlaylistBridge handles all Perplexity formats — numbered lists, bullet points, cited markdown, and plain artist–track lines. No manual cleanup needed before pasting." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does this work with Perplexity Pro answers?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. PlaylistBridge works with output from Perplexity Free, Pro, and all underlying models including Claude, GPT-4o, and Sonar." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">PlaylistBridge</a>
+        <a href="/" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to app
+        </a>
+    </div>
+</nav>
+
+<main>
+
+    <header class="hero">
+        <div class="hero-badge"><span class="dot"></span>Perplexity → Spotify</div>
+        <h1>
+            Turn <span class="perplexity">Perplexity</span> picks<br>
+            into real <span class="spotify">Spotify</span> listening
+        </h1>
+        <p class="subtitle">Perplexity AI finds the perfect tracks — but can't stream them. Paste its recommendations into PlaylistBridge and start listening in seconds.</p>
+        <a href="/?p=spotify" class="hero-cta">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            Open PlaylistBridge for Spotify
+        </a>
+        <div class="trust-strip">
+            <span class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                No login required
+            </span>
+            <span class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Completely free
+            </span>
+            <span class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Works in seconds
+            </span>
+        </div>
+    </header>
+
+    <hr class="divider">
+
+    <!-- WHY -->
+    <section class="why-section">
+        <p class="section-label">Why Perplexity + Spotify?</p>
+        <h2>Perplexity finds music other AIs miss</h2>
+        <p>Unlike most AI assistants, Perplexity searches the live web when answering — which means it can surface recent releases, emerging artists, and niche recommendations backed by real sources. The gap? It still can't press play. PlaylistBridge closes that gap.</p>
+
+        <div class="perplexity-edge">
+            <div class="edge-icon">🔎</div>
+            <div>
+                <h3>Perplexity's search-first edge</h3>
+                <p>When you ask Perplexity for music, it pulls from current reviews, music blogs, and streaming charts — not just training data. That means fresher, more specific picks than most AI models. PlaylistBridge turns those picks into instant Spotify links.</p>
+            </div>
+        </div>
+
+        <div class="prompt-example">
+            <div class="prompt-label">Example Perplexity prompt</div>
+            <p>"What are the best sad indie folk songs released in the last two years? Include artist and track name for each."</p>
+        </div>
+
+        <div class="use-cases">
+            <div class="use-case-card"><div class="icon">📰</div><h3>Source-backed picks</h3><p>Perplexity cites Pitchfork, NME, and music blogs — so you know why a track was recommended.</p></div>
+            <div class="use-case-card"><div class="icon">🆕</div><h3>Recent releases</h3><p>Perplexity's live search means it can recommend albums and tracks from this week, not just its training data.</p></div>
+            <div class="use-case-card"><div class="icon">🌍</div><h3>Global & niche genres</h3><p>Ask for Afrobeats, K-indie, or Brazilian phonk — Perplexity's search pulls from worldwide music coverage.</p></div>
+            <div class="use-case-card"><div class="icon">🎯</div><h3>Hyper-specific requests</h3><p>Songs for a wedding processional, a boxing training montage, or a rainy Sunday morning — Perplexity delivers.</p></div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- HOW -->
+    <section class="how-section">
+        <p class="section-label">How it works</p>
+        <h2>Three steps from Perplexity to Spotify</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>Ask Perplexity for a playlist</h3>
+                    <p>Prompt Perplexity with any music request — genre, mood, era, activity, or artist-similar. For the cleanest output, ask it to format results as "Artist – Song Title", though any format works.</p>
+                    <span class="tag">Works with Perplexity Free & Pro</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Copy the raw text output</h3>
+                    <p>Don't bother cleaning it up. PlaylistBridge automatically strips numbered lists, bullet points, citation markers, and any surrounding explanation text Perplexity adds.</p>
+                    <span class="tag">Auto-cleaned — no manual editing</span>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Paste → select Spotify → get links</h3>
+                    <p>Paste into PlaylistBridge, choose Spotify, and hit Get Links. Each track is matched via metadata lookup and turned into a direct Spotify search link instantly.</p>
+                    <span class="tag">No login. No account. Instant.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- FORMATS -->
+    <section class="formats-section">
+        <p class="section-label">Supported formats</p>
+        <h2>Paste it however Perplexity formatted it</h2>
+        <div class="format-grid">
+            <div class="format-pill"><strong>Numbered list</strong>1. Blinding Lights – The Weeknd<br>2. Levitating – Dua Lipa</div>
+            <div class="format-pill"><strong>Cited markdown</strong>• "Espresso" – Sabrina Carpenter [1]<br>• "Feather" – Sabrina Carpenter [2]</div>
+            <div class="format-pill"><strong>Bold with context</strong>**Midnight City** by M83 — iconic synth-pop<br>**Do I Wanna Know?** – Arctic Monkeys</div>
+            <div class="format-pill"><strong>Plain lines</strong>Instant Crush - Daft Punk<br>Get Lucky - Daft Punk ft. Pharrell</div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <p class="section-label">Common questions</p>
+        <h2>Perplexity to Spotify — FAQ</h2>
+        <div class="faq-item">
+            <h3>Can I convert a Perplexity playlist to Spotify without logging in?</h3>
+            <p>Yes. PlaylistBridge converts Perplexity AI recommendations to Spotify search links with no login or account needed. Just paste, click, and listen.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Does Perplexity give better music recommendations than ChatGPT?</h3>
+            <p>It depends on what you want. Perplexity's live web search means it excels at recent releases, sourced picks, and niche genre deep-dives. ChatGPT often has stronger stylistic range for creative mood playlists. Both work great with PlaylistBridge.</p>
+        </div>
+        <div class="faq-item">
+            <h3>What Perplexity output formats does PlaylistBridge support?</h3>
+            <p>All of them — numbered lists, bullet points, citation markers like [1], bold markdown, and plain "Artist – Track" lines. PlaylistBridge automatically parses and cleans the text before matching.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Does this work with Perplexity Pro and its different AI models?</h3>
+            <p>Yes. PlaylistBridge works with output from Perplexity Free and Pro, regardless of which underlying model (Claude, GPT-4o, or Sonar) generated the recommendations.</p>
+        </div>
+    </section>
+
+    <!-- CALLOUT -->
+    <div class="bridge-callout">
+        <div class="bridge-callout-text">
+            <h3>Ready to hear your Perplexity playlist?</h3>
+            <p>Paste your list, select Spotify, and get instant links. Free, no login needed.</p>
+        </div>
+        <a href="/?p=spotify" class="bridge-cta">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            Convert on PlaylistBridge
+        </a>
+    </div>
+
+</main>
+
+<footer>
+    <div class="footer-content"><p>&copy; PlaylistBridge. All rights reserved.</p></div>
+    <div class="footer-seo">
+        <a href="/chatgpt-to-spotify.html">ChatGPT to Spotify</a>
+        <a href="/claude-to-spotify.html">Claude to Spotify</a>
+        <a href="/perplexity-to-spotify.html">Perplexity to Spotify</a>
+        <a href="/gemini-playlist-player.html">Gemini Playlist</a>
+        <a href="/grok-playlist-player.html">Grok Playlist</a>
+        <a href="/text-to-youtube-music.html">Text to YouTube Music</a>
+        <a href="/paste-ai-playlist.html">Paste AI Playlist</a>
+        <a href="/text-to-playlist.html">Text to Playlist</a>
+        <a href="/how-to-play-chatgpt-playlist.html">How-to Guide</a>
+    </div>
+</footer>
+
+</body>
+</html>
