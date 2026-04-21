@@ -462,3 +462,8 @@ body.player-open { padding-bottom: 80px; }
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     #pb-expanded, #pb-exp-art, .pb-exp-bg, #pb-progress-bar, #pb-progress-exp-bar { transition-duration: 0.01ms !important; animation: none !important; }
 }
+.logo-image {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+}
